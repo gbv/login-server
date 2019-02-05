@@ -44,5 +44,10 @@ try {
 } catch(error) {
   config.providers = []
 }
+// Prepare providers
+for (let provider of config.providers) {
+  provider.loginURL = `${baseUrl}/login/${provider.id}`,
+  provider.callbackURL = `${baseUrl}/login/${provider.id}/return`
+}
 
 module.exports = config

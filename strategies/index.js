@@ -11,7 +11,7 @@ module.exports = callback => {
   for (let provider of config.providers) {
     let options = Object.assign({
       passReqToCallback: true,
-      callbackURL: `${config.baseUrl}/login/${provider.id}/return`,
+      callbackURL: provider.callbackURL,
     }, provider.auth)
     try {
       result[provider.id] = require(`./${provider.id}`)(options, provider, (req, token, tokenSecret, profile, done) => {

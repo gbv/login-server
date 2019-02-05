@@ -17,6 +17,7 @@ This repository offers a login server to be used with the [Cocoda Mapping Tool](
 - [Test](#test)
 - [API](#api)
   - [WebSocket](#websocket)
+  - [GET /providers](#get-providers)
   - [GET /users](#get-users)
   - [GET /users/:id](#get-usersid)
 - [Maintainers](#maintainers)
@@ -127,6 +128,19 @@ Available events are:
 - `loggedIn` - sent when the user has logged in (will be sent immediately after establishing the WebSocket if the user is already logged in)
 - `loggedOut` - sent when the user has logged out
 - `updated` - sent when the user was updated (e.g. added a new identity, etc.)
+- `providers` - sent as answer to a providers request via the WebSocket (consists of a property `data.providers` with a list of available providers)
+- `error` - sent as answer to a malformed message via the WebSocket (consists of a property `data.message` with an error message)
+
+You can also send requests to the WebSocket. These also have to be JSON-encoded strings in the following form:
+
+```json
+{
+  "type": "name of request"
+}
+```
+
+Currently available request types are:
+- `providers` - returns a list of available providers (same as [GET /providers](#get-providers))
 
 #### Example Usage
 ```javascript
@@ -141,6 +155,9 @@ socket.addEventListener("message", (message) => {
   }
 })
 ```
+
+### GET /providers
+Returns a list of available providers.
 
 ### GET /users
 Returns all users in database. Note: This may be removed in the future.

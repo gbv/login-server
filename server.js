@@ -1,5 +1,6 @@
 const _ = require("lodash")
 const config = require("./config")
+const utils = require("./utils")
 const express = require("express")
 const session = require("express-session")
 const bodyParser = require("body-parser")
@@ -44,13 +45,6 @@ if (!port) {
   process.exit(1)
 }
 
-/**
- * Returns a random v4 UUID.
- *
- * from: https://gist.github.com/jed/982883
- */
-function uuid(a){return a?(a^Math.random()*16>>a/4).toString(16):([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,uuid)}
-
 // Prepare strategies with they verify functions
 const strategies = require("./strategies")((req, token, tokenSecret, profile, done) => {
   let user = req.user
@@ -65,7 +59,7 @@ const strategies = require("./strategies")((req, token, tokenSecret, profile, do
         done(null, user)
       } else {
         // Create new user
-        let id = uuid()
+        let id = utils.uuid()
         user = new User({
           _id: id,
           uri: `${config.baseUrl}/users/${id}`,
@@ -192,8 +186,19 @@ app.ws("/", (ws, req) => {
     // Fire loggedIn event
     userLoggedIn(req.user, sessionID)
   }
-  ws.on("message", () => {
-    // Message will be ignored
+  ws.on("message", (message) => {
+    try {
+      message = JSON.parse(message)
+      if (message.type === "providers") {
+        // Reply with list of providers
+        sendEvent(sessionID, "providers", {
+          providers: utils.prepareProviders()
+        })
+      }
+    } catch(error) {
+      // Send error event to WebSocket
+      sendEvent(sessionID, "error", { message: "Message could not be parsed." })
+    }
   })
   ws.on("close", () => {
     // Remove sessionID from websockets
