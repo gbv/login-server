@@ -1,0 +1,13 @@
+<% if (user) { %>
+	<p>Hello, <%= user.name %>. <a href="<%= user.uri %>" target="_blank">API URL</a> | <a href="/logout">Log out</a></p>
+<% } %>
+<% config.providers.forEach(provider => { %>
+  <p>
+  <% if (user && user.identities && user.identities[provider.id]) { %>
+    <%= provider.name %> connected (<%= user.identities[provider.id].id %>). %>
+    <a href="/disconnect/<%= provider.id %>">Disconnect</a>
+  <% } else { %>
+    Connect <a href="/login/<%= provider.id %>">via <%= provider.name %></a>.
+  <% } %>
+  </p>
+<% }) %>
