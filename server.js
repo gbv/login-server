@@ -21,7 +21,7 @@ function sendEvent(sessionID, event, data) {
   let socket = websockets[sessionID]
   if (socket) {
     socket.send(JSON.stringify({
-      event,
+      type: event,
       date: (new Date()).toISOString(),
       data
     }))
