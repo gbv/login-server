@@ -25,4 +25,13 @@ module.exports = app => {
     })
   })
 
+  app.get("/currentUser", (req, res) => {
+    let user = req.user
+    if (user) {
+      res.json(user)
+    } else {
+      res.sendStatus(404)
+    }
+  })
+
 }

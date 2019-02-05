@@ -18,6 +18,7 @@ This repository offers a login server to be used with the [Cocoda Mapping Tool](
 - [API](#api)
   - [WebSocket](#websocket)
   - [GET /providers](#get-providers)
+  - [GET /currentUser](#get-currentuser)
   - [GET /users](#get-users)
   - [GET /users/:id](#get-usersid)
 - [Maintainers](#maintainers)
@@ -158,6 +159,9 @@ socket.addEventListener("message", (message) => {
 
 ### GET /providers
 Returns a list of available providers.
+
+### GET /currentUser
+Returns the currently logged in user. Returns an 404 error when no user is logged in.
 
 ### GET /users
 Returns all users in database. Note: This may be removed in the future.
