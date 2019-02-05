@@ -16,6 +16,7 @@ This repository offers a login server to be used with the [Cocoda Mapping Tool](
 - [Usage](#usage)
 - [Test](#test)
 - [API](#api)
+  - [WebSocket](#websocket)
   - [GET /users](#get-users)
   - [GET /users/:id](#get-usersid)
 - [Maintainers](#maintainers)
@@ -95,6 +96,50 @@ npm test
 
 ## API
 To be extended.
+
+### WebSocket
+Offers a WebSocket that sends events about the current user. Events are sent as JSON-encoded strings that look like this:
+
+```json
+{
+  "event": "name of event (see below)",
+  "date": "(Date as ISOString)",
+  "data": {
+    "user": {
+      "uri": "URI of user",
+      "name": "Name of user",
+      "identities": {
+        "xzy": {
+          "id": "ID of user for provider xzy",
+          "uri": "URI or profile URL of user for provider xzy",
+          "name": "Display name of user for provider xzy (if available)",
+          "username": "Username of user for provider xzy (if available)"
+        }
+      },
+      "rights": ["a", "list", "of", "rights"]
+    }
+  }
+}
+```
+
+Available events are:
+- `loggedIn` - sent when the user has logged in (will be sent immediately after establishing the WebSocket if the user is already logged in)
+- `loggedOut` - sent when the user has logged out
+- `updated` - sent when the user was updated (e.g. added a new identity, etc.)
+
+#### Example Usage
+```javascript
+// Assumes server is run on localhost:3005
+let socket = new WebSocket("ws://localhost:3005")
+socket.addEventListener("message", (message) => {
+  try {
+    let event = JSON.parse(message)
+    alert(event.event, event.user && event.user.uri)
+  } catch(error) {
+    console.warn("Error parsing WebSocket message", message)
+  }
+})
+```
 
 ### GET /users
 Returns all users in database. Note: This may be removed in the future.
