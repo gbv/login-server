@@ -71,7 +71,7 @@ const strategies = require("./strategies")((req, token, tokenSecret, profile, do
           uri: `${config.baseUrl}/users/${id}`,
           name: profile.name,
           identities: {
-            [profile.provider]: profile
+            [profile.provider]: _.omit(profile, ["provider"])
           }
         })
         user.save().then(user => {
@@ -88,7 +88,7 @@ const strategies = require("./strategies")((req, token, tokenSecret, profile, do
   } else {
     // User is already logged in. Add new profile to identities.
     // Note: This is a workaround to make Mongoose recognize the changes.
-    let identities = Object.assign(user.identities, { [profile.provider]: profile })
+    let identities = Object.assign(user.identities, { [profile.provider]: _.omit(profile, ["provider"]) })
     user.set("identities", {})
     user.set("identities", identities)
     user.save().then(user => {
