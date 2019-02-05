@@ -2,6 +2,7 @@
  * Imports and configures all available stategies.
  */
 
+const _ = require("lodash")
 const config = require("../config")
 
 module.exports = callback => {
@@ -13,7 +14,17 @@ module.exports = callback => {
       callbackURL: `${config.baseUrl}/login/${provider.id}/return`,
     }, provider.auth)
     try {
-      result[provider.id] = require(`./${provider.id}`)(options, provider, callback)
+      result[provider.id] = require(`./${provider.id}`)(options, provider, (req, token, tokenSecret, profile, done) => {
+        // Add URI to profile
+        let uri = provider.template
+        if (uri) {
+          _.forOwn(profile, (value, key) => {
+            uri = uri.replace(`{${key}}`, value)
+          })
+          profile.uri = uri
+        }
+        callback(req, token, tokenSecret, profile, done)
+      })
     } catch(error) {
       console.warn(`Error configuring provider ${provider.id}.`)
     }

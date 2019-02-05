@@ -70,6 +70,7 @@ To configure the providers:
   {
     "id": "github",
     "name": "GitHub",
+    "template": "https://github.com/{username}",
     "auth": {
       "clientID": "abcdef1234567890",
       "clientSecret": "abcdef1234567890abcdef1234567890"
@@ -78,7 +79,7 @@ To configure the providers:
 ]
 ```
 
-For each provider, the `id` is the name used by the corresponding passport strategy, the `name` is the display name, and `auth` will be inserted into the options when configuring the strategy (most applications need `clientID` and `clientSecret`, but for example Mediawiki needs `consumerKey` and `consumerSecret`).
+For each provider, the `id` is the name used by the corresponding passport strategy, the `name` is the display name, `template` is used to generate a URI for the user (available placeholders are `{username}` and `{id}`), and `auth` will be inserted into the options when configuring the strategy (most applications need `clientID` and `clientSecret`, but for example Mediawiki needs `consumerKey` and `consumerSecret`).
 
 You can only use providers available in folder `strategies/`. Feel free to add more providers via Pull Request (please use existing files as templates).
 
