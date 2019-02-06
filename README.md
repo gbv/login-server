@@ -133,9 +133,10 @@ After you have added the strategy, you can use it by adding a provider to `confi
 [
   {
     "id": "github",
+    "strategy": "github",
     "name": "GitHub",
     "template": "https://github.com/{username}",
-    "auth": {
+    "options": {
       "clientID": "abcdef1234567890",
       "clientSecret": "abcdef1234567890abcdef1234567890"
     }
@@ -145,11 +146,12 @@ After you have added the strategy, you can use it by adding a provider to `confi
 
 Each object in the list of providers can have the following properties:
 
-- `id` (required) - Name of the Passport strategy.
+- `id` (required) - Unique ID for the provider.
+- `strategy` (required) - Name of the Passport strategy used by the provider.
 - `name` (required) - Display name of the provider.
 - `template` (optional) - A template string to generate a URI (the placeholder `{field}` can be any field provided in the `providerProfile` object, usually `{id}` or `{username}`).
 - `credentialsNecessary` (optional) - Set to `true` if username and password credentials are necessary for this provider. Instead of a redirect (for OAuth), cocoda-userdb will show a login form that will send the credentials to a POST endpoint.
-- `auth` (mostly required) - A options object for the strategy, often containing client credentials for the authentication endpoint.
+- `options` (mostly required) - A options object for the strategy, often containing client credentials for the authentication endpoint.
 
 The following is an example `providers.json` that shows how to configure each of the existing providers:
 
@@ -157,36 +159,40 @@ The following is an example `providers.json` that shows how to configure each of
 [
   {
     "id": "github",
+    "strategy": "github",
     "name": "GitHub",
     "template": "https://github.com/{username}",
-    "auth": {
+    "options": {
       "clientID": "abcdef1234567890",
       "clientSecret": "abcdef1234567890abcdef1234567890"
     }
   },
   {
     "id": "orcid",
+    "strategy": "orcid",
     "name": "ORCID",
     "template": "https://orcid.org/{id}",
-    "auth": {
+    "options": {
       "clientID": "APP-abcdef1234567890",
       "clientSecret": "abcdef1-23456-7890ab-cdef12-34567890"
     }
   },
   {
     "id": "mediawiki",
+    "strategy": "mediawiki",
     "name": "Mediawiki",
     "template": "https://www.mediawiki.org/wiki/User:{username}",
-    "auth": {
+    "options": {
       "consumerKey": "abcdef1234567890",
       "consumerSecret": "abcdef1234567890abcdef1234567890"
     }
   },
   {
-    "id": "ldapauth",
+    "id": "my-ldap",
+    "strategy": "ldapauth",
     "name": "My LDAP",
     "credentialsNecessary": true,
-    "auth": {
+    "options": {
       "server": {
         "url": "ldap://ldap.example.com",
         "bindDN": "uid=admin,dc=example,dc=com",

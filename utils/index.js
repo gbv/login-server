@@ -16,7 +16,7 @@ function uuid(a){return a?(a^Math.random()*16>>a/4).toString(16):([1e7]+-1e3+-4e
  * Prepares list of providers by removing sensitive properties.
  */
 function prepareProviders() {
-  return config.providers.map(provider => _.omit(provider, ["template", "auth", "callbackURL"]))
+  return config.providers.map(provider => _.omit(provider, ["template", "auth", "callbackURL", "options"]))
 }
 
 module.exports = {

@@ -12,9 +12,9 @@ module.exports = callback => {
     let options = Object.assign({
       passReqToCallback: true,
       callbackURL: provider.callbackURL,
-    }, provider.auth)
+    }, provider.options)
     try {
-      result[provider.id] = require(`./${provider.id}`)(options, provider, (req, token, tokenSecret, profile, done) => {
+      result[provider.id] = require(`./${provider.strategy}`)(options, provider, (req, token, tokenSecret, profile, done) => {
         // Add URI to profile
         let uri = provider.template
         if (uri) {

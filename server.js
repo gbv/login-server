@@ -151,6 +151,7 @@ _.forEach(strategies, (strategy, providerId) => {
   if (!provider) {
     return
   }
+  let strategyName = provider.strategy
 
   if (provider.credentialsNecessary) {
     // Add a GET and POST route
@@ -160,7 +161,7 @@ _.forEach(strategies, (strategy, providerId) => {
     })
 
     app.post(`/login/${providerId}`,
-      passport.authenticate(providerId,
+      passport.authenticate(strategyName,
         {
           successRedirect: "/",
           failureRedirect: `/login/${providerId}`
@@ -173,12 +174,12 @@ _.forEach(strategies, (strategy, providerId) => {
     // Add GET routes for login redirection and return
 
     app.get(`/login/${providerId}`,
-      passport.authenticate(providerId), (req, res) => {
+      passport.authenticate(strategyName), (req, res) => {
         res.redirect("/")
       })
 
     app.get(`/login/${providerId}/return`,
-      passport.authenticate(providerId), (req, res) => {
+      passport.authenticate(strategyName), (req, res) => {
         res.redirect("/")
       })
 
