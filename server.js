@@ -10,6 +10,14 @@ const passport = require("passport")
 const path = require("path")
 const User = require("./models/user")
 
+// Prepare rate limiting middleware
+const rateLimit = require("express-rate-limit")
+const apiLimiter = rateLimit({
+  // Maximum of 10 requests per minute
+  windowMs: 60 * 1000,
+  max: 10
+})
+
 // Prepare session store
 const MongoStore = require("connect-mongo")(session)
 const mongoStore = new MongoStore({ url: config.database.url })
@@ -161,6 +169,7 @@ _.forEach(strategies, (strategy, providerId) => {
     })
 
     app.post(`/login/${providerId}`,
+      apiLimiter,
       passport.authenticate(strategyName,
         {
           successRedirect: "/",
