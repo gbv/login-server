@@ -15,6 +15,8 @@ This repository offers a user database to be used with the [Cocoda Mapping Tool]
   - [Configuration](#configuration)
 - [Usage](#usage)
 - [Test](#test)
+- [Strategies](#strategies)
+  - [Providers](#providers)
 - [API](#api)
   - [WebSocket](#websocket)
   - [GET /providers](#get-providers)
@@ -65,7 +67,67 @@ MONGO_DB=
 ```
 
 #### `config/providers.json`
-To configure the providers:
+To configure the providers. See [Providers](#providers).
+
+## Usage
+```bash
+npm run start
+```
+
+## Test
+Not yet implemented.
+
+```bash
+npm test
+```
+
+## Strategies
+cocoda-userdb uses [Passport](http://www.passportjs.org) as authentication middleware. Passport uses so-called "strategies" to support authentication with different providers. A list of available strategies can be found [here](http://www.passportjs.org/packages/). Currently supported strategies in cocoda-userdb are:
+
+- GitHub (via [passport-github](http://www.passportjs.org/packages/passport-github/))
+- ORCID (via [passport-orcid](http://www.passportjs.org/packages/passport-orcid/))
+- Mediawiki (via [passport-mediawiki-oauth](http://www.passportjs.org/packages/passport-mediawiki-oauth/))
+- LDAP (via [passport-ldapauth](http://www.passportjs.org/packages/passport-ldapauth/))
+
+Because strategies use different parameters in their [verify callbacks](http://www.passportjs.org/docs/configure/), each strategy has its own wrapper file in the folder `strategies/`. To add another strategy to cocoda-userdb, add a file called `{name}.js` (where `{name}` is the name of the strategy that is used with `passport.authenticate`) with the following structure (GitHub as example):
+
+```javascript
+/**
+ * OAuth Stategy for GitHub.
+ */
+
+// Import strategy here
+const Strategy = require("passport-github").Strategy
+
+// Don't change this part!
+module.exports =
+  (options, provider, callback) => new Strategy(options,
+    // Strategies have different callback parameters.
+    // `req` is always the first and the `done` callback is always last.
+    (req, token, tokenSecret, profile, done) => {
+      // Prepare a standardized object for the user profile,
+      // usually using information from the `profile` parameter
+      let providerProfile = {
+        // Required, don't change this!
+        provider: provider.id,
+        // Required: Choose a field that represents a unique user ID for this user
+        id: profile.id,
+        // Optional: Provides a display name (e.g. full name)
+        name: profile.displayName,
+        // Optional: Provides a username
+        username: profile.username
+      }
+      // Call a custom callback. `req`, `providerProfile`, and `done` are required,
+      // `token` and `tokenSecret` can be null.
+      callback(req, token, tokenSecret, providerProfile, done)
+  })
+```
+
+You can look at the existing strategies as examples and add your own via a Pull Request.
+
+### Providers
+
+After you have added the strategy, you can use it by adding a provider to `config/providers.json`:
 
 ```json
 [
@@ -81,21 +143,62 @@ To configure the providers:
 ]
 ```
 
-For each provider, the `id` is the name used by the corresponding passport strategy, the `name` is the display name, `template` is used to generate a URI for the user (available placeholders are `{username}` and `{id}`), and `auth` will be inserted into the options when configuring the strategy (most applications need `clientID` and `clientSecret`, but for example Mediawiki needs `consumerKey` and `consumerSecret`).
+Each object in the list of providers can have the following properties:
 
-You can only use providers available in folder `strategies/`. Feel free to add more providers via Pull Request (please use existing files as templates).
+- `id` (required) - Name of the Passport strategy.
+- `name` (required) - Display name of the provider.
+- `template` (optional) - A template string to generate a URI (the placeholder `{field}` can be any field provided in the `providerProfile` object, usually `{id}` or `{username}`).
+- `credentialsNecessary` (optional) - Set to `true` if username and password credentials are necessary for this provider. Instead of a redirect (for OAuth), cocoda-userdb will show a login form that will send the credentials to a POST endpoint.
+- `auth` (mostly required) - A options object for the strategy, often containing client credentials for the authentication endpoint.
 
-## Usage
-```bash
-npm run start
+The following is an example `providers.json` that shows how to configure each of the existing providers:
+
+```json
+[
+  {
+    "id": "github",
+    "name": "GitHub",
+    "template": "https://github.com/{username}",
+    "auth": {
+      "clientID": "abcdef1234567890",
+      "clientSecret": "abcdef1234567890abcdef1234567890"
+    }
+  },
+  {
+    "id": "orcid",
+    "name": "ORCID",
+    "template": "https://orcid.org/{id}",
+    "auth": {
+      "clientID": "APP-abcdef1234567890",
+      "clientSecret": "abcdef1-23456-7890ab-cdef12-34567890"
+    }
+  },
+  {
+    "id": "mediawiki",
+    "name": "Mediawiki",
+    "template": "https://www.mediawiki.org/wiki/User:{username}",
+    "auth": {
+      "consumerKey": "abcdef1234567890",
+      "consumerSecret": "abcdef1234567890abcdef1234567890"
+    }
+  },
+  {
+    "id": "ldapauth",
+    "name": "My LDAP",
+    "credentialsNecessary": true,
+    "auth": {
+      "server": {
+        "url": "ldap://ldap.example.com",
+        "bindDN": "uid=admin,dc=example,dc=com",
+        "bindCredentials": "abcdef1234567890",
+        "searchBase": "dc=example,dc=com",
+        "searchFilter": "(uid={{username}})"
+      }
+    }
+  }
+]
 ```
 
-## Test
-Not yet implemented.
-
-```bash
-npm test
-```
 
 ## API
 To be extended.
