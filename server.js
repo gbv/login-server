@@ -128,7 +128,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(require("cookie-parser")())
 app.use(session({
   secret: config.sessionSecret,
-  resave: true,
+  resave: false,
   saveUninitialized: false,
   store: mongoStore,
   cookie: {
@@ -170,11 +170,13 @@ app.get("/disconnect/:provider", (req, res) => {
   }
 })
 
-app.get("/logout", (req, res) => {
+app.get("/logout", async (req, res) => {
+  // Note: Note sure if `await` is even applicable here, or if `req.user = undefined` makes sense, but it seems to help with #3.
+  // Invalidate session
+  await req.logout()
+  req.user = undefined
   // Fire loggedOut event
   userLoggedOut(req.user, req.sessionID)
-  // Invalidate session.
-  req.logout()
   res.redirect("/")
 })
 
