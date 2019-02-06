@@ -19,10 +19,17 @@ This repository offers a user database to be used with the [Cocoda Mapping Tool]
   - [Providers](#providers)
 - [API](#api)
   - [WebSocket](#websocket)
+    - [Example Usage](#example-usage)
   - [GET /providers](#get-providers)
   - [GET /currentUser](#get-currentuser)
   - [GET /users](#get-users)
   - [GET /users/:id](#get-usersid)
+  - [GET /login](#get-login)
+  - [GET /login/:provider](#get-loginprovider)
+  - [GET /login/:provider/return](#get-loginproviderreturn)
+  - [POST /login/:provider](#post-loginprovider)
+  - [GET /disconnect/:provider](#get-disconnectprovider)
+  - [GET /logout](#get-logout)
 - [Maintainers](#maintainers)
 - [Contribute](#contribute)
 - [License](#license)
@@ -278,6 +285,24 @@ Returns all users in database. Note: This may be removed in the future.
 ### GET /users/:id
 Returns a specific user.
 
+### GET /login
+Shows a site to manage one's user account (if already authenticated) or to login (if not authenticated).
+
+### GET /login/:provider
+Shows a login page for a provider. For OAuth providers, this page will redirect to the provider's page to connect your account, which then redirects to `/login/:provider/return`. For providers using credentials, this will show a login form.
+
+### GET /login/:provider/return
+Callback endpoint for OAuth requests. Will save the connected account to the user (or create a new user if necessary) and redirect to `login`.
+
+### POST /login/:provider
+POST endpoint for providers using credentials. If successful, it will redirect to `/login`, otherwise it will redirect back to `/login/:provider`.
+
+### GET /disconnect/:provider
+Disconnects a provider from the user and redirects to `/login`.
+
+### GET /logout
+Logs the user out of their account. Note that the session will remain because it is used for the WebSockets. This enables the application to send events to active WebSockets for the current session, even if the user has logged out.
+
 ## Maintainers
 
 - [@stefandesu](https://github.com/stefandesu)
@@ -286,7 +311,9 @@ Returns a specific user.
 ## Contribute
 PRs accepted.
 
-Small note: If editing the README, please conform to the [standard-readme](https://github.com/RichardLitt/standard-readme) specification.
+- Please run the tests before committing.
+- Please do not skip the pre-commit hook when committing your changes.
+- If editing the README, please conform to the [standard-readme](https://github.com/RichardLitt/standard-readme) specification.
 
 ## License
 MIT © 2019 Verbundzentrale des GBV (VZG)
