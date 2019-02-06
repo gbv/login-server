@@ -3,6 +3,7 @@ const config = require("./config")
 const utils = require("./utils")
 const express = require("express")
 const session = require("express-session")
+const helmet = require("helmet")
 const bodyParser = require("body-parser")
 const fs = require("fs")
 const passport = require("passport")
@@ -114,6 +115,10 @@ passport.deserializeUser((id, done) => {
 })
 
 let app = express()
+
+// Use helmet to set important http headers
+app.use(helmet())
+
 require("express-ws")(app)
 
 // Pretty-print JSON output
