@@ -176,7 +176,7 @@ _.forEach(strategies, (strategy, providerId) => {
           failureRedirect: `/login/${providerId}`
         }),
       (req, res) => {
-        res.redirect("/")
+        res.redirect("/login")
       })
 
   } else {
@@ -184,12 +184,12 @@ _.forEach(strategies, (strategy, providerId) => {
 
     app.get(`/login/${providerId}`,
       passport.authenticate(strategyName), (req, res) => {
-        res.redirect("/")
+        res.redirect("/login")
       })
 
     app.get(`/login/${providerId}/return`,
       passport.authenticate(strategyName), (req, res) => {
-        res.redirect("/")
+        res.redirect("/login")
       })
 
   }
@@ -208,10 +208,10 @@ app.get("/disconnect/:provider", (req, res) => {
       // Fire updated event
       userUpdated(user, req.sessionID)
     }).catch(() => null).finally(() => {
-      res.redirect("/")
+      res.redirect("/login")
     })
   } else {
-    res.redirect("/")
+    res.redirect("/login")
   }
 })
 
@@ -222,7 +222,12 @@ app.get("/logout", async (req, res) => {
   req.user = undefined
   // Fire loggedOut event
   userLoggedOut(req.user, req.sessionID)
-  res.redirect("/")
+  res.redirect("/login")
+})
+
+// Currently redirects to /login, but will offer a API documentation later.
+app.get("/", (req, res) => {
+  res.redirect("/login")
 })
 
 app.ws("/", (ws, req) => {
