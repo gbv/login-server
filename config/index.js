@@ -19,7 +19,7 @@ const
   mongoAuth = mongoUser ? `${mongoUser}:${mongoPass}@` : "",
   mongoHost = process.env.MONGO_HOST || "localhost",
   mongoPort = process.env.MONGO_PORT || 27017,
-  mongoDb = (process.env.MONGO_DB || "cocoda-login") + (env == "test" ? "-test" : ""),
+  mongoDb = (process.env.MONGO_DB || "cocoda-userdb") + (env == "test" ? "-test" : ""),
   mongoUrl = `mongodb://${mongoAuth}${mongoHost}:${mongoPort}/${mongoDb}`,
   mongoOptions = {
     reconnectTries: 60,

@@ -1,14 +1,14 @@
 {
-  "name": "cocoda-login",
+  "name": "cocoda-userdb",
   "version": "0.1.0",
-  "description": "Login server for Cocoda Mapping Tool",
-  "homepage": "https://github.com/gbv/cocoda-login",
+  "description": "User database for Cocoda Mapping Tool",
+  "homepage": "https://github.com/gbv/cocoda-userdb",
   "repository": {
     "type": "git",
-    "url": "https://github.com/gbv/cocoda-login.git"
+    "url": "https://github.com/gbv/cocoda-userdb.git"
   },
   "bugs": {
-    "url": "https://github.com/gbv/cocoda-login/issues"
+    "url": "https://github.com/gbv/cocoda-userdb/issues"
   },
   "main": "server.js",
   "scripts": {

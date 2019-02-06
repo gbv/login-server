@@ -1,11 +1,11 @@
-# Cocoda Login
+# Cocoda UserDB
 
-[![Build Status](https://travis-ci.com/gbv/cocoda-login.svg?branch=master)](https://travis-ci.com/gbv/cocoda-login)
+[![Build Status](https://travis-ci.com/gbv/cocoda-userdb.svg?branch=master)](https://travis-ci.com/gbv/cocoda-userdb)
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg)](https://github.com/RichardLitt/standard-readme)
 
-> Login server for Cocoda Mapping Tool
+> User database for Cocoda Mapping Tool
 
-This repository offers a login server to be used with the [Cocoda Mapping Tool](https://github.com/gbv/cocoda).
+This repository offers a user database to be used with the [Cocoda Mapping Tool](https://github.com/gbv/cocoda). It allows users to authenticate using different providers (e.g. GitHub, ORCID).
 
 ## Table of Contents
 
@@ -32,8 +32,8 @@ You need to have access to a [MongoDB database](https://docs.mongodb.com/manual/
 
 ### Clone and Install
 ```bash
-git clone https://github.com/gbv/cocoda-login.git
-cd cocoda-login
+git clone https://github.com/gbv/cocoda-userdb.git
+cd cocoda-userdb
 npm install
 ```
 
@@ -60,7 +60,7 @@ MONGO_PASS=
 MONGO_HOST=
 # port used for MongoDB, default: 27017
 MONGO_PORT=
-# database used for MongoDB, default: cocoda-login
+# database used for MongoDB, default: cocoda-userdb
 MONGO_DB=
 ```
 

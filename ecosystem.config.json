@@ -1,4 +1,4 @@
 {
-  "name": "cocoda-login",
+  "name": "cocoda-userdb",
   "script": "./server.js"
 }
