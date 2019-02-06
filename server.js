@@ -49,7 +49,7 @@ if (!port) {
 // Prepare strategies with they verify functions
 const strategies = require("./strategies")((req, token, tokenSecret, profile, done) => {
   let user = req.user
-  const sessionID = req.cookies["connect.sid"].split(".")[0].split(":")[1]
+  const sessionID = req.sessionID
   if (!user) {
     // User is not yet logged in. Either find existing user or create a new user.
     User.findOne({ [`identities.${profile.provider}.id`]: profile.id }).then(user => {
@@ -145,14 +145,44 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 // Strategy routes
-_.forEach(strategies, (strategy, provider) => {
-  app.get(`/login/${provider}`,
-    passport.authenticate(provider))
+_.forEach(strategies, (strategy, providerId) => {
 
-  app.get(`/login/${provider}/return`,
-    passport.authenticate(provider), (req, res) => {
-      res.redirect("/")
+  let provider = config.providers.find(provider => provider.id === providerId)
+  if (!provider) {
+    return
+  }
+
+  if (provider.credentialsNecessary) {
+    // Add a GET and POST route
+
+    app.get(`/login/${providerId}`, (req, res) => {
+      res.render("login", { provider })
     })
+
+    app.post(`/login/${providerId}`,
+      passport.authenticate(providerId,
+        {
+          successRedirect: "/",
+          failureRedirect: `/login/${providerId}`
+        }),
+      (req, res) => {
+        res.redirect("/")
+      })
+
+  } else {
+    // Add GET routes for login redirection and return
+
+    app.get(`/login/${providerId}`,
+      passport.authenticate(providerId), (req, res) => {
+        res.redirect("/")
+      })
+
+    app.get(`/login/${providerId}/return`,
+      passport.authenticate(providerId), (req, res) => {
+        res.redirect("/")
+      })
+
+  }
 })
 
 // Disconnect route
