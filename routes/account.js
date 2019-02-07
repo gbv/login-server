@@ -1,5 +1,5 @@
 /**
- * Login route.
+ * Account route.
  */
 
 const config = require("../config")
@@ -7,12 +7,12 @@ const utils = require("../utils")
 
 module.exports = app => {
 
-  app.get("/login", (req, res) => {
-    if (req.user) {
-      res.redirect("/account")
+  app.get("/account", (req, res) => {
+    if (!req.user) {
+      res.redirect("/login")
     } else {
-      res.render("login", {
-        user: null,
+      res.render("account", {
+        user: req.user,
         config,
         messages: utils.flashMessages(req),
       })

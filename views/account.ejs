@@ -1,6 +1,6 @@
 <%- include('header'); -%>
 
-<!-- Template for /login route -->
+<!-- Template for /account route -->
 
 <% if (user) { %>
   <form class="form-inline" id="nameForm">
@@ -65,16 +65,6 @@
     })
   }
   </script>
-<% } else { %>
-  <h4>Login via</h4>
-  <% config.providers.forEach(provider => { %>
-    <p>
-      <a href="/login/<%= provider.id %>"><%= provider.name %></a>
-    </p>
-  <% }) %>
 <% }%>
-
-
-
 
 <%- include('footer'); -%>
