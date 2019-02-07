@@ -141,6 +141,7 @@ app.set("json spaces", 2)
 app.set("views", __dirname + "/views")
 app.set("view engine", "ejs")
 app.locals.baseUrl = config.baseUrl
+app.locals.config = config
 
 app.use(flash())
 
@@ -190,7 +191,7 @@ _.forEach(strategies, (strategy, providerId) => {
     // Add a GET and POST route
 
     app.get(`/login/${providerId}`, skip, (req, res) => {
-      res.render("login", {
+      res.render("loginCredentials", {
         provider,
         user: req.user,
         messages: utils.flashMessages(req),
