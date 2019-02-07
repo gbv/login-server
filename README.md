@@ -290,19 +290,22 @@ Returns a specific user.
 Adjusts a specific user. Can only be used if the same user is currently logged in. Allowed properties to change: `name` (everything else will be ignored).
 
 ### GET /login
-Shows a site to manage one's user account (if already authenticated) or to login (if not authenticated).
+Shows a site to login (if not authenticated) or directs to `/account` (if authenticated).
+
+### GET /account
+Shows a site to manage one's user account (if already authenticated) or redirects to `/login` (if not authenticated).
 
 ### GET /login/:provider
 Shows a login page for a provider. For OAuth providers, this page will redirect to the provider's page to connect your account, which then redirects to `/login/:provider/return`. For providers using credentials, this will show a login form.
 
 ### GET /login/:provider/return
-Callback endpoint for OAuth requests. Will save the connected account to the user (or create a new user if necessary) and redirect to `login`.
+Callback endpoint for OAuth requests. Will save the connected account to the user (or create a new user if necessary) and redirect to `/account`.
 
 ### POST /login/:provider
-POST endpoint for providers using credentials. If successful, it will redirect to `/login`, otherwise it will redirect back to `/login/:provider`.
+POST endpoint for providers using credentials. If successful, it will redirect to `/account`, otherwise it will redirect back to `/login/:provider`.
 
 ### GET /disconnect/:provider
-Disconnects a provider from the user and redirects to `/login`.
+Disconnects a provider from the user and redirects to `/account`.
 
 ### GET /logout
 Logs the user out of their account. Note that the session will remain because it is used for the WebSockets. This enables the application to send events to active WebSockets for the current session, even if the user has logged out.
