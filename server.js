@@ -162,10 +162,19 @@ _.forEach(strategies, (strategy, providerId) => {
   }
   let strategyName = provider.strategy
 
+  let skip = (req, res, next) => {
+    if (req.user && req.user.identities && req.user.identities[providerId]) {
+      // User has already connected this account
+      res.redirect("/login")
+    } else {
+      next()
+    }
+  }
+
   if (provider.credentialsNecessary) {
     // Add a GET and POST route
 
-    app.get(`/login/${providerId}`, (req, res) => {
+    app.get(`/login/${providerId}`, skip, (req, res) => {
       res.render("login", { provider, user: req.user })
     })
 
@@ -183,7 +192,7 @@ _.forEach(strategies, (strategy, providerId) => {
   } else {
     // Add GET routes for login redirection and return
 
-    app.get(`/login/${providerId}`,
+    app.get(`/login/${providerId}`, skip,
       passport.authenticate(strategyName), (req, res) => {
         res.redirect("/login")
       })
@@ -201,6 +210,11 @@ app.get("/disconnect/:provider", (req, res) => {
   let user = req.user
   let provider = req.params.provider
   if (user && user.identities && user.identities[provider]) {
+    if (user.identities.length < 2) {
+      // Don't disconnect if it's the only provider left
+      res.redirect("/login")
+      return
+    }
     let identities = _.omit(user.identities, [provider])
     user.set("identities", {})
     user.set("identities", identities)
