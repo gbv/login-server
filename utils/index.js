@@ -19,7 +19,17 @@ function prepareProviders() {
   return config.providers.map(provider => _.omit(provider, ["template", "auth", "callbackURL", "options"]))
 }
 
+function flashMessages(req) {
+  return {
+    success: req.flash("success"),
+    info: req.flash("info"),
+    warning: req.flash("warning"),
+    danger: req.flash("error")
+  }
+}
+
 module.exports = {
   uuid,
   prepareProviders,
+  flashMessages,
 }

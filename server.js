@@ -5,6 +5,7 @@ const express = require("express")
 const session = require("express-session")
 const helmet = require("helmet")
 const bodyParser = require("body-parser")
+const flash = require("connect-flash")
 const fs = require("fs")
 const passport = require("passport")
 const path = require("path")
@@ -58,6 +59,7 @@ if (!port) {
 const strategies = require("./strategies")((req, token, tokenSecret, profile, done) => {
   let user = req.user
   const sessionID = req.sessionID
+  let provider = config.providers.find(provider => provider.id === profile.provider)
   if (!user) {
     // User is not yet logged in. Either find existing user or create a new user.
     User.findOne({ [`identities.${profile.provider}.id`]: profile.id }).then(user => {
@@ -65,6 +67,7 @@ const strategies = require("./strategies")((req, token, tokenSecret, profile, do
         // Found existing user
         // Fire loggedIn event
         userLoggedIn(user, sessionID)
+        req.flash("success", "You were logged in.")
         done(null, user)
       } else {
         // Create new user
@@ -80,6 +83,7 @@ const strategies = require("./strategies")((req, token, tokenSecret, profile, do
         user.save().then(user => {
           // Fire loggedIn event
           userLoggedIn(user, sessionID)
+          req.flash("success", "A new user account was successfully created!")
           done(null, user)
         }).catch(error => {
           done(error, null)
@@ -96,6 +100,7 @@ const strategies = require("./strategies")((req, token, tokenSecret, profile, do
     user.set("identities", identities)
     user.save().then(user => {
       userUpdated(user, sessionID)
+      req.flash("success", `${provider && provider.name} successfully connected.`)
       done(null, user)
     }).catch(error => {
       done(error, null)
@@ -137,6 +142,8 @@ app.set("views", __dirname + "/views")
 app.set("view engine", "ejs")
 app.locals.baseUrl = config.baseUrl
 
+app.use(flash())
+
 // Prepare sessions, etc.
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(require("cookie-parser")())
@@ -165,42 +172,42 @@ _.forEach(strategies, (strategy, providerId) => {
   let skip = (req, res, next) => {
     if (req.user && req.user.identities && req.user.identities[providerId]) {
       // User has already connected this account
+      req.flash("info", `${provider.name} is already connected.`)
       res.redirect("/login")
     } else {
       next()
     }
   }
 
+  let authenticateOptions = {
+    successRedirect: "/login",
+    failureRedirect: `/login/${providerId}`,
+    failureFlash: "Could not verify credentials."
+  }
+
   if (provider.credentialsNecessary) {
     // Add a GET and POST route
 
     app.get(`/login/${providerId}`, skip, (req, res) => {
-      res.render("login", { provider, user: req.user })
+      res.render("login", {
+        provider,
+        user: req.user,
+        messages: utils.flashMessages(req),
+      })
     })
 
     app.post(`/login/${providerId}`,
       apiLimiter,
-      passport.authenticate(strategyName,
-        {
-          successRedirect: "/",
-          failureRedirect: `/login/${providerId}`
-        }),
-      (req, res) => {
-        res.redirect("/login")
-      })
+      passport.authenticate(strategyName, authenticateOptions))
 
   } else {
     // Add GET routes for login redirection and return
 
     app.get(`/login/${providerId}`, skip,
-      passport.authenticate(strategyName), (req, res) => {
-        res.redirect("/login")
-      })
+      passport.authenticate(strategyName))
 
     app.get(`/login/${providerId}/return`,
-      passport.authenticate(strategyName), (req, res) => {
-        res.redirect("/login")
-      })
+      passport.authenticate(strategyName, authenticateOptions))
 
   }
 })
@@ -212,6 +219,7 @@ app.get("/disconnect/:provider", (req, res) => {
   if (user && user.identities && user.identities[provider]) {
     if (user.identities.length < 2) {
       // Don't disconnect if it's the only provider left
+      req.flash("error", "You can't disconnect your last connected account.")
       res.redirect("/login")
       return
     }
@@ -222,10 +230,18 @@ app.get("/disconnect/:provider", (req, res) => {
     user.save().then(user => {
       // Fire updated event
       userUpdated(user, req.sessionID)
-    }).catch(() => null).finally(() => {
+      req.flash("success", "Account disconnected.")
+    }).catch(() => {
+      req.flash("error", "Account could not be disconnected.")
+    }).finally(() => {
       res.redirect("/login")
     })
   } else {
+    if (user) {
+      req.flash("warning", "You can't disconnect an account that is not connected.")
+    } else {
+      req.flash("error", "You need to be logged in to disconnect an account.")
+    }
     res.redirect("/login")
   }
 })
@@ -235,6 +251,7 @@ app.get("/logout", async (req, res) => {
   // Invalidate session
   await req.logout()
   req.user = undefined
+  req.flash("success", "You were logged out.")
   // Fire loggedOut event
   userLoggedOut(req.user, req.sessionID)
   res.redirect("/login")

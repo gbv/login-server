@@ -34,3 +34,11 @@ h4 {
       </div>
     </div>
     <div class="card-body">
+      <!-- Show info messages -->
+      <% Object.keys(messages).forEach(type => { %>
+        <% messages[type].forEach(message => { %>
+          <div class="alert alert-<%= type %>">
+            <%= message %>
+          </div>
+        <% }) %>
+      <% }) %>
