@@ -33,7 +33,7 @@ h4 {
       <div style="flex: 1; text-align: right;">
         <% if (user) { %>
           Logged in as <%= user.name %><br>
-          <a href="<%= baseUrl %>/logout">Logout</a>
+          <a href="<%= user.uri %>" target="_blank">My Data</a> • <a href="<%= baseUrl %>/logout">Logout</a>
         <% } else { %>
           <a href="<%= baseUrl %>/login">Login</a>
         <% } %>
