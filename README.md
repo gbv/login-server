@@ -90,7 +90,7 @@ npm test
 ```
 
 ## Strategies
-cocoda-userdb uses [Passport](http://www.passportjs.org) as authentication middleware. Passport uses so-called "strategies" to support authentication with different providers. A list of available strategies can be found [here](http://www.passportjs.org/packages/). Currently supported strategies in cocoda-userdb are:
+cocoda-userdb uses [Passport](http://www.passportjs.org) ([GitHub](https://github.com/jaredhanson/passport)) as authentication middleware. Passport uses so-called "strategies" to support authentication with different providers. A list of available strategies can be found [here](https://github.com/jaredhanson/passport/wiki/Strategies). Currently supported strategies in cocoda-userdb are:
 
 - GitHub (via [passport-github](http://www.passportjs.org/packages/passport-github/))
 - ORCID (via [passport-orcid](http://www.passportjs.org/packages/passport-orcid/))
