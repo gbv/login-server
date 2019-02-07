@@ -3,7 +3,11 @@
 <!-- Template for /login route -->
 
 <% if (user) { %>
-  <p>Hello, <%= user.name %>.</p>
+  <form class="form-inline" id="nameForm">
+    <label for="name">Change name:</label>
+    <input type="input" class="form-control" id="name" value="<%= user.name %>">
+    <button type="submit" class="btn btn-primary" id="nameSubmit">Submit</button>
+  </form>
   <h4>Connected Accounts</h4>
   <table class="table"><tbody>
   <% config.providers.forEach(provider => { %>
@@ -29,6 +33,38 @@
   <form method="get" action="/delete" style="width: 100%; text-align: center;">
     <button type="submit" class="btn btn-danger">Delete User Account</button>
   </form>
+  <script>
+  let nameForm = document.getElementById("nameForm")
+  let nameElement = document.getElementById("name")
+  let nameSubmit = document.getElementById("nameSubmit")
+  nameElement.oninput = () => {
+    nameSubmit.disabled = nameElement.value == ""
+  }
+  nameForm.onsubmit = (event) => {
+    let body = { name: nameElement.value }
+    event.preventDefault()
+    fetch("<%= user.uri %>", {
+      headers: {
+        "Content-Type": "application/json"
+      },
+      method: "PATCH",
+      body: JSON.stringify(body)
+    }).then(response => {
+      if (response.status == 200) {
+        return true
+      }
+      return false
+    }).catch(error => {
+      return false
+    }).then(success => {
+      if (success) {
+        location.reload()
+      } else {
+        alert("Error: Name could not be saved.")
+      }
+    })
+  }
+  </script>
 <% } else { %>
   <h4>Login via</h4>
   <% config.providers.forEach(provider => { %>

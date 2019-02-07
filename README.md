@@ -24,6 +24,7 @@ This repository offers a user database to be used with the [Cocoda Mapping Tool]
   - [GET /currentUser](#get-currentuser)
   - [GET /users](#get-users)
   - [GET /users/:id](#get-usersid)
+  - [PATCH /users/:id](#patch-usersid)
   - [GET /login](#get-login)
   - [GET /login/:provider](#get-loginprovider)
   - [GET /login/:provider/return](#get-loginproviderreturn)
@@ -284,6 +285,9 @@ Returns all users in database. Note: This may be removed in the future.
 
 ### GET /users/:id
 Returns a specific user.
+
+### PATCH /users/:id
+Adjusts a specific user. Can only be used if the same user is currently logged in. Allowed properties to change: `name` (everything else will be ignored).
 
 ### GET /login
 Shows a site to manage one's user account (if already authenticated) or to login (if not authenticated).

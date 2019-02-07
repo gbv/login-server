@@ -146,6 +146,7 @@ app.use(flash())
 
 // Prepare sessions, etc.
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
 app.use(require("cookie-parser")())
 app.use(session({
   secret: config.sessionSecret,
