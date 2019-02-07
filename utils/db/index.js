@@ -12,6 +12,7 @@
 const config = require("../../config")
 const mongoose = require("mongoose")
 mongoose.Promise = global.Promise
+mongoose.set("useFindAndModify", false)
 
 const connection = mongoose.connect(config.database.url, config.database.options)
 
