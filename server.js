@@ -250,16 +250,39 @@ app.get("/logout", async (req, res) => {
   // Note: Note sure if `await` is even applicable here, or if `req.user = undefined` makes sense, but it seems to help with #3.
   // Invalidate session
   await req.logout()
-  req.user = undefined
   req.flash("success", "You were logged out.")
   // Fire loggedOut event
   userLoggedOut(req.user, req.sessionID)
+  req.user = undefined
   res.redirect("/login")
 })
 
 // Currently redirects to /login, but will offer a API documentation later.
 app.get("/", (req, res) => {
   res.redirect("/login")
+})
+
+app.get("/delete", (req, res) => {
+  res.render("delete", {
+    user: req.user,
+    messages: utils.flashMessages(req),
+  })
+})
+
+// We need to use POST here because DELETE can't be opened by the browser.
+app.post("/delete", async (req, res) => {
+  let user = req.user
+  await req.logout()
+  User.findByIdAndRemove(user.id).then(() => {
+    // Fire loggedOut event
+    userLoggedOut(null, req.sessionID)
+    req.flash("success", "Your user account was deleted.")
+  }).catch(() => {
+    req.flash("error", "There was an error when trying to delete your user account.")
+  }).finally(() => {
+    req.user = undefined
+    res.redirect("/login")
+  })
 })
 
 app.ws("/", (ws, req) => {

@@ -26,6 +26,9 @@
     </tr>
   <% }) %>
   </tbody></table>
+  <form method="get" action="/delete" style="width: 100%; text-align: center;">
+    <button type="submit" class="btn btn-danger">Delete User Account</button>
+  </form>
 <% } else { %>
   <h4>Login via</h4>
   <% config.providers.forEach(provider => { %>
