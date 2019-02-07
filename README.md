@@ -307,6 +307,12 @@ Disconnects a provider from the user and redirects to `/login`.
 ### GET /logout
 Logs the user out of their account. Note that the session will remain because it is used for the WebSockets. This enables the application to send events to active WebSockets for the current session, even if the user has logged out.
 
+### GET /delete
+Shows a site to delete one's user account.
+
+### POST /delete
+Commits user account deletion and redirects to `/login`.
+
 ## Maintainers
 
 - [@stefandesu](https://github.com/stefandesu)
