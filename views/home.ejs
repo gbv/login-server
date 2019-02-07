@@ -1,14 +1,41 @@
+<%- include('header'); -%>
+
 <!-- Template for /login route -->
+
 <% if (user) { %>
-	<p>Hello, <%= user.name %>. <a href="<%= user.uri %>" target="_blank">API URL</a> | <a href="/logout">Log out</a></p>
-<% } %>
-<% config.providers.forEach(provider => { %>
-  <p>
-  <% if (user && user.identities && user.identities[provider.id]) { %>
-    <%= provider.name %> connected (<%= user.identities[provider.id].id %>). %>
-    <a href="/disconnect/<%= provider.id %>">Disconnect</a>
-  <% } else { %>
-    Connect <a href="/login/<%= provider.id %>">via <%= provider.name %></a>.
-  <% } %>
-  </p>
-<% }) %>
+  <p>Hello, <%= user.name %>.</p>
+  <h4>Connected Accounts</h4>
+  <table class="table"><tbody>
+  <% config.providers.forEach(provider => { %>
+    <tr>
+      <td><b><%= provider.name %></b></td>
+      <td>
+      <% if (user.identities && user.identities[provider.id]) { %>
+        <%= user.identities[provider.id].id %> %>
+      <% } %>
+      </td>
+      <td>
+      <% if (user.identities && user.identities[provider.id]) { %>
+        <% if (Object.keys(user.identities).length > 1) { %>
+          <a href="/disconnect/<%= provider.id %>">Disconnect</a>
+        <% } %>
+      <% } else { %>
+        <a href="/login/<%= provider.id %>">Connect</a>
+      <% } %>
+      </td>
+    </tr>
+  <% }) %>
+  </tbody></table>
+<% } else { %>
+  <h4>Login via</h4>
+  <% config.providers.forEach(provider => { %>
+    <p>
+      <a href="/login/<%= provider.id %>"><%= provider.name %></a>
+    </p>
+  <% }) %>
+<% }%>
+
+
+
+
+<%- include('footer'); -%>

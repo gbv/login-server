@@ -135,6 +135,7 @@ app.set("json spaces", 2)
 // Configure view engine to render EJS templates.
 app.set("views", __dirname + "/views")
 app.set("view engine", "ejs")
+app.locals.baseUrl = config.baseUrl
 
 // Prepare sessions, etc.
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -165,7 +166,7 @@ _.forEach(strategies, (strategy, providerId) => {
     // Add a GET and POST route
 
     app.get(`/login/${providerId}`, (req, res) => {
-      res.render("login", { provider })
+      res.render("login", { provider, user: req.user })
     })
 
     app.post(`/login/${providerId}`,

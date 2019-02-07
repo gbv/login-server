@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Cocoda Login</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+</head>
+<body>
+<style>
+h4 {
+  margin-bottom: 20px;
+}
+.footer {
+  display: flex;
+}
+.footer > div {
+  flex: 1;
+  text-align: center;
+}
+</style>
+<div class="container">
+  <div class="card" style="width: 550px; margin: 50px auto 0px auto;">
+    <div class="card-header" style="display: flex;">
+      <div style="flex: 1;">
+        <h3>Cocoda Login</h3>
+      </div>
+      <div style="flex: 1; text-align: right;">
+        <% if (user) { %>
+          Logged in as <%= user.name %><br>
+          <a href="<%= baseUrl %>/logout">Logout</a>
+        <% } else { %>
+          <a href="<%= baseUrl %>/login">Login</a>
+        <% } %>
+      </div>
+    </div>
+    <div class="card-body">

@@ -1,8 +1,18 @@
+<%- include('header'); -%>
+
 <!-- Template for /login/{provider} route where provider requires authentication using credentials -->
 <a href="../../">back</a>
+<h2>Login via <%= provider.name %></h2>
 <form method="post" action="">
-  <h1>Login via <%= provider.name %></h1>
-  Username: <input type="input" name="username" /><br>
-  Password: <input type="password" name="password" /><br>
-  <input type="submit" value="Login" />
+  <div class="form-group">
+    <label for="username">Username:</label>
+    <input type="username" class="form-control" id="username" placeholder="Enter username" name="username">
+  </div>
+  <div class="form-group">
+    <label for="pwd">Password:</label>
+    <input type="password" class="form-control" id="password" placeholder="Enter password" name="password">
+  </div>
+  <button type="submit" class="btn btn-primary">Login</button>
 </form>
+
+<%- include('footer'); -%>
