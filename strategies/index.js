@@ -4,6 +4,7 @@
 
 const _ = require("lodash")
 const config = require("../config")
+const utils = require("../utils")
 const events = require("../lib/events")
 const User = require("../models/user")
 
