@@ -101,13 +101,13 @@ const path = require("path")
 require("./utils/db").then(() => {
   // For tests, find the next empty port
   if (config.env == "test") {
-    portfinder.basePort = port
+    portfinder.basePort = port || 3000
     return portfinder.getPortPromise()
   } else {
     return port
   }
 }).then(port => {
-  app.listen(port || 3000, () => {
+  app.listen(port, () => {
     console.log(`Listening on port ${port}.`)
 
     // Import routes
