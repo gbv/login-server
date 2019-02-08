@@ -67,7 +67,7 @@ app.use(session({
   saveUninitialized: false,
   store: mongoStore,
   cookie: {
-    secure: config.env != "development",
+    secure: config.env != "development" && config.env != "test",
     maxAge: 10*365*24*60*60*1000
   }
 }))
@@ -94,10 +94,19 @@ app.get("/", (req, res) => {
   res.redirect("/login")
 })
 
+const portfinder = require("portfinder")
 const fs = require("fs")
 const path = require("path")
 
 require("./utils/db").then(() => {
+  // For tests, find the next empty port
+  if (config.env == "test") {
+    portfinder.basePort = port
+    return portfinder.getPortPromise()
+  } else {
+    return port
+  }
+}).then(port => {
   app.listen(port, () => {
     console.log(`Listening on port ${port}.`)
 
@@ -105,6 +114,9 @@ require("./utils/db").then(() => {
     fs.readdirSync(path.join(__dirname, "routes")).map(file => {
       require("./routes/" + file)(app)
     })
+
+    // Emit event that tests can use to wait for
+    app.emit("started")
   })
 })
 
