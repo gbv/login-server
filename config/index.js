@@ -4,7 +4,7 @@
  * A .env file is required.
  * Required keys: PORT
  * Recommennded keys: BASE_URL, NODE_ENV, SESSION_SECRET
- * Optional keys: MONGO_USER, MONGO_PASS, MONGO_HOST, MONGO_PORT, MONGO_DB
+ * Optional keys: MONGO_USER, MONGO_PASS, MONGO_HOST, MONGO_PORT, MONGO_DB, RATE_LIMIT_WINDOW, RATE_LIMIT_MAX
  *
  */
 require("dotenv").config()
