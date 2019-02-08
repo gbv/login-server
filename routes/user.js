@@ -4,6 +4,7 @@
 
 const User = require("../models/user")
 const _ = require("lodash")
+const events = require("../lib/events")
 
 module.exports = app => {
 
@@ -43,6 +44,7 @@ module.exports = app => {
         user[key] = value
       })
       user.save().then(user => {
+        events.userUpdated(req.sessionID, user)
         res.json(user)
       }).catch(() => {
         res.sendStatus(400)
