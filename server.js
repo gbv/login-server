@@ -2,7 +2,7 @@ const config = require("./config")
 
 // Don't start application without a port!
 const port = config.port
-if (!port) {
+if (!port && config.env != "test") {
   console.error("Please provide PORT in .env")
   process.exit(1)
 }
