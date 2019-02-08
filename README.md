@@ -72,6 +72,10 @@ MONGO_HOST=
 MONGO_PORT=
 # database used for MongoDB, default: cocoda-userdb
 MONGO_DB=
+# the rate limit window in ms, default: 60 * 1000
+RATE_LIMIT_WINDOW=
+# the rate limit tries, default: 10
+RATE_LIMIT_MAX=
 ```
 
 #### `config/providers.json`
@@ -275,7 +279,7 @@ socket.addEventListener("message", (message) => {
 ```
 
 ### GET /providers
-Returns a list of available providers.
+Returns a list of available providers (stripped off sensitive information).
 
 ### GET /currentUser
 Returns the currently logged in user. Returns an 404 error when no user is logged in.
