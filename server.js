@@ -11,10 +11,6 @@ const passport = require("passport")
 const path = require("path")
 const User = require("./models/user")
 
-// Prepare rate limiting middleware
-const rateLimit = require("express-rate-limit")
-const apiLimiter = rateLimit(config.rateLimitOptions)
-
 // Prepare session store
 const MongoStore = require("connect-mongo")(session)
 const mongoStore = new MongoStore({ url: config.database.url })
@@ -86,57 +82,6 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 
-// Strategy routes
-_.forEach(strategies, (strategy, providerId) => {
-
-  let provider = config.providers.find(provider => provider.id === providerId)
-  if (!provider) {
-    return
-  }
-  let strategyName = provider.strategy
-
-  let skip = (req, res, next) => {
-    if (req.user && req.user.identities && req.user.identities[providerId]) {
-      // User has already connected this account
-      req.flash("info", `${provider.name} is already connected.`)
-      res.redirect("/login")
-    } else {
-      next()
-    }
-  }
-
-  let authenticateOptions = {
-    successRedirect: "/login",
-    failureRedirect: `/login/${providerId}`,
-    failureFlash: "Could not verify credentials."
-  }
-
-  if (provider.credentialsNecessary) {
-    // Add a GET and POST route
-
-    app.get(`/login/${providerId}`, skip, (req, res) => {
-      res.render("loginCredentials", {
-        provider,
-        user: req.user,
-        messages: utils.flashMessages(req),
-      })
-    })
-
-    app.post(`/login/${providerId}`,
-      apiLimiter,
-      passport.authenticate(strategyName, authenticateOptions))
-
-  } else {
-    // Add GET routes for login redirection and return
-
-    app.get(`/login/${providerId}`, skip,
-      passport.authenticate(strategyName))
-
-    app.get(`/login/${providerId}/return`,
-      passport.authenticate(strategyName, authenticateOptions))
-
-  }
-})
 
 // Disconnect route
 app.get("/disconnect/:provider", (req, res) => {
