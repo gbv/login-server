@@ -25,7 +25,9 @@ const
     reconnectTries: 60,
     reconnectInterval: 1000,
     useNewUrlParser: true
-  }
+  },
+  rateLimitWindow = process.env.RATE_LIMIT_WINDOW || (60 * 1000),
+  rateLimitMax = process.env.RATE_LIMIT_MAX || 10
 
 let config = {
   env,
@@ -36,6 +38,10 @@ let config = {
     options: mongoOptions,
   },
   sessionSecret,
+  rateLimitOptions: {
+    windowMs: rateLimitWindow,
+    max: rateLimitMax,
+  },
 }
 
 // Load providers

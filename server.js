@@ -13,11 +13,7 @@ const User = require("./models/user")
 
 // Prepare rate limiting middleware
 const rateLimit = require("express-rate-limit")
-const apiLimiter = rateLimit({
-  // Maximum of 10 requests per minute
-  windowMs: 60 * 1000,
-  max: 10
-})
+const apiLimiter = rateLimit(config.rateLimitOptions)
 
 // Prepare session store
 const MongoStore = require("connect-mongo")(session)
