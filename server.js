@@ -23,30 +23,8 @@ const apiLimiter = rateLimit({
 const MongoStore = require("connect-mongo")(session)
 const mongoStore = new MongoStore({ url: config.database.url })
 
-// List of websockets by session ID
-let websockets = {}
-
-// Helper method for sending socket messages about session events
-function sendEvent(sessionID, event, data) {
-  let socket = websockets[sessionID]
-  if (socket) {
-    socket.send(JSON.stringify({
-      type: event,
-      date: (new Date()).toISOString(),
-      data
-    }))
-  }
-}
-// Event methods for session changes
-function userLoggedIn(user, sessionID) {
-  sendEvent(sessionID, "loggedIn", { user })
-}
-function userLoggedOut(user, sessionID) {
-  sendEvent(sessionID, "loggedOut", { user })
-}
-function userUpdated(user, sessionID) {
-  sendEvent(sessionID, "updated", { user })
-}
+// Prepare WebSocket events
+const events = require("./lib/events")
 
 // Don't start application without a port!
 const port = config.port
@@ -66,7 +44,7 @@ const strategies = require("./strategies")((req, token, tokenSecret, profile, do
       if (user) {
         // Found existing user
         // Fire loggedIn event
-        userLoggedIn(user, sessionID)
+        events.userLoggedIn(sessionID, user)
         req.flash("success", "You were logged in.")
         done(null, user)
       } else {
@@ -82,7 +60,7 @@ const strategies = require("./strategies")((req, token, tokenSecret, profile, do
         })
         user.save().then(user => {
           // Fire loggedIn event
-          userLoggedIn(user, sessionID)
+          events.userLoggedIn(sessionID, user)
           req.flash("success", "A new user account was successfully created!")
           done(null, user)
         }).catch(error => {
@@ -99,7 +77,7 @@ const strategies = require("./strategies")((req, token, tokenSecret, profile, do
     user.set("identities", {})
     user.set("identities", identities)
     user.save().then(user => {
-      userUpdated(user, sessionID)
+      events.userUpdated(sessionID, user)
       req.flash("success", `${provider && provider.name} successfully connected.`)
       done(null, user)
     }).catch(error => {
@@ -231,7 +209,7 @@ app.get("/disconnect/:provider", (req, res) => {
     // TODO: Error handling.
     user.save().then(user => {
       // Fire updated event
-      userUpdated(user, req.sessionID)
+      events.userUpdated(req.sessionID, user)
       req.flash("success", "Account disconnected.")
     }).catch(() => {
       req.flash("error", "Account could not be disconnected.")
@@ -254,7 +232,7 @@ app.get("/logout", async (req, res) => {
   await req.logout()
   req.flash("success", "You were logged out.")
   // Fire loggedOut event
-  userLoggedOut(req.user, req.sessionID)
+  events.userLoggedOut(req.sessionID, req.user)
   req.user = undefined
   res.redirect("/login")
 })
@@ -277,7 +255,7 @@ app.post("/delete", async (req, res) => {
   await req.logout()
   User.findByIdAndRemove(user.id).then(() => {
     // Fire loggedOut event
-    userLoggedOut(null, req.sessionID)
+    events.userLoggedOut(req.sessionID)
     req.flash("success", "Your user account was deleted.")
   }).catch(() => {
     req.flash("error", "There was an error when trying to delete your user account.")
@@ -290,28 +268,29 @@ app.post("/delete", async (req, res) => {
 app.ws("/", (ws, req) => {
   // Add sessionID to websockets
   const sessionID = req.sessionID
-  websockets[sessionID] = ws
+  events.addSocket(sessionID, ws)
+
   if (req.user) {
     // Fire loggedIn event
-    userLoggedIn(req.user, sessionID)
+    events.userLoggedIn(sessionID, req.user)
   }
   ws.on("message", (message) => {
     try {
       message = JSON.parse(message)
       if (message.type === "providers") {
         // Reply with list of providers
-        sendEvent(sessionID, "providers", {
+        events.sendEvent(sessionID, "providers", {
           providers: utils.prepareProviders()
         })
       }
     } catch(error) {
       // Send error event to WebSocket
-      sendEvent(sessionID, "error", { message: "Message could not be parsed." })
+      events.error(sessionID, "Message could not be parsed.")
     }
   })
   ws.on("close", () => {
     // Remove sessionID from websockets
-    websockets[sessionID] = undefined
+    events.removeSocket(sessionID)
   })
 })
 
