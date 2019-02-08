@@ -44,16 +44,38 @@ let config = {
   },
 }
 
-// Load providers
-try {
-  config.providers = require("./providers.json")
-} catch(error) {
-  config.providers = []
+if (env != "test") {
+  // Load providers
+  try {
+    config.providers = require("./providers.json")
+  } catch(error) {
+    config.providers = []
+  }
+  // Prepare providers
+  for (let provider of config.providers) {
+    provider.loginURL = `${baseUrl}/login/${provider.id}`,
+    provider.callbackURL = `${baseUrl}/login/${provider.id}/return`
+  }
+} else {
+  // Configure a test provider for tests
+  config.providers = [
+    {
+      id: "test",
+      strategy: "test",
+      name: "Test",
+      credentialsNecessary: true,
+      options: {
+        users: [
+          {
+            username: "testuser",
+            password: "testtest",
+            displayName: "A Test User"
+          }
+        ]
+      }
+    }
+  ]
 }
-// Prepare providers
-for (let provider of config.providers) {
-  provider.loginURL = `${baseUrl}/login/${provider.id}`,
-  provider.callbackURL = `${baseUrl}/login/${provider.id}/return`
-}
+
 
 module.exports = config
