@@ -13,8 +13,11 @@ module.exports = app => {
     events.addSocket(sessionID, ws)
 
     if (req.user) {
-    // Fire loggedIn event
+      // Fire loggedIn event
       events.userLoggedIn(sessionID, req.user)
+    } else {
+      // Fire loggedOut event
+      events.userLoggedOut(sessionID, null)
     }
     ws.on("message", (message) => {
       try {
