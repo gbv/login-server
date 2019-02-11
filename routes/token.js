@@ -1,5 +1,5 @@
 /**
- * /publicKey route.
+ * Routes related to JSON Web Tokens.
  */
 
 const config = require("../config")
