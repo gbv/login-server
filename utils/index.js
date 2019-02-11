@@ -4,6 +4,7 @@
 
 const _ = require("lodash")
 const config = require("../config")
+const jwt = require("jsonwebtoken")
 
 /**
  * Returns a random v4 UUID.
@@ -28,8 +29,18 @@ function flashMessages(req) {
   }
 }
 
+function getToken(user) {
+  // Don't include `identities` in JWT payload.
+  let token = jwt.sign({ user: _.omit(user, ["identities"]) }, config.privateKey, config.jwtOptions)
+  return {
+    token,
+    expiresIn: config.jwtOptions.expiresIn,
+  }
+}
+
 module.exports = {
   uuid,
   prepareProviders,
   flashMessages,
+  getToken,
 }

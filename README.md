@@ -22,6 +22,7 @@ This repository offers a user database to be used with the [Cocoda Mapping Tool]
   - [WebSocket](#websocket)
     - [Example Usage](#example-usage)
   - [GET /publicKey](#get-publickey)
+  - [GET /token](#get-token)
   - [GET /providers](#get-providers)
   - [GET /currentUser](#get-currentuser)
   - [GET /users](#get-users)
@@ -235,6 +236,8 @@ You can also provide your own keypair by setting `JTW_PRIVATE_KEY_PATH` and `JTW
 
 By default, each token is valid for 120 seconds. You can adjust this by setting `JWT_EXPIRES_IN` in `.env`.
 
+Tokens get be received either through the [/token endpoint](#get-token) or by using the [WebSocket](#websocket) request of type `token`. Additionally, a token is sent after the user is logged in and then regularly before the last token expires.
+
 
 ## API
 To be extended.
@@ -269,6 +272,7 @@ Available event types are:
 - `loggedOut` - sent when the user has logged out
 - `updated` - sent when the user was updated (e.g. added a new identity, etc.)
 - `providers` - sent as answer to a providers request via the WebSocket (consists of a property `data.providers` with a list of available providers)
+- `token` - sent when the user has logged in and then in intervals before the previous token expires, or as answer to a token request (property `data` will have the same format as in [GET /token](#get-token))
 - `error` - sent as answer to a malformed message via the WebSocket (consists of a property `data.message` with an error message)
 
 You can also send requests to the WebSocket. These also have to be JSON-encoded strings in the following form:
@@ -281,6 +285,7 @@ You can also send requests to the WebSocket. These also have to be JSON-encoded 
 
 Currently available request types are:
 - `providers` - returns a list of available providers (same as [GET /providers](#get-providers))
+- `token` - returns a JWT (same as [GET /token](#get-token))
 
 #### Example Usage
 ```javascript
@@ -298,6 +303,20 @@ socket.addEventListener("message", (message) => {
 
 ### GET /publicKey
 Returns an object with keys `publicKey` (usually a RSA public key) and `algorithm` (the [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) algorithm used). The corresponding private key is used when signing JWTs.
+
+### GET /token
+Returns a JSON Web Token in the format:
+
+```json
+{
+  "token": "<JWT>",
+  "expiresIn": 120
+}
+```
+
+See also: [JWTs](#jwts).
+
+Returns an 403 error when no user is logged in.
 
 ### GET /providers
 Returns a list of available providers (stripped off sensitive information).

@@ -28,6 +28,9 @@ module.exports = app => {
             providers: utils.prepareProviders()
           })
         }
+        if (message.type === "token") {
+          events.sendToken(sessionID)
+        }
       } catch(error) {
       // Send error event to WebSocket
         events.error(sessionID, "Message could not be parsed.")
