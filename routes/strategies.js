@@ -25,14 +25,14 @@ module.exports = app => {
       if (req.user && req.user.identities && req.user.identities[providerId]) {
       // User has already connected this account
         req.flash("info", `${provider.name} is already connected.`)
-        res.redirect("/login")
+        res.redirect("/account")
       } else {
         next()
       }
     }
 
     let authenticateOptions = {
-      successRedirect: "/login",
+      successRedirect: "/account",
       failureRedirect: `/login/${providerId}`,
       failureFlash: "Could not verify credentials."
     }
