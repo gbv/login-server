@@ -84,7 +84,7 @@ JTW_PRIVATE_KEY_PATH=
 JTW_PUBLIC_KEY_PATH=
 # the jsonwebtoken algorithm used
 JWT_ALGORITHM=
-# expiration time of JWTs in seconds, default: 120
+# expiration time of JWTs in seconds, default: 120, min: 10
 JWT_EXPIRES_IN=
 ```
 
@@ -236,7 +236,34 @@ You can also provide your own keypair by setting `JTW_PRIVATE_KEY_PATH` and `JTW
 
 By default, each token is valid for 120 seconds. You can adjust this by setting `JWT_EXPIRES_IN` in `.env`.
 
-Tokens get be received either through the [/token endpoint](#get-token) or by using the [WebSocket](#websocket) request of type `token`. Additionally, a token is sent after the user is logged in and then regularly before the last token expires.
+Tokens get be received either through the [/token endpoint](#get-token) or by using the [WebSocket](#websocket) request of type `token`. Additionally, a token is sent via the WebSocket after the user is logged in and then regularly before the last token expires.
+
+Example how to verify a token:
+
+```javascript
+const jwt = require("jsonwebtoken")
+
+// token, e.g. from user request
+let token = "..."
+
+// get public key from file or endpoint
+let publicKey = "..."
+
+jwt.verify(token, publicKey, (error, decoded) => {
+  if (error) {
+    // handle error
+    // ...
+  } else {
+    let { user, iat, exp } = decoded
+    // user is the user object
+    // iat is the issued timestamp
+    // exp is the expiration timestamp
+    // ...
+  }
+})
+```
+
+Alternatively, you can use [passport-jwt](http://www.passportjs.org/packages/passport-jwt/) (example will follow).
 
 
 ## API
