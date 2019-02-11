@@ -10,7 +10,7 @@ let authAgent = request.agent(app)
 before(done => {
   // Wait for the app to start
   server.then(() => {
-    User.remove({}).then(() => {
+    User.deleteMany({}).then(() => {
       // Send a request to authenticate the user
       authAgent
         .post("/login/test")
@@ -29,7 +29,7 @@ before(done => {
 
 after(() => {
   // Remove all users after test
-  return User.remove({})
+  return User.deleteMany({})
 })
 
 module.exports = authAgent
