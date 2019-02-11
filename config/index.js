@@ -8,6 +8,9 @@
  *
  */
 require("dotenv").config()
+const fs = require("fs")
+const nodersa = require("node-rsa")
+const jwt = require("jsonwebtoken")
 
 const
   env = process.env.NODE_ENV || "development",
@@ -27,7 +30,11 @@ const
     useNewUrlParser: true
   },
   rateLimitWindow = process.env.RATE_LIMIT_WINDOW || (60 * 1000),
-  rateLimitMax = process.env.RATE_LIMIT_MAX || 10
+  rateLimitMax = process.env.RATE_LIMIT_MAX || 10,
+  privateKeyPath = process.env.JTW_PRIVATE_KEY_PATH,
+  publicKeyPath = process.env.JTW_PUBLIC_KEY_PATH,
+  jwtAlgorithm = process.env.JWT_ALGORITHM || "RS256",
+  jwtExpiresIn = process.env.JWT_EXPIRES_IN || 120
 
 let config = {
   env,
@@ -42,7 +49,51 @@ let config = {
     windowMs: rateLimitWindow,
     max: rateLimitMax,
   },
+  jwtOptions: {
+    algorithm: jwtAlgorithm,
+    expiresIn: jwtExpiresIn
+  },
 }
+
+/**
+ * ##### RSA Key Setup #####
+ */
+
+let privateKey, publicKey
+try {
+  privateKey = fs.readFileSync(privateKeyPath || "./private.key")
+  publicKey = fs.readFileSync(publicKeyPath || "./public.key")
+  // Test keys by using jwt
+  let testToken = jwt.sign({ test: "test" }, privateKey, config.jwtOptions)
+  jwt.verify(testToken, publicKey)
+  console.log("Loaded RSA keypair.")
+} catch(error) {
+  if (privateKeyPath || publicKeyPath || privateKey || publicKey) {
+    let errorName = error.name
+    let errorCode = error.code
+    if (errorName === "Error" && errorCode === "ENOENT") {
+      console.error(`Error: Could not find key at path ${error.path}.`)
+    } else if (errorName === "JsonWebTokenError") {
+      console.error("Error: Testing provided keypair failed (could not verify a signed token).")
+    } else {
+      console.error(`Error: Unkown error when loading keypair. (${errorName}, ${errorCode}, ${error.message})`)
+    }
+    process.exit(1)
+  }
+  console.log("Generating new keypair and saving to `./private.key` and `./public.key`...")
+  let key = new nodersa({ b: 2048 })
+  privateKey = key.exportKey("private")
+  publicKey = key.exportKey("public")
+  // Save keys to files
+  fs.writeFileSync("./private.key", privateKey)
+  fs.writeFileSync("./public.key", publicKey)
+}
+config.privateKey = privateKey
+config.publicKey = publicKey
+
+/**
+ * ##### Providers Setup #####
+ */
 
 if (env != "test") {
   // Load providers

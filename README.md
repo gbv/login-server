@@ -17,9 +17,11 @@ This repository offers a user database to be used with the [Cocoda Mapping Tool]
 - [Test](#test)
 - [Strategies](#strategies)
   - [Providers](#providers)
+- [JWTs](#jwts)
 - [API](#api)
   - [WebSocket](#websocket)
     - [Example Usage](#example-usage)
+  - [GET /publicKey](#get-publickey)
   - [GET /providers](#get-providers)
   - [GET /currentUser](#get-currentuser)
   - [GET /users](#get-users)
@@ -76,6 +78,13 @@ MONGO_DB=
 RATE_LIMIT_WINDOW=
 # the rate limit tries, default: 10
 RATE_LIMIT_MAX=
+# a jsonwebtoken compatible keypair
+JTW_PRIVATE_KEY_PATH=
+JTW_PUBLIC_KEY_PATH=
+# the jsonwebtoken algorithm used
+JWT_ALGORITHM=
+# expiration time of JWTs in seconds, default: 120
+JWT_EXPIRES_IN=
 ```
 
 #### `config/providers.json`
@@ -217,6 +226,15 @@ The following is an example `providers.json` that shows how to configure each of
 ]
 ```
 
+## JWTs
+cocoda-userdb offers JSON Web Tokens that can be used to authenticate against other services (like [jskos-server](https://github.com/gbv/jskos-server)). [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) is used for signing the tokens.
+
+By default, a new RSA keypair is generated when the application is first started (2048 bits, using [node-rsa](https://github.com/rzcoder/node-rsa)). This generated keypair will be available in `./private.key` and `./public.key`. You can give the `./public.key` file to any other service that needs to verify the tokens. Alternatively, the currently used public key is offered at the [/publicKey endpoint](#get-publickey).
+
+You can also provide your own keypair by setting `JTW_PRIVATE_KEY_PATH` and `JTW_PUBLIC_KEY_PATH` in `.env`. By default, the `RS256` algorithm is used, but any other public key algorithm can be used by setting `JWT_ALGORITHM`.
+
+By default, each token is valid for 120 seconds. You can adjust this by setting `JWT_EXPIRES_IN` in `.env`.
+
 
 ## API
 To be extended.
@@ -277,6 +295,9 @@ socket.addEventListener("message", (message) => {
   }
 })
 ```
+
+### GET /publicKey
+Returns an object with keys `publicKey` (usually a RSA public key) and `algorithm` (the [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) algorithm used). The corresponding private key is used when signing JWTs.
 
 ### GET /providers
 Returns a list of available providers (stripped off sensitive information).
