@@ -33,8 +33,12 @@ const
   rateLimitMax = process.env.RATE_LIMIT_MAX || 10,
   privateKeyPath = process.env.JTW_PRIVATE_KEY_PATH,
   publicKeyPath = process.env.JTW_PUBLIC_KEY_PATH,
-  jwtAlgorithm = process.env.JWT_ALGORITHM || "RS256",
-  jwtExpiresIn = process.env.JWT_EXPIRES_IN || 120
+  jwtAlgorithm = process.env.JWT_ALGORITHM || "RS256"
+let jwtExpiresIn = parseInt(process.env.JWT_EXPIRES_IN) || 120
+if (jwtExpiresIn < 10) {
+  console.warn("Warning: Minimum for JWT_EXPIRES_IN is 10 seconds.")
+  jwtExpiresIn = 10
+}
 
 let config = {
   env,
