@@ -1,6 +1,6 @@
 const expect = require("chai").expect
 const request = require("supertest")
-const app = require("../server")
+const { app } = require("../server")
 const utils = require("../utils")
 
 // Use this agent for authenticated requests

@@ -1,5 +1,5 @@
 const request = require("supertest")
-const app = require("../server")
+const { app } = require("../server")
 
 // Use this agent for authenticated requests
 let authAgent = require("./authAgent")

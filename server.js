@@ -98,7 +98,9 @@ const portfinder = require("portfinder")
 const fs = require("fs")
 const path = require("path")
 
-require("./utils/db").then(() => {
+let returnObject = {}
+let promise = require("./utils/db").then(db => {
+  returnObject.db = db
   // For tests, find the next empty port
   if (config.env == "test") {
     portfinder.basePort = port || 3000
@@ -107,17 +109,22 @@ require("./utils/db").then(() => {
     return port
   }
 }).then(port => {
-  app.listen(port, () => {
-    console.log(`Listening on port ${port}.`)
+  return new Promise(resolve => {
+    returnObject.port = port
+    let listener = app.listen(port, () => {
+      console.log(`Listening on port ${port}.`)
 
-    // Import routes
-    fs.readdirSync(path.join(__dirname, "routes")).map(file => {
-      require("./routes/" + file)(app)
+      // Import routes
+      fs.readdirSync(path.join(__dirname, "routes")).map(file => {
+        require("./routes/" + file)(app)
+      })
+
+      returnObject.app = app
+      // Resolve promise
+      resolve(returnObject)
     })
-
-    // Emit event that tests can use to wait for
-    app.emit("started")
+    returnObject.listener = listener
   })
 })
 
-module.exports = app
+module.exports = { app, server: promise }
