@@ -9,6 +9,7 @@
  */
 require("dotenv").config()
 const fs = require("fs")
+const url = require("url")
 const nodersa = require("node-rsa")
 const jwt = require("jsonwebtoken")
 
@@ -34,6 +35,17 @@ const
   privateKeyPath = process.env.JTW_PRIVATE_KEY_PATH,
   publicKeyPath = process.env.JTW_PUBLIC_KEY_PATH,
   jwtAlgorithm = process.env.JWT_ALGORITHM || "RS256"
+
+let allowedOrigins = (process.env.ALLOWED_ORIGINS || "").split(",").filter(origin => origin != "")
+
+let purl = url.parse(baseUrl)
+if (!["http:", "https:"].includes(purl.protocol) || !purl.slashes || !purl.hostname) {
+  console.error("Please provide a full BASE_URL in .env.")
+  process.exit(1)
+}
+allowedOrigins.push(`${purl.protocol}//${purl.hostname}`)
+console.log("Allowed origins:", allowedOrigins.join(", "))
+
 let jwtExpiresIn = parseInt(process.env.JWT_EXPIRES_IN) || 120
 if (jwtExpiresIn < 10) {
   console.warn("Warning: Minimum for JWT_EXPIRES_IN is 10 seconds.")
@@ -42,7 +54,7 @@ if (jwtExpiresIn < 10) {
 
 let config = {
   env,
-  baseUrl,
+  baseUrl: baseUrl.endsWith("/") ? baseUrl.substring(0, baseUrl.length - 1) : baseUrl,
   port,
   database: {
     url: mongoUrl,
@@ -57,6 +69,7 @@ let config = {
     algorithm: jwtAlgorithm,
     expiresIn: jwtExpiresIn
   },
+  allowedOrigins,
 }
 
 /**

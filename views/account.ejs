@@ -21,16 +21,16 @@
       <td>
       <% if (user.identities && user.identities[provider.id]) { %>
         <% if (Object.keys(user.identities).length > 1) { %>
-          <a href="/disconnect/<%= provider.id %>">Disconnect</a>
+          <a href="<%= baseUrl %>/disconnect/<%= provider.id %>">Disconnect</a>
         <% } %>
       <% } else { %>
-        <a href="/login/<%= provider.id %>">Connect</a>
+        <a href="<%= baseUrl %>/login/<%= provider.id %>">Connect</a>
       <% } %>
       </td>
     </tr>
   <% }) %>
   </tbody></table>
-  <form method="get" action="/delete" style="width: 100%; text-align: center;">
+  <form method="get" action="<%= baseUrl %>/delete" style="width: 100%; text-align: center;">
     <button type="submit" class="btn btn-danger">Delete User Account</button>
   </form>
   <script>
@@ -47,6 +47,7 @@
       headers: {
         "Content-Type": "application/json"
       },
+      credentials: "include",
       method: "PATCH",
       body: JSON.stringify(body)
     }).then(response => {

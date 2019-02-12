@@ -27,7 +27,7 @@
 <h4>Login via</h4>
 <% config.providers.forEach(provider => { %>
   <p>
-    <a href="/login/<%= provider.id %>"><%= provider.name %></a>
+    <a href="<%= baseUrl %>/login/<%= provider.id %>"><%= provider.name %></a>
   </p>
 <% }) %>
 

@@ -43,11 +43,26 @@ let app = require("express")()
 // Use helmet to set important http headers
 app.use(require("helmet")())
 
+// Rewrite res.redirect to always prepend baseUrl
+app.use((req, res, next) => {
+  let redirect = res.redirect
+  res.redirect = target => {
+    target = config.baseUrl + (target.startsWith("/") ? "" : "/") + target
+    redirect.call(res, target)
+  }
+  next()
+})
+
 // Add default headers
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*")
+  // Allow multiple origins from config
+  let origin = req.headers.origin
+  if (config.allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin)
+  }
   res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization")
   res.setHeader("Access-Control-Allow-Methods", "GET,PUT,POST,PATCH,DELETE")
+  res.setHeader("Access-Control-Allow-Credentials", true)
   res.setHeader("Access-Control-Expose-Headers", "X-Total-Count, Link")
   next()
 })

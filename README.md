@@ -62,7 +62,10 @@ To configure the application:
 # required, port for express
 PORT=
 # recommended, full base URL without trailing slash, default: http://localhost[:PORT]
+# (required when used in production)
 BASE_URL=
+# list of allowed origins separated by comma, includes the hostname of BASE_URL by default
+ALLOWED_ORIGINS=
 # recommended, default: development
 NODE_ENV=
 # recommended, secret used by the session
