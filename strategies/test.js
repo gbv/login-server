@@ -2,7 +2,7 @@
  * OAuth Stategy for GitHub.
  */
 
-const Strategy = require("../utils/test-strategy").Strategy
+const Strategy = require("../lib/test-strategy").Strategy
 
 module.exports = (options, provider, callback) => new Strategy(options, (req, token, tokenSecret, profile, done) => {
   callback(req, token, tokenSecret, {

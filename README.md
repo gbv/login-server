@@ -88,7 +88,7 @@ JWT_ALGORITHM=
 JWT_EXPIRES_IN=
 ```
 
-#### `config/providers.json`
+#### `providers.json`
 To configure the providers. See [Providers](#providers).
 
 ## Usage
@@ -149,7 +149,7 @@ You can look at the existing strategies as examples and add your own via a Pull 
 
 ### Providers
 
-After you have added the strategy, you can use it by adding a provider to `config/providers.json`:
+After you have added the strategy, you can use it by adding a provider to `providers.json`:
 
 ```json
 [
