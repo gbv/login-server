@@ -354,7 +354,9 @@ Returns a list of available providers (stripped off sensitive information).
 Returns the currently logged in user. Returns an 404 error when no user is logged in.
 
 ### GET /users
-Returns all users in database. Note: This may be removed in the future.
+Note: This may be removed in the future.
+
+Returns all users in database. If URL parameter `uri` is given, only users whose identities match one of the URIs are returned. Multiple URIs are separated by `|`.
 
 ### GET /users/:id
 Returns a specific user.

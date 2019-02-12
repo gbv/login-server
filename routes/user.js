@@ -2,6 +2,7 @@
  * User routes.
  */
 
+const config = require("../config")
 const User = require("../models/user")
 const _ = require("lodash")
 const events = require("../lib/events")
@@ -9,7 +10,19 @@ const events = require("../lib/events")
 module.exports = app => {
 
   app.get("/users", (req, res) => {
-    User.find().then(users => {
+    let query = req.query || {}
+    let conditions = []
+    // Search by URI
+    if (query.uri) {
+      let uris = query.uri.split("|")
+      for (let uri of uris) {
+        conditions.push({ uri })
+        for (let provider of config.providers) {
+          conditions.push({ [`identities.${provider.id}.uri`]: uri })
+        }
+      }
+    }
+    User.find(conditions.length ? { $or: conditions } : {}).then(users => {
       res.json(users)
     }).catch(error => {
       console.log(error.message)
