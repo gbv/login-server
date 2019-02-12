@@ -102,7 +102,9 @@ try {
   }
   // Save keys to files
   fs.writeFileSync("./private.key", privateKey)
+  fs.chmodSync("./private.key", "600")
   fs.writeFileSync("./public.key", publicKey)
+  fs.chmodSync("./public.key", "644")
 }
 config.privateKey = privateKey
 config.publicKey = publicKey
