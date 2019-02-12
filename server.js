@@ -59,8 +59,7 @@ app.use(require("cookie-parser")())
 
 // Sessions
 const session = require("express-session")
-const MongoStore = require("connect-mongo")(session)
-const mongoStore = new MongoStore({ url: config.database.url })
+const mongoStore = require("./utils/mongoStore")
 app.use(session({
   secret: config.sessionSecret,
   resave: false,
