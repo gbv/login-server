@@ -43,6 +43,15 @@ let app = require("express")()
 // Use helmet to set important http headers
 app.use(require("helmet")())
 
+// Add default headers
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*")
+  res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization")
+  res.setHeader("Access-Control-Allow-Methods", "GET,PUT,POST,PATCH,DELETE")
+  res.setHeader("Access-Control-Expose-Headers", "X-Total-Count, Link")
+  next()
+})
+
 // WebSockets
 require("express-ws")(app)
 
