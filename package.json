@@ -14,7 +14,8 @@
   "scripts": {
     "test": "NODE_ENV=test mocha --exit --timeout 10000 --slow 2000",
     "start": "nodemon server.js",
-    "lint-staged": "lint-staged"
+    "lint-staged": "lint-staged",
+    "indexes": "node utils/addIndexes.js"
   },
   "lint-staged": {
     "**/*.js": [

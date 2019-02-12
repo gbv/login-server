@@ -48,6 +48,8 @@ You need to have access to a [MongoDB database](https://docs.mongodb.com/manual/
 git clone https://github.com/gbv/cocoda-userdb.git
 cd cocoda-userdb
 npm install
+# after setting up or changing providers, create indexes
+npm run indexes
 ```
 
 ### Configuration
