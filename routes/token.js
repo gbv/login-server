@@ -18,7 +18,7 @@ module.exports = app => {
     if (req.user) {
       res.json(utils.getToken(req.user))
     } else {
-      res.sendStatus(403)
+      res.status(401).json({ status: 401, message: "Authorization necessary." })
     }
   })
 

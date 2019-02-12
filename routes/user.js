@@ -8,13 +8,12 @@ const events = require("../lib/events")
 
 module.exports = app => {
 
-  // TODO: Should this be accessible?
   app.get("/users", (req, res) => {
     User.find().then(users => {
       res.json(users)
     }).catch(error => {
       console.log(error.message)
-      res.sendStatus(422)
+      res.status(500).json({ status: 500, message: "Could not retrieve users." })
     })
   })
 
@@ -23,7 +22,7 @@ module.exports = app => {
       res.json(user)
     }).catch(error => {
       console.log(error.message)
-      res.sendStatus(404)
+      res.status(404).json({ status: 404, message: "User not found." })
     })
   })
 
@@ -34,11 +33,11 @@ module.exports = app => {
     // Currently only able to change name
     patch = _.pick(patch, ["name"])
     if (!user) {
-      res.sendStatus(401)
+      res.status(401).json({ status: 401, message: "Authorization necessary." })
     } else if (userId != user.id) {
-      res.sendStatus(403)
+      res.status(403).json({ status: 403, message: "Can't modify another user." })
     } else if (_.isEmpty(patch)) {
-      res.sendStatus(400)
+      res.status(422).json({ status: 422, message: "No change to be made." })
     } else {
       _.forOwn(patch, (value, key) => {
         user[key] = value
@@ -47,7 +46,7 @@ module.exports = app => {
         events.userUpdated(req.sessionID, user)
         res.json(user)
       }).catch(() => {
-        res.sendStatus(400)
+        res.status(500).json({ status: 500, message: "Modified user could not be saved." })
       })
     }
   })
@@ -57,7 +56,7 @@ module.exports = app => {
     if (user) {
       res.json(user)
     } else {
-      res.sendStatus(404)
+      res.status(401).json({ status: 401, message: "Authorization necessary." })
     }
   })
 
