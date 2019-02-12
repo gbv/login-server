@@ -6,6 +6,12 @@ const _ = require("lodash")
 const config = require("../config")
 const jwt = require("jsonwebtoken")
 
+// Imports for getUserFromSession
+const session = require("express-session")
+const MongoStore = require("connect-mongo")(session)
+const mongoStore = new MongoStore({ url: config.database.url })
+const User = require("../models/user")
+
 /**
  * Returns a random v4 UUID.
  *
@@ -38,9 +44,33 @@ function getToken(user) {
   }
 }
 
+/**
+ * Returns a Promise with a user for a sessionID.
+ *
+ * @param {*} sessionID
+ */
+function getUserFromSession(sessionID) {
+  return new Promise((resolve, reject) => {
+    // Get session from sessionID
+    mongoStore.get(sessionID, (localError, session) => {
+      if (localError || !session.passport.user) {
+        reject()
+      } else {
+        // Get user from session
+        User.findById(session.passport.user).then(user => {
+          resolve(user)
+        }).catch(() => {
+          reject()
+        })
+      }
+    })
+  })
+}
+
 module.exports = {
   uuid,
   prepareProviders,
   flashMessages,
   getToken,
+  getUserFromSession,
 }
