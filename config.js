@@ -88,6 +88,18 @@ try {
   let key = new nodersa({ b: 2048 })
   privateKey = key.exportKey("private")
   publicKey = key.exportKey("public")
+  // Backup existing key files
+  for (let filename of ["./private", "./public"]) {
+    let index = 0
+    let file = (index) => filename + (index ? `.backup.${index}` : "") + ".key"
+    while (fs.existsSync(file(index))) {
+      index += 1
+    }
+    if (index > 0) {
+      console.warn(`Renaming ${file(0)} to ${file(index)}...`)
+      fs.renameSync(file(0), file(index))
+    }
+  }
   // Save keys to files
   fs.writeFileSync("./private.key", privateKey)
   fs.writeFileSync("./public.key", publicKey)
