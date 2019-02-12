@@ -10,10 +10,10 @@ let currentUser
 
 describe("GET /currentUser", () => {
 
-  it("should return error 404 when not logged in", done => {
+  it("should return error 401 when not logged in", done => {
     request(app)
       .get("/currentUser")
-      .expect(404, done)
+      .expect(401, done)
 
   })
 
@@ -74,11 +74,11 @@ describe("PATCH /users/:id", () => {
       .expect(401, done)
   })
 
-  it ("should return a 400 response if there is no patch", done => {
+  it ("should return a 422 response if there is no patch", done => {
     authAgent
       .patch(currentUser.uri.substring(currentUser.uri.indexOf("/users")))
       .send({})
-      .expect(400, done)
+      .expect(422, done)
   })
 
   it ("should change name", done => {
