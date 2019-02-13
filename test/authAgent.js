@@ -18,9 +18,9 @@ before(done => {
           username: "testuser",
           password: "testtest"
         })
-        .expect("Location", "/account")
         .expect(res => {
           expect(res.header["set-cookie"]).not.to.be.null
+          expect(res.header.location.endsWith("/account")).to.be.true
         })
         .expect(302, done)
     })

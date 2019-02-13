@@ -1,3 +1,4 @@
+const expect = require("chai").expect
 const request = require("supertest")
 const { app } = require("../server")
 
@@ -15,7 +16,9 @@ describe("GET /account", () => {
   it("should return a 302 response and redirect to /login if user is not logged in", done => {
     request(app)
       .get("/account")
-      .expect("Location", "/login")
+      .expect(res => {
+        expect(res.header.location.endsWith("/login")).to.be.true
+      })
       .expect(302, done)
   })
 
