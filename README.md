@@ -1,9 +1,7 @@
-# Cocoda UserDB
+# Login Server
 
-[![Build Status](https://travis-ci.com/gbv/cocoda-userdb.svg?branch=master)](https://travis-ci.com/gbv/cocoda-userdb)
+[![Build Status](https://travis-ci.com/gbv/login-server.svg?branch=master)](https://travis-ci.com/gbv/login-server)
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg)](https://github.com/RichardLitt/standard-readme)
-
-> User database for Cocoda Mapping Tool
 
 This repository offers a user database to be used with the [Cocoda Mapping Tool](https://github.com/gbv/cocoda). It allows users to authenticate using different providers (e.g. GitHub, ORCID).
 
@@ -45,8 +43,8 @@ You need to have access to a [MongoDB database](https://docs.mongodb.com/manual/
 
 ### Clone and Install
 ```bash
-git clone https://github.com/gbv/cocoda-userdb.git
-cd cocoda-userdb
+git clone https://github.com/gbv/login-server.git
+cd login-server
 npm install
 # after setting up or changing providers, create indexes
 npm run indexes
@@ -78,7 +76,7 @@ MONGO_PASS=
 MONGO_HOST=
 # port used for MongoDB, default: 27017
 MONGO_PORT=
-# database used for MongoDB, default: cocoda-userdb
+# database used for MongoDB, default: login-server
 MONGO_DB=
 # the rate limit window in ms, default: 60 * 1000
 RATE_LIMIT_WINDOW=
@@ -109,14 +107,14 @@ npm test
 ```
 
 ## Strategies
-cocoda-userdb uses [Passport](http://www.passportjs.org) ([GitHub](https://github.com/jaredhanson/passport)) as authentication middleware. Passport uses so-called "strategies" to support authentication with different providers. A list of available strategies can be found [here](https://github.com/jaredhanson/passport/wiki/Strategies). Currently supported strategies in cocoda-userdb are:
+login-server uses [Passport](http://www.passportjs.org) ([GitHub](https://github.com/jaredhanson/passport)) as authentication middleware. Passport uses so-called "strategies" to support authentication with different providers. A list of available strategies can be found [here](https://github.com/jaredhanson/passport/wiki/Strategies). Currently supported strategies in login-server are:
 
 - GitHub (via [passport-github](http://www.passportjs.org/packages/passport-github/))
 - ORCID (via [passport-orcid](http://www.passportjs.org/packages/passport-orcid/))
 - Mediawiki (via [passport-mediawiki-oauth](http://www.passportjs.org/packages/passport-mediawiki-oauth/))
 - LDAP (via [passport-ldapauth](http://www.passportjs.org/packages/passport-ldapauth/))
 
-Because strategies use different parameters in their [verify callbacks](http://www.passportjs.org/docs/configure/), each strategy has its own wrapper file in the folder `strategies/`. To add another strategy to cocoda-userdb, add a file called `{name}.js` (where `{name}` is the name of the strategy that is used with `passport.authenticate`) with the following structure (GitHub as example):
+Because strategies use different parameters in their [verify callbacks](http://www.passportjs.org/docs/configure/), each strategy has its own wrapper file in the folder `strategies/`. To add another strategy to login-server, add a file called `{name}.js` (where `{name}` is the name of the strategy that is used with `passport.authenticate`) with the following structure (GitHub as example):
 
 ```javascript
 /**
@@ -177,7 +175,7 @@ Each object in the list of providers can have the following properties:
 - `strategy` (required) - Name of the Passport strategy used by the provider.
 - `name` (required) - Display name of the provider.
 - `template` (optional) - A template string to generate a URI (the placeholder `{field}` can be any field provided in the `providerProfile` object, usually `{id}` or `{username}`).
-- `credentialsNecessary` (optional) - Set to `true` if username and password credentials are necessary for this provider. Instead of a redirect (for OAuth), cocoda-userdb will show a login form that will send the credentials to a POST endpoint.
+- `credentialsNecessary` (optional) - Set to `true` if username and password credentials are necessary for this provider. Instead of a redirect (for OAuth), login-server will show a login form that will send the credentials to a POST endpoint.
 - `options` (mostly required) - A options object for the strategy, often containing client credentials for the authentication endpoint.
 
 The following is an example `providers.json` that shows how to configure each of the existing providers:
@@ -233,7 +231,7 @@ The following is an example `providers.json` that shows how to configure each of
 ```
 
 ## JWTs
-cocoda-userdb offers JSON Web Tokens that can be used to authenticate against other services (like [jskos-server](https://github.com/gbv/jskos-server)). [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) is used for signing the tokens.
+login-server offers JSON Web Tokens that can be used to authenticate against other services (like [jskos-server](https://github.com/gbv/jskos-server)). [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) is used for signing the tokens.
 
 By default, a new RSA keypair is generated when the application is first started (2048 bits, using [node-rsa](https://github.com/rzcoder/node-rsa)). This generated keypair will be available in `./private.key` and `./public.key`. You can give the `./public.key` file to any other service that needs to verify the tokens. Alternatively, the currently used public key is offered at the [/publicKey endpoint](#get-publickey).
 
