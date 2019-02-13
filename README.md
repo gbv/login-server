@@ -299,10 +299,11 @@ Offers a WebSocket that sends events about the current user. Events are sent as 
 
 Available event types are:
 - `loggedIn` - sent when the user has logged in (will be sent immediately after establishing the WebSocket if the user is already logged in)
-- `loggedOut` - sent when the user has logged out
+- `loggedOut` - sent when the user has logged out (will be sent immediately after establishing the WebSocket if the user is not logged in)
 - `updated` - sent when the user was updated (e.g. added a new identity, etc.)
 - `providers` - sent as answer to a providers request via the WebSocket (consists of a property `data.providers` with a list of available providers)
 - `token` - sent when the user has logged in and then in intervals before the previous token expires, or as answer to a token request (property `data` will have the same format as in [GET /token](#get-token))
+- `authenticated` - sent as a success reply when requesting authentication (see below)
 - `error` - sent as answer to a malformed message via the WebSocket (consists of a property `data.message` with an error message)
 
 You can also send requests to the WebSocket. These also have to be JSON-encoded strings in the following form:
@@ -316,8 +317,13 @@ You can also send requests to the WebSocket. These also have to be JSON-encoded 
 Currently available request types are:
 - `providers` - returns a list of available providers (same as [GET /providers](#get-providers))
 - `token` - returns a JWT (same as [GET /token](#get-token))
+- `authenticate` - uses a JWT acquired from [GET /token](#get-token) to associate the current WebSocket with a particular session (sent request object needs property `token`)
+
+The `authenticate` request is necessary when the WebSocket is used from a different domain than login-server. In that case, a token needs to be requested via the API (e.g. using fetch with option `credentials: "include"` or axios with option `withCredentials: true`) and be sent via the WebSocket. The token includes the encrypted sessionID that will then be associated with the WebSocket connection. An example on how such a workflow could look like will be added here later.
 
 #### Example Usage
+The following is a simple example on how to connect to the WebSocket.
+
 ```javascript
 // Assumes server is run on localhost:3005
 let socket = new WebSocket("ws://localhost:3005")
@@ -346,7 +352,7 @@ Returns a JSON Web Token in the format:
 
 See also: [JWTs](#jwts).
 
-Returns an 403 error when no user is logged in.
+The token itself will contain a `user` property (which either contains information about the currently logged in user, or is null if the user is not logged in) and a `sessionID` property which is needed to authenticate within a [WebSocket](#websocket) connection.
 
 ### GET /providers
 Returns a list of available providers (stripped off sensitive information).

@@ -10,7 +10,7 @@
 require("dotenv").config()
 const fs = require("fs")
 const url = require("url")
-const nodersa = require("node-rsa")
+const rsa = require("node-rsa")
 const jwt = require("jsonwebtoken")
 
 const
@@ -98,7 +98,7 @@ try {
     process.exit(1)
   }
   console.log("Generating new keypair and saving to `./private.key` and `./public.key`...")
-  let key = new nodersa({ b: 2048 })
+  let key = new rsa({ b: 2048 })
   privateKey = key.exportKey("private")
   publicKey = key.exportKey("public")
   // Backup existing key files
@@ -121,6 +121,7 @@ try {
 }
 config.privateKey = privateKey
 config.publicKey = publicKey
+config.key = new rsa(privateKey)
 
 /**
  * ##### Providers Setup #####

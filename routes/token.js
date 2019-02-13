@@ -15,11 +15,7 @@ module.exports = app => {
   })
 
   app.get("/token", (req, res) => {
-    if (req.user) {
-      res.json(utils.getToken(req.user))
-    } else {
-      res.status(401).json({ status: 401, message: "Authorization necessary." })
-    }
+    res.json(utils.getToken(req.user, req.sessionID))
   })
 
 }

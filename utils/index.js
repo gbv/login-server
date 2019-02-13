@@ -33,9 +33,15 @@ function flashMessages(req) {
   }
 }
 
-function getToken(user) {
+function getToken(user, sessionID) {
+  let data = {}
   // Don't include `identities` in JWT payload.
-  let token = jwt.sign({ user: _.omit(user, ["identities"]) }, config.privateKey, config.jwtOptions)
+  data.user = user ? _.omit(user, ["identities"]) : null
+  if (sessionID) {
+    // Include encrypted sessionID for session identification through the token
+    data.sessionID = config.key.encrypt(sessionID, "base64")
+  }
+  let token = jwt.sign(data, config.privateKey, config.jwtOptions)
   return {
     token,
     expiresIn: config.jwtOptions.expiresIn,

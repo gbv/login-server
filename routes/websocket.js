@@ -2,8 +2,10 @@
  * WebSocket
  */
 
+const config = require("../config")
 const utils = require("../utils")
 const events = require("../lib/events")
+const jwt = require("jsonwebtoken")
 
 module.exports = app => {
 
@@ -31,10 +33,32 @@ module.exports = app => {
           events.sendEvent(wsID, "providers", {
             providers: utils.prepareProviders()
           })
-        }
-        if (message.type === "token") {
+        } else if (message.type === "token") {
           events.sendToken(wsID)
+        } else if (message.type === "authenticate") {
+          // Handle authentication via JWT
+          let token = message.token
+          try {
+            let decodedToken = jwt.verify(token, config.publicKey)
+            let sessionID = config.key.decrypt(decodedToken.sessionID).toString("utf8")
+            socket.sessionID = sessionID
+            // Send authenticated event
+            events.sendEvent(wsID, "authenticated")
+            // Get user for session and send login/logout event
+            utils.getUserFromSession(sessionID).catch(() => null).then(user => {
+              if (user) {
+                events.userLoggedInWs(wsID, user)
+              } else {
+                events.userLoggedOutWs(wsID, null)
+              }
+            })
+          } catch(error) {
+            events.error(wsID, "Authentication failed.")
+          }
+        } else {
+          events.error(wsID, `Unknown requets type ${message.type}.`)
         }
+
       } catch(error) {
       // Send error event to WebSocket
         events.error(wsID, "Message could not be parsed.")

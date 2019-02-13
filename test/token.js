@@ -27,10 +27,19 @@ describe("GET /publicKey", () => {
 
 describe("GET /token", () => {
 
-  it("should deny token if user is not logged in", done => {
+  it ("should return a valid token with user: null if user is not logged in", done => {
     request(app)
       .get("/token")
-      .expect(401, done)
+      .expect("Content-Type", /json/)
+      .expect(res => {
+        expect(res.body).to.be.an("object")
+        expect(res.body.token).to.be.a("string")
+        expect(res.body.expiresIn).to.be.a("number")
+        // Check token for validity
+        let token = jwt.verify(res.body.token, publicKey)
+        expect(token.user).to.be.null
+      })
+      .expect(200, done)
   })
 
   it ("should return a valid token if user is logged in", done => {
@@ -42,7 +51,8 @@ describe("GET /token", () => {
         expect(res.body.token).to.be.a("string")
         expect(res.body.expiresIn).to.be.a("number")
         // Check token for validity
-        jwt.verify(res.body.token, publicKey)
+        let token = jwt.verify(res.body.token, publicKey)
+        expect(token.user).to.be.an("object")
       })
       .expect(200, done)
   })
