@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.com/gbv/login-server.svg?branch=master)](https://travis-ci.com/gbv/login-server)
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg)](https://github.com/RichardLitt/standard-readme)
 
-This repository offers a user database to be used with the [Cocoda Mapping Tool](https://github.com/gbv/cocoda). It allows users to authenticate using different providers (e.g. GitHub, ORCID).
+This repository offers a login server to be used with the [Cocoda Mapping Tool](https://github.com/gbv/cocoda). It allows users to authenticate using different providers (e.g. GitHub, ORCID). See [this Pen](https://codepen.io/stefandesu/pen/vbaJwo) for an example on how you could use this.
 
 ## Table of Contents
 
@@ -319,7 +319,7 @@ Currently available request types are:
 - `token` - returns a JWT (same as [GET /token](#get-token))
 - `authenticate` - uses a JWT acquired from [GET /token](#get-token) to associate the current WebSocket with a particular session (sent request object needs property `token`)
 
-The `authenticate` request is necessary when the WebSocket is used from a different domain than login-server. In that case, a token needs to be requested via the API (e.g. using fetch with option `credentials: "include"` or axios with option `withCredentials: true`) and be sent via the WebSocket. The token includes the encrypted sessionID that will then be associated with the WebSocket connection. An example on how such a workflow could look like will be added here later.
+The `authenticate` request is necessary when the WebSocket is used from a different domain than login-server. In that case, a token needs to be requested via the API (e.g. using fetch with option `credentials: "include"` or axios with option `withCredentials: true`) and be sent via the WebSocket. The token includes the encrypted sessionID that will then be associated with the WebSocket connection. Here is an example on how a workflow from a web application could look like: https://codepen.io/stefandesu/pen/vbaJwo
 
 #### Example Usage
 The following is a simple example on how to connect to the WebSocket.
