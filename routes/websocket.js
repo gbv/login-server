@@ -4,6 +4,7 @@
 
 const config = require("../config")
 const utils = require("../utils")
+const mongoStore = require("../utils/mongoStore")
 const events = require("../lib/events")
 const jwt = require("jsonwebtoken")
 
@@ -17,6 +18,14 @@ module.exports = app => {
       ws
     }
     events.addSocket(wsID, socket)
+
+    // Check if sessionID already exists in store. If yes, consider connection authenticated.
+    mongoStore.get(req.sessionID).then(session => {
+      if (session) {
+        events.sendEvent(wsID, "authenticated")
+      }
+    }).catch(() => {})
+
 
     if (req.user) {
       // Fire loggedIn event
