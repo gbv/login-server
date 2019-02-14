@@ -1,38 +1,72 @@
 const expect = require("chai").expect
 const { server } = require("../server")
 const WebSocket = require("ws")
+const _ = require("lodash")
+
+// Use this agent for authenticated requests
+let authAgent = require("./authAgent")
 
 describe("WebSocket", () => {
 
-  it("should connect to the WebSocket, receive a loggedOut event and react to the providers request", done => {
-    // Because this dooes not share the session with the authorized user agent, the user will be logged out.
-    // TODO: Find way to test WebSocket with authorization
+  it("should connect to the WebSocket and receive messages as expected", done => {
+
+    // Wait for the server
     server.then(({ listener, port }) => {
-      expect(port).to.be.equal(listener.address().port)
-      let address = `ws://localhost:${port}/`
-      let ws = new WebSocket(address)
-      let responses = 0, expected = 2
-      ws.on("message", message => {
-        responses += 1
-        let event = JSON.parse(message)
-        if (event.type == "providers") {
-          // End test when providers were received
-          expect(event.data).to.be.an("object")
-          expect(event.data.providers).to.be.an("array").with.length(1)
-        } else if (event.type == "tokens") {
-          // TODO: Add as soon as WebSockets can be tested with authorization.
-        } else {
-          expect(event.type).to.be.equal("loggedOut")
-        }
-        if (responses == expected) {
-          done()
-        }
-      })
-      ws.on("open", () => {
-        // WebSocket opened, send provider request
-        ws.send(JSON.stringify({ type: "providers" }))
+
+      // Get a token to authenticate later
+      authAgent.get("/token").then(res => {
+        expect(res.body).to.be.an("object")
+        expect(res.body.token).to.be.a("string")
+        const token = res.body.token
+
+        // Connect to the WebSocket
+        expect(port).to.be.equal(listener.address().port)
+        let address = `ws://localhost:${port}/`
+        let ws = new WebSocket(address)
+
+        // Assemble expected response types
+        const expected1 = ["loggedOut", "providers"].sort()
+        const expected2 = ["loggedOut", "providers", "authenticated", "loggedIn", "token"].sort()
+
+        // Message handler
+        let responses = []
+        ws.on("message", message => {
+          let event = JSON.parse(message)
+          responses.push(event.type)
+          responses.sort()
+
+          if (event.type == "providers") {
+            expect(event.data).to.be.an("object")
+            expect(event.data.providers).to.be.an("array").with.length(1)
+          } else if (event.type == "token") {
+            expect(event.data).to.be.an("object")
+            expect(event.data.token).to.be.a("string")
+          } else if (event.type == "loggedIn") {
+            expect(event.data).to.be.an("object")
+            expect(event.data.user).to.be.an("object")
+          } else {
+            expect(["loggedOut", "authenticated"]).to.contain(event.type)
+          }
+          // After "providers" and "loggedOut", send "authenticate" request with token
+          if (responses.length == expected1.length) {
+            expect(_.isEqual(expected1, responses)).to.be.true
+            ws.send(JSON.stringify({ type: "authenticate", token }))
+          }
+          // Finish test when all expected responses were received
+          if (expected2.length == responses.length) {
+            expect(_.isEqual(expected2, responses)).to.be.true
+            done()
+          }
+        })
+
+        // Send "providers" request after WebSocket opened
+        ws.on("open", () => {
+          ws.send(JSON.stringify({ type: "providers" }))
+        })
+
       })
     })
+
   })
 
 })
