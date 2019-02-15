@@ -19,6 +19,8 @@ module.exports = app => {
     }
     events.addSocket(wsID, socket)
 
+    events.sendEvent(wsID, "open", null)
+
     // Check if sessionID already exists in store. If yes, consider connection authenticated.
     mongoStore.get(req.sessionID).then(session => {
       if (session) {

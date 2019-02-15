@@ -298,6 +298,7 @@ Offers a WebSocket that sends events about the current user. Events are sent as 
 ```
 
 Available event types are:
+- `open` - sent after WebSocket connection was established, use this instead of `ws.onopen`!
 - `loggedIn` - sent when the user has logged in (will be sent immediately after establishing the WebSocket if the user is already logged in)
 - `loggedOut` - sent when the user has logged out (will be sent immediately after establishing the WebSocket if the user is not logged in)
 - `updated` - sent when the user was updated (e.g. added a new identity, etc.)
