@@ -38,7 +38,6 @@ describe("GET /token", () => {
         // Check token for validity
         let token = jwt.verify(res.body.token, publicKey)
         expect(token.user).to.be.null
-        expect(token.sessionID).to.be.a("string")
       })
       .expect(200, done)
   })
