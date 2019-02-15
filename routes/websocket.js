@@ -64,6 +64,12 @@ module.exports = app => {
           } catch(error) {
             events.error(wsID, "Authentication failed.")
           }
+        } else if (message.type === "publicKey") {
+          // Reply with public key of server
+          events.sendEvent(wsID, "publicKey", {
+            publicKey: config.publicKey.toString("utf8"),
+            algorithm: config.jwtOptions.algorithm,
+          })
         } else {
           events.error(wsID, `Unknown requets type ${message.type}.`)
         }

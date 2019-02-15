@@ -302,6 +302,7 @@ Available event types are:
 - `loggedOut` - sent when the user has logged out (will be sent immediately after establishing the WebSocket if the user is not logged in)
 - `updated` - sent when the user was updated (e.g. added a new identity, etc.)
 - `providers` - sent as answer to a providers request via the WebSocket (consists of a property `data.providers` with a list of available providers)
+- `publicKey` - sent as answer to a publicKey request via the WebSocket (consists of properties `data.publicKey` and `data.algorithm`)
 - `token` - sent when the user has logged in and then in intervals before the previous token expires, or as answer to a token request (property `data` will have the same format as in [GET /token](#get-token))
 - `authenticated` - sent as a success reply when requesting authentication (see below)
 - `error` - sent as answer to a malformed message via the WebSocket (consists of a property `data.message` with an error message)
@@ -316,6 +317,7 @@ You can also send requests to the WebSocket. These also have to be JSON-encoded 
 
 Currently available request types are:
 - `providers` - returns a list of available providers (same as [GET /providers](#get-providers))
+- `publicKey` - returns the server's public key (same as [GET /publicKey](#get-publickey))
 - `token` - returns a JWT (same as [GET /token](#get-token))
 - `authenticate` - uses a JWT acquired from [GET /token](#get-token) to associate the current WebSocket with a particular session (sent request object needs property `token`)
 

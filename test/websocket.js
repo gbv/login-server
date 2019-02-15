@@ -25,8 +25,8 @@ describe("WebSocket", () => {
         let ws = new WebSocket(address)
 
         // Assemble expected response types
-        const expected1 = ["loggedOut", "providers"].sort()
-        const expected2 = ["loggedOut", "providers", "authenticated", "loggedIn", "token"].sort()
+        const expected1 = ["loggedOut", "providers", "publicKey"].sort()
+        const expected2 = ["loggedOut", "providers", "publicKey", "authenticated", "loggedIn", "token"].sort()
 
         // Message handler
         let responses = []
@@ -44,6 +44,10 @@ describe("WebSocket", () => {
           } else if (event.type == "loggedIn") {
             expect(event.data).to.be.an("object")
             expect(event.data.user).to.be.an("object")
+          } else if (event.type == "publicKey") {
+            expect(event.data).to.be.an("object")
+            expect(event.data.publicKey).to.be.a("string")
+            expect(event.data.algorithm).to.be.a("string")
           } else {
             expect(["loggedOut", "authenticated"]).to.contain(event.type)
           }
@@ -59,9 +63,10 @@ describe("WebSocket", () => {
           }
         })
 
-        // Send "providers" request after WebSocket opened
+        // Send "providers" and "publicKey" request after WebSocket opened
         ws.on("open", () => {
           ws.send(JSON.stringify({ type: "providers" }))
+          ws.send(JSON.stringify({ type: "publicKey" }))
         })
 
       })
