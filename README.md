@@ -100,7 +100,7 @@ npm run start
 ```
 
 ## Test
-Not yet implemented.
+Note that tests use the same MongoDB as configured in `.env`, just with the postfix `-test` after the database name!
 
 ```bash
 npm test
