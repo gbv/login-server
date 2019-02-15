@@ -33,19 +33,32 @@ function flashMessages(req) {
   }
 }
 
+/**
+ * Returns a Promise for a JSON Web Token.
+ *
+ * @param {*} user
+ * @param {*} sessionID
+ */
 function getToken(user, sessionID) {
   let data = {}
   // Don't include `identities` in JWT payload.
   data.user = user ? _.omit(user, ["identities"]) : null
+
+  let sessionPromise = Promise.resolve(null)
   if (sessionID) {
-    // Include encrypted sessionID for session identification through the token
-    data.sessionID = config.key.encrypt(sessionID, "base64")
+    // Include encrypted sessionID for session identification through the token, only if there exists a session with this token
+    sessionPromise = mongoStore.get(sessionID).then(session => session ? sessionID : null).catch(() => null)
   }
-  let token = jwt.sign(data, config.privateKey, config.jwtOptions)
-  return {
-    token,
-    expiresIn: config.jwtOptions.expiresIn,
-  }
+  return sessionPromise.then(sessionID => {
+    if (sessionID) {
+      data.sessionID = config.key.encrypt(sessionID, "base64")
+    }
+    let token = jwt.sign(data, config.privateKey, config.jwtOptions)
+    return {
+      token,
+      expiresIn: config.jwtOptions.expiresIn,
+    }
+  })
 }
 
 /**

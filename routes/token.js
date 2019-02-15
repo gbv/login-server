@@ -15,7 +15,9 @@ module.exports = app => {
   })
 
   app.get("/token", (req, res) => {
-    res.json(utils.getToken(req.user, req.sessionID))
+    utils.getToken(req.user, req.sessionID).then(token => {
+      res.json(token)
+    })
   })
 
 }
