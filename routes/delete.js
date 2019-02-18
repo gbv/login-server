@@ -22,7 +22,7 @@ module.exports = app => {
     User.findByIdAndRemove(user.id).then(() => {
     // Fire loggedOut event
       events.userLoggedOut(req.sessionID)
-      req.flash("success", "Your user account was deleted.")
+      req.flash("success", "Your user account has been deleted.")
     }).catch(() => {
       req.flash("error", "There was an error when trying to delete your user account.")
     }).finally(() => {
