@@ -19,8 +19,10 @@ This repository offers a login server to be used with the [Cocoda Mapping Tool](
 - [Web interface](#web-interface)
   - [GET /](#get)
   - [GET /login](#get-login)
+  - [GET /login/:provider](#get-loginprovider)
   - [GET /account](#get-account)
   - [GET /logout](#get-logout)
+  - [GET /delete](#get-delete)
 - [API](#api)
   - [WebSocket](#websocket)
     - [Example Usage](#example-usage)
@@ -31,10 +33,10 @@ This repository offers a login server to be used with the [Cocoda Mapping Tool](
   - [GET /users](#get-users)
   - [GET /users/:id](#get-usersid)
   - [PATCH /users/:id](#patch-usersid)
-  - [GET /login/:provider](#get-loginprovider)
   - [GET /login/:provider/return](#get-loginproviderreturn)
   - [POST /login/:provider](#post-loginprovider)
   - [GET /disconnect/:provider](#get-disconnectprovider)
+  - [POST /delete](#post-delete)
 - [Maintainers](#maintainers)
 - [Contribute](#contribute)
 - [License](#license)
@@ -279,11 +281,17 @@ The base URL currently redirects to `/account` (if logged in) or to `/login` (ot
 ### GET /login
 Shows a site to login (if not authenticated) or directs to `/account` (if authenticated).
 
+### GET /login/:provider
+Shows a login page for a provider. For OAuth providers, this page will redirect to the provider's page to connect your account, which then redirects to `/login/:provider/return`. For providers using credentials, this will show a login form.
+
 ### GET /account
 Shows a site to manage one's user account (if already authenticated) or redirects to `/login` (if not authenticated).
 
 ### GET /logout
 Logs the user out of their account. Note that the session will remain because it is used for the WebSockets. This enables the application to send events to active WebSockets for the current session, even if the user has logged out.
+
+### GET /delete
+Shows a site to delete one's user account.
 
 ## API
 To be extended.
@@ -390,9 +398,6 @@ Returns a specific user.
 ### PATCH /users/:id
 Adjusts a specific user. Can only be used if the same user is currently logged in. Allowed properties to change: `name` (everything else will be ignored).
 
-### GET /login/:provider
-Shows a login page for a provider. For OAuth providers, this page will redirect to the provider's page to connect your account, which then redirects to `/login/:provider/return`. For providers using credentials, this will show a login form.
-
 ### GET /login/:provider/return
 Callback endpoint for OAuth requests. Will save the connected account to the user (or create a new user if necessary) and redirect to `/account`.
 
@@ -401,9 +406,6 @@ POST endpoint for providers using credentials. If successful, it will redirect t
 
 ### GET /disconnect/:provider
 Disconnects a provider from the user and redirects to `/account`.
-
-### GET /delete
-Shows a site to delete one's user account.
 
 ### POST /delete
 Commits user account deletion and redirects to `/login`.
