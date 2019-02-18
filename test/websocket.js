@@ -25,8 +25,8 @@ describe("WebSocket", () => {
         let ws = new WebSocket(address)
 
         // Assemble expected response types
-        const expected1 = ["loggedOut", "providers", "publicKey"].sort()
-        const expected2 = ["loggedOut", "providers", "publicKey", "authenticated", "loggedIn", "token"].sort()
+        const expected1 = ["open", "loggedOut", "providers", "publicKey"].sort()
+        const expected2 = ["open", "loggedOut", "providers", "publicKey", "authenticated", "loggedIn", "token"].sort()
 
         // Message handler
         let responses = []
@@ -49,7 +49,7 @@ describe("WebSocket", () => {
             expect(event.data.publicKey).to.be.a("string")
             expect(event.data.algorithm).to.be.a("string")
           } else {
-            expect(["loggedOut", "authenticated"]).to.contain(event.type)
+            expect(["open", "loggedOut", "authenticated"]).to.contain(event.type)
           }
           // After "providers" and "loggedOut", send "authenticate" request with token
           if (responses.length == expected1.length) {
