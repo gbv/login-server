@@ -25,7 +25,7 @@
         <%= user.identities[provider.id].id %> %>
       <% } %>
       </td>
-      <td>
+      <td class="text-right">
       <% if (user.identities && user.identities[provider.id]) { %>
         <% if (Object.keys(user.identities).length > 1) { %>
         <a class="btn btn-outline-danger" href="<%= baseUrl %>/disconnect/<%= provider.id %>">Disconnect</a>
