@@ -38,7 +38,8 @@ passport.deserializeUser((id, done) => {
 /**
  * ##### Express Setup #####
  */
-let app = require("express")()
+const express = require("express")
+let app = express()
 
 // Use helmet to set important http headers
 app.use(require("helmet")())
@@ -107,6 +108,9 @@ app.set("views", __dirname + "/views")
 app.set("view engine", "ejs")
 app.locals.baseUrl = config.baseUrl
 app.locals.config = config
+
+// Offer static files in `/static`
+app.use("/static", express.static("static"))
 
 /**
  * ##### Express Route Setup #####

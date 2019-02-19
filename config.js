@@ -135,9 +135,23 @@ if (env != "test") {
     config.providers = []
   }
   // Prepare providers
+  let imageFormats = ["svg", "png", "jpg"]
   for (let provider of config.providers) {
     provider.loginURL = `${baseUrl}/login/${provider.id}`,
     provider.callbackURL = `${baseUrl}/login/${provider.id}/return`
+    // Add image URL if a file for that provider can be found
+    if (!provider.image) {
+      for (let format of imageFormats) {
+        let file = `static/${provider.id}.${format}`
+        if (fs.existsSync(file)) {
+          provider.image = `${baseUrl}/${file}`
+          break
+        }
+      }
+    } else if (!provider.image.startsWith("http")) {
+      // If it's a relative URL, prepend the baseUrl
+      provider.image = `${baseUrl}/${provider.image}`
+    }
   }
 } else {
   // Configure a test provider for tests

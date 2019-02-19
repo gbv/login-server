@@ -25,10 +25,23 @@
 </p>
 
 <h4>Login via</h4>
+<div class="card-columns">
 <% config.providers.forEach(provider => { %>
-  <p>
-    <a href="<%= baseUrl %>/login/<%= provider.id %>"><%= provider.name %></a>
-  </p>
+  <div class="card">
+    <a href="<%= baseUrl %>/login/<%= provider.id %>">
+      <div class="card-body text-center">
+        <div style="margin-bottom: 10px; height: 28px;">
+          <% if (provider.image) { %>
+          <img src="<%= provider.image %>" height="28px" />
+          <% } %>
+        </div>
+        <p>
+          <%= provider.name %>
+        </p>
+      </div>
+    </a>
+  </div>
 <% }) %>
+</div>
 
 <%- include('footer'); -%>

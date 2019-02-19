@@ -12,7 +12,14 @@
   <table class="table"><tbody>
   <% config.providers.forEach(provider => { %>
     <tr>
-      <td><b><%= provider.name %></b></td>
+      <td style="text-align: center;">
+      <% if (provider.image) { %>
+        <img src="<%= provider.image %>" height="18px" />
+      <% } %>
+      </td>
+      <td>
+        <b><%= provider.name %></b>
+      </td>
       <td>
       <% if (user.identities && user.identities[provider.id]) { %>
         <%= user.identities[provider.id].id %> %>
