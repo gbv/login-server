@@ -4,9 +4,9 @@
 
 <% if (user) { %>
   <form class="form-inline" id="nameForm">
-    <label for="name">Change name:</label>
+    <label for="name">Name:</label>
     <input type="input" class="form-control" id="name" value="<%= user.name %>">
-    <button type="submit" class="btn btn-primary" id="nameSubmit">Submit</button>
+    <button type="submit" class="btn btn-primary" id="nameSubmit">Change</button>
   </form>
   <h4>Connected Accounts</h4>
   <table class="table"><tbody>
@@ -21,10 +21,10 @@
       <td>
       <% if (user.identities && user.identities[provider.id]) { %>
         <% if (Object.keys(user.identities).length > 1) { %>
-          <a href="<%= baseUrl %>/disconnect/<%= provider.id %>">Disconnect</a>
+        <a class="btn btn-outline-danger" href="<%= baseUrl %>/disconnect/<%= provider.id %>">Disconnect</a>
         <% } %>
       <% } else { %>
-        <a href="<%= baseUrl %>/login/<%= provider.id %>">Connect</a>
+        <a class="btn btn-outline-primary" href="<%= baseUrl %>/login/<%= provider.id %>">Connect</a>
       <% } %>
       </td>
     </tr>
