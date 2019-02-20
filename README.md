@@ -18,25 +18,28 @@ This repository offers a login server to be used with the [Cocoda Mapping Tool](
 - [JWTs](#jwts)
 - [Web interface](#web-interface)
   - [GET /](#get)
+  - [GET /account](#get-account)
   - [GET /login](#get-login)
   - [GET /login/:provider](#get-loginprovider)
-  - [GET /account](#get-account)
-  - [GET /logout](#get-logout)
-  - [GET /delete](#get-delete)
-- [API](#api)
-  - [WebSocket](#websocket)
-    - [Example Usage](#example-usage)
-  - [GET /publicKey](#get-publickey)
-  - [GET /token](#get-token)
-  - [GET /providers](#get-providers)
-  - [GET /currentUser](#get-currentuser)
-  - [GET /users](#get-users)
-  - [GET /users/:id](#get-usersid)
-  - [PATCH /users/:id](#patch-usersid)
-  - [GET /login/:provider/return](#get-loginproviderreturn)
   - [POST /login/:provider](#post-loginprovider)
   - [GET /disconnect/:provider](#get-disconnectprovider)
+  - [GET /logout](#get-logout)
+  - [GET /delete](#get-delete)
   - [POST /delete](#post-delete)
+- [OAuth endpoint](#oauth-endpoint)
+  - [GET /login/:provider/return](#get-loginproviderreturn)
+- [HTTP API](#http-api)
+  - [GET /publicKey](#get-publickey)
+  - [GET /providers](#get-providers)
+  - [GET /users](#get-users)
+  - [GET /currentUser](#get-currentuser)
+  - [GET /users/:id](#get-usersid)
+  - [PATCH /users/:id](#patch-usersid)
+  - [GET /token](#get-token)
+- [WebSocket](#websocket)
+  - [Event types](#event-types)
+  - [Request types](#request-types)
+  - [Example Usage](#example-usage)
 - [Maintainers](#maintainers)
 - [Contribute](#contribute)
 - [License](#license)
@@ -104,8 +107,16 @@ To configure the providers. See [Providers](#providers).
 npm run start
 ```
 
+The server provides a [web interface](#web-interface), a [HTTP API](#http-api) and a [WebSocket](#websocket).
+
+The web interface allows users to create and manage accounts with connections to multiple identities at identity providers (see [providers](#providers)). Providers are used to authenticate users because the login server does not store any passwords (single sign-on).
+
+The HTTP API and WebSocket allow client applications to interact with the login server, for instance to check whether a user has been logged in and to find out which identities belong to a user.
+
+The login server can further be used to authenticate users against other services so users can proof their identities.
+
 ## Test
-Note that tests use the same MongoDB as configured in `.env`, just with the postfix `-test` after the database name!
+Tests use the same MongoDB as configured in `.env`, just with the postfix `-test` after the database name.
 
 ```bash
 npm test
@@ -275,19 +286,30 @@ jwt.verify(token, publicKey, (error, decoded) => {
 
 Alternatively, you can use [passport-jwt](http://www.passportjs.org/packages/passport-jwt/) (example will follow).
 
+[`/account`]: #get-account
+[`/login`]: #get-login
+[`/login/:provider/return`]: #get-loginproviderreturn
+[`/login/:provider`]: #get-loginprovider
+
 ## Web interface
 
 ### GET /
-The base URL currently redirects to `/account` (if logged in) or to `/login` (otherwise). This may be changed to a customized landing page instead.
-
-### GET /login
-Shows a site to login (if not authenticated) or directs to `/account` (if authenticated).
-
-### GET /login/:provider
-Shows a login page for a provider. For OAuth providers, this page will redirect to the provider's page to connect your account, which then redirects to `/login/:provider/return`. For providers using credentials, this will show a login form.
+The base URL currently redirects to [`/account`] (if logged in) or to [`/login`] (otherwise). This will be changed to a customized landing page instead.
 
 ### GET /account
-Shows a site to manage one's user account (if already authenticated) or redirects to `/login` (if not authenticated).
+Shows a site to manage one's user account (if already authenticated) or redirects to [`/login`] (if not authenticated).
+
+### GET /login
+Shows a site to login (if not authenticated) or directs to [`/account`] (if authenticated).
+
+### GET /login/:provider
+Shows a login page for a provider. For OAuth providers, this page will redirect to the provider's page to connect your account, which then redirects to [`/login/:provider/return`]. For providers using credentials, this will show a login form.
+
+### POST /login/:provider
+POST endpoint for providers using credentials. If successful, it will redirect to [`/account`], otherwise it will redirect back to [`/login/:provider`].
+
+### GET /disconnect/:provider
+Disconnects a provider from the user and redirects to [`/account`].
 
 ### GET /logout
 Logs the user out of their account. Note that the session will remain because it is used for the WebSockets. This enables the application to send events to active WebSockets for the current session, even if the user has logged out.
@@ -295,26 +317,69 @@ Logs the user out of their account. Note that the session will remain because it
 ### GET /delete
 Shows a site to delete one's user account.
 
-## API
-To be extended.
+### POST /delete
+Commits user account deletion and redirects to [`/login`].
 
-### WebSocket
-Offers a WebSocket that sends events about the current user. Events are sent as JSON-encoded strings that look like this:
+## OAuth endpoint
+
+The server provides an OAuth redirection endpoint (redirection URI) for each OAuth [provider](#providers).
+
+### GET /login/:provider/return
+Callback endpoint for OAuth requests. Will save the connected account to the user (or create a new user if necessary) and redirect to [`/account`].
+
+## HTTP API
+
+### GET /publicKey
+Returns an object with keys `publicKey` (usually a RSA public key) and `algorithm` (the [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) algorithm used). The corresponding private key is used when signing JWTs.
+
+### GET /providers
+Returns a list of available providers (stripped off sensitive information).
+
+### GET /users
+Note: This may be removed in the future.
+
+Returns all users in database. If URL parameter `uri` is given, only users whose identities match one of the URIs are returned. Multiple URIs are separated by `|`.
+
+### GET /currentUser
+Returns the currently logged in user. Returns an 404 error when no user is logged in.
+
+### GET /users/:id
+Returns a specific user.
+
+### PATCH /users/:id
+Adjusts a specific user. Can only be used if the same user is currently logged in. Allowed properties to change: `name` (everything else will be ignored).
+
+### GET /token
+Returns a JSON Web Token in the format:
 
 ```json
 {
-  "type": "name of event (see below)",
-  "date": "(Date as ISOString)",
+  "token": "<JWT>",
+  "expiresIn": 120
+}
+```
+
+See also: [JWTs](#jwts).
+
+The token itself will contain a `user` property (which either contains information about the currently logged in user, or is null if the user is not logged in) and a `sessionID` property which is needed to authenticate within a [WebSocket](#websocket) connection.
+
+## WebSocket
+The WebSocket API at base URL `/` sends events about the current user and can be used for requests alternative to the [HTTP API](#http-api). Events are sent as JSON-encoded strings that look like this:
+
+```json
+{
+  "type": "event name (see below)",
+  "date": "date (as ISOString)",
   "data": {
     "user": {
       "uri": "URI of user",
-      "name": "Name of user",
+      "name": "name of user",
       "identities": {
         "xzy": {
           "id": "ID of user for provider xzy",
           "uri": "URI or profile URL of user for provider xzy",
-          "name": "Display name of user for provider xzy (if available)",
-          "username": "Username of user for provider xzy (if available)"
+          "name": "display name of user for provider xzy (if available)",
+          "username": "username of user for provider xzy (if available)"
         }
       },
       "rights": ["a", "list", "of", "rights"]
@@ -323,7 +388,8 @@ Offers a WebSocket that sends events about the current user. Events are sent as 
 }
 ```
 
-Available event types are:
+### Event types
+
 - `open` - sent after WebSocket connection was established, use this instead of `ws.onopen`!
 - `loggedIn` - sent when the user has logged in (will be sent immediately after establishing the WebSocket if the user is already logged in)
 - `loggedOut` - sent when the user has logged out (will be sent immediately after establishing the WebSocket if the user is not logged in)
@@ -342,15 +408,16 @@ You can also send requests to the WebSocket. These also have to be JSON-encoded 
 }
 ```
 
-Currently available request types are:
+### Request types
+
 - `providers` - returns a list of available providers (same as [GET /providers](#get-providers))
 - `publicKey` - returns the server's public key (same as [GET /publicKey](#get-publickey))
 - `token` - returns a JWT (same as [GET /token](#get-token))
 - `authenticate` - uses a JWT acquired from [GET /token](#get-token) to associate the current WebSocket with a particular session (sent request object needs property `token`)
 
-The `authenticate` request is necessary when the WebSocket is used from a different domain than login-server. In that case, a token needs to be requested via the API (e.g. using fetch with option `credentials: "include"` or axios with option `withCredentials: true`) and be sent via the WebSocket. The token includes the encrypted sessionID that will then be associated with the WebSocket connection. Here is an example on how a workflow from a web application could look like: https://codepen.io/stefandesu/pen/vbaJwo
+The `authenticate` request is necessary when the WebSocket is used from a different domain than login-server. In that case, a token needs to be requested via the API (e.g. using fetch with option `credentials: "include"` or axios with option `withCredentials: true`) and be sent via the WebSocket. The token includes the encrypted sessionID that will then be associated with the WebSocket connection. Here is an example on how a workflow from a web application could look like: <https://codepen.io/stefandesu/pen/vbaJwo>
 
-#### Example Usage
+### Example Usage
 The following is a simple example on how to connect to the WebSocket.
 
 ```javascript
@@ -366,51 +433,6 @@ socket.addEventListener("message", (message) => {
 })
 ```
 
-### GET /publicKey
-Returns an object with keys `publicKey` (usually a RSA public key) and `algorithm` (the [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) algorithm used). The corresponding private key is used when signing JWTs.
-
-### GET /token
-Returns a JSON Web Token in the format:
-
-```json
-{
-  "token": "<JWT>",
-  "expiresIn": 120
-}
-```
-
-See also: [JWTs](#jwts).
-
-The token itself will contain a `user` property (which either contains information about the currently logged in user, or is null if the user is not logged in) and a `sessionID` property which is needed to authenticate within a [WebSocket](#websocket) connection.
-
-### GET /providers
-Returns a list of available providers (stripped off sensitive information).
-
-### GET /currentUser
-Returns the currently logged in user. Returns an 404 error when no user is logged in.
-
-### GET /users
-Note: This may be removed in the future.
-
-Returns all users in database. If URL parameter `uri` is given, only users whose identities match one of the URIs are returned. Multiple URIs are separated by `|`.
-
-### GET /users/:id
-Returns a specific user.
-
-### PATCH /users/:id
-Adjusts a specific user. Can only be used if the same user is currently logged in. Allowed properties to change: `name` (everything else will be ignored).
-
-### GET /login/:provider/return
-Callback endpoint for OAuth requests. Will save the connected account to the user (or create a new user if necessary) and redirect to `/account`.
-
-### POST /login/:provider
-POST endpoint for providers using credentials. If successful, it will redirect to `/account`, otherwise it will redirect back to `/login/:provider`.
-
-### GET /disconnect/:provider
-Disconnects a provider from the user and redirects to `/account`.
-
-### POST /delete
-Commits user account deletion and redirects to `/login`.
 
 ## Maintainers
 
