@@ -11,6 +11,7 @@ module.exports = app => {
     res.json({
       publicKey: config.publicKey.toString("utf8"),
       algorithm: config.jwtOptions.algorithm,
+      env: config.env
     })
   })
 
