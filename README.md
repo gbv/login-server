@@ -72,8 +72,8 @@ PORT=
 BASE_URL=
 # list of allowed origins separated by comma, includes the hostname of BASE_URL by default
 ALLOWED_ORIGINS=
-# recommended, default: development
-NODE_ENV=
+# required for some strategies to enable production mode, default: development
+NODE_ENV=production
 # recommended, secret used by the session
 SESSION_SECRET=
 # username used for MongoDB, default: <empty>
