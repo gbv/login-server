@@ -12,7 +12,8 @@ const userSchema = new Schema({
   _id: String,
   uri: String,
   name: String,
-  identities: Schema.Types.Mixed
+  identities: Schema.Types.Mixed,
+  mergedUsers: [String],
 }, { versionKey: false })
 
 module.exports = mongoose.model("User", userSchema)

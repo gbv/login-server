@@ -45,9 +45,10 @@ const verify = (req, token, tokenSecret, profile, done) => {
       done(error, null)
     })
   } else {
-    // User is already logged in. Check if identity is already attached to a different account and if not, add new profile to identities.
+    // User is already logged in. Check if identity is already attached to a different account.
     User.findOne({ [`identities.${profile.provider}.id`]: profile.id }).then(existingUser => {
       if (!existingUser) {
+        // Add identity to user profile
         // Note: This is a workaround to make Mongoose recognize the changes.
         let identities = Object.assign(user.identities, { [profile.provider]: _.omit(profile, ["provider"]) })
         user.set("identities", {})
@@ -58,8 +59,28 @@ const verify = (req, token, tokenSecret, profile, done) => {
           done(null, user)
         })
       } else {
-        req.flash("error", `${provider && provider.name} is already connected to an existing account!`)
-        done(null, user)
+        const intersection = _.intersection(_.keys(user.identities), _.keys(existingUser.identities))
+        if (intersection.length == 0) {
+          // No intersecting identities, can automatically merge user accounts.
+          // Merge identities
+          let identities = Object.assign(user.identities, existingUser.identities)
+          user.set("identities", {})
+          user.set("identities", identities)
+          // Add previous URI to mergedUsers
+          if (!user.mergedUsers) {
+            user.mergedUsers = []
+          }
+          user.mergedUsers.push(existingUser.uri)
+          return User.findByIdAndRemove(existingUser.id).then(() => user.save()).then(user => {
+            events.userUpdated(sessionID, user)
+            req.flash("success", `${provider && provider.name} successfully connected by merging with an existing account.`)
+            done(null, user)
+          })
+        } else {
+          // There is a conflict with identities.
+          req.flash("error", `${provider && provider.name} is already connected to an existing account and a merge could not be performed automatically. To perform the merge, remove the following identities from either account: ${intersection.join(", ")}`)
+          done(null, user)
+        }
       }
     }).catch(error => {
       done(error, user)
