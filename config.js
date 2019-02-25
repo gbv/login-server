@@ -34,7 +34,8 @@ const
   rateLimitMax = process.env.RATE_LIMIT_MAX || 10,
   privateKeyPath = process.env.JTW_PRIVATE_KEY_PATH,
   publicKeyPath = process.env.JTW_PUBLIC_KEY_PATH,
-  jwtAlgorithm = process.env.JWT_ALGORITHM || "RS256"
+  jwtAlgorithm = process.env.JWT_ALGORITHM || "RS256",
+  title = process.env.TITLE || "Login Server"
 
 let allowedOrigins = (process.env.ALLOWED_ORIGINS || "").split(",").filter(origin => origin != "")
 
@@ -70,6 +71,7 @@ let config = {
     expiresIn: jwtExpiresIn
   },
   allowedOrigins,
+  title,
 }
 
 /**

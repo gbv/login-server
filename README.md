@@ -70,6 +70,8 @@ PORT=
 # recommended, full base URL without trailing slash, default: http://localhost[:PORT]
 # (required when used in production)
 BASE_URL=
+# title of application (will be shown in header)
+TITLE=My Login Server
 # list of allowed origins separated by comma, includes the hostname of BASE_URL by default
 ALLOWED_ORIGINS=
 # required for some strategies to enable production mode, default: development
