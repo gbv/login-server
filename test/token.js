@@ -8,16 +8,18 @@ let authAgent = require("./authAgent")
 
 let publicKey
 
-describe("GET /publicKey", () => {
+describe("GET /about", () => {
 
-  it("should return the public key", done => {
+  it("should return information (e.g. public key)", done => {
     request(app)
-      .get("/publicKey")
+      .get("/about")
       .expect(res => {
         expect(res.body).to.be.an("object")
         expect(res.body.publicKey).to.be.a("string")
         publicKey = res.body.publicKey
         expect(res.body.algorithm).to.be.a("string")
+        expect(res.body.title).to.be.a("string")
+        expect(res.body.env).to.be.a("string")
       })
       .expect(200, done)
 

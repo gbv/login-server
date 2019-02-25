@@ -29,7 +29,7 @@ This repository offers a login server to be used with the [Cocoda Mapping Tool](
 - [OAuth endpoint](#oauth-endpoint)
   - [GET /login/:provider/return](#get-loginproviderreturn)
 - [HTTP API](#http-api)
-  - [GET /publicKey](#get-publickey)
+  - [GET /about](#get-about)
   - [GET /providers](#get-providers)
   - [GET /users](#get-users)
   - [GET /currentUser](#get-currentuser)
@@ -253,7 +253,7 @@ The following is an example `providers.json` that shows how to configure each of
 ## JWTs
 login-server offers JSON Web Tokens that can be used to authenticate against other services (like [jskos-server](https://github.com/gbv/jskos-server)). [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) is used for signing the tokens.
 
-By default, a new RSA keypair is generated when the application is first started (2048 bits, using [node-rsa](https://github.com/rzcoder/node-rsa)). This generated keypair will be available in `./private.key` and `./public.key`. You can give the `./public.key` file to any other service that needs to verify the tokens. Alternatively, the currently used public key is offered at the [/publicKey endpoint](#get-publickey).
+By default, a new RSA keypair is generated when the application is first started (2048 bits, using [node-rsa](https://github.com/rzcoder/node-rsa)). This generated keypair will be available in `./private.key` and `./public.key`. You can give the `./public.key` file to any other service that needs to verify the tokens. Alternatively, the currently used public key is offered at the [/about endpoint](#get-about).
 
 You can also provide your own keypair by setting `JTW_PRIVATE_KEY_PATH` and `JTW_PUBLIC_KEY_PATH` in `.env`. By default, the `RS256` algorithm is used, but any other public key algorithm can be used by setting `JWT_ALGORITHM`.
 
@@ -331,8 +331,8 @@ Callback endpoint for OAuth requests. Will save the connected account to the use
 
 ## HTTP API
 
-### GET /publicKey
-Returns an object with keys `publicKey` (usually a RSA public key) and `algorithm` (the [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) algorithm used). The corresponding private key is used when signing JWTs.
+### GET /about
+Returns an object with keys `title` (title of the login-server instance), `env` (environment, like `development` or `production`), `publicKey` (usually a RSA public key), and `algorithm` (the [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) algorithm used). The corresponding private key to the given public key is used when signing JWTs.
 
 ### GET /providers
 Returns a list of available providers (stripped off sensitive information).
@@ -412,7 +412,7 @@ You can also send requests to the WebSocket. These also have to be JSON-encoded 
 ### Request types
 
 - `providers` - returns a list of available providers (same as [GET /providers](#get-providers))
-- `publicKey` - returns the server's public key (same as [GET /publicKey](#get-publickey))
+- `publicKey` - returns the server's public key
 - `token` - returns a JWT (same as [GET /token](#get-token))
 - `authenticate` - uses a JWT acquired from [GET /token](#get-token) to associate the current WebSocket with a particular session (sent request object needs property `token`)
 
