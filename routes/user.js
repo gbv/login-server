@@ -32,7 +32,11 @@ module.exports = app => {
 
   app.get("/users/:id", (req, res) => {
     User.findById(req.params.id).then(user => {
-      res.json(user)
+      if (user) {
+        res.json(user)
+      } else {
+        throw new Error("User not found.")
+      }
     }).catch(error => {
       console.log(error.message)
       res.status(404).json({ status: 404, message: "User not found." })
