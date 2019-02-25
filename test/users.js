@@ -26,7 +26,6 @@ describe("GET /currentUser", () => {
         currentUser = res.body
         expect(res.body.uri).to.be.a("string")
         expect(res.body.name).to.be.a("string")
-        expect(res.body.rights).to.be.an("array")
         expect(res.body.identities).to.be.an("object")
         expect(res.body.identities.test).to.be.an("object")
       })

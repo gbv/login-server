@@ -12,8 +12,7 @@ const userSchema = new Schema({
   _id: String,
   uri: String,
   name: String,
-  identities: Schema.Types.Mixed,
-  rights: [String]
+  identities: Schema.Types.Mixed
 }, { versionKey: false })
 
 module.exports = mongoose.model("User", userSchema)

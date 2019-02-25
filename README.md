@@ -381,8 +381,7 @@ The WebSocket API at base URL `/` sends events about the current user and can be
           "name": "display name of user for provider xzy (if available)",
           "username": "username of user for provider xzy (if available)"
         }
-      },
-      "rights": ["a", "list", "of", "rights"]
+      }
     }
   }
 }
