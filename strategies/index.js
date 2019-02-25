@@ -45,17 +45,24 @@ const verify = (req, token, tokenSecret, profile, done) => {
       done(error, null)
     })
   } else {
-    // User is already logged in. Add new profile to identities.
-    // Note: This is a workaround to make Mongoose recognize the changes.
-    let identities = Object.assign(user.identities, { [profile.provider]: _.omit(profile, ["provider"]) })
-    user.set("identities", {})
-    user.set("identities", identities)
-    user.save().then(user => {
-      events.userUpdated(sessionID, user)
-      req.flash("success", `${provider && provider.name} successfully connected.`)
-      done(null, user)
+    // User is already logged in. Check if identity is already attached to a different account and if not, add new profile to identities.
+    User.findOne({ [`identities.${profile.provider}.id`]: profile.id }).then(existingUser => {
+      if (!existingUser) {
+        // Note: This is a workaround to make Mongoose recognize the changes.
+        let identities = Object.assign(user.identities, { [profile.provider]: _.omit(profile, ["provider"]) })
+        user.set("identities", {})
+        user.set("identities", identities)
+        return user.save().then(user => {
+          events.userUpdated(sessionID, user)
+          req.flash("success", `${provider && provider.name} successfully connected.`)
+          done(null, user)
+        })
+      } else {
+        req.flash("error", `${provider && provider.name} is already connected to an existing account!`)
+        done(null, user)
+      }
     }).catch(error => {
-      done(error, null)
+      done(error, user)
     })
   }
 }
