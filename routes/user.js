@@ -17,7 +17,7 @@ module.exports = app => {
       let uris = query.uri.split("|")
       for (let uri of uris) {
         conditions.push({ uri })
-        conditions.push({ mergedUsers: uri })
+        conditions.push({ merged: uri })
         for (let provider of config.providers) {
           conditions.push({ [`identities.${provider.id}.uri`]: uri })
         }
@@ -37,7 +37,7 @@ module.exports = app => {
         res.json(user)
       } else {
         let uri = `${config.baseUrl}/users/${req.params.id}`
-        User.findOne({ mergedUsers: uri }).then(user => {
+        User.findOne({ merged: uri }).then(user => {
           if (user) {
             res.redirect(`/users/${user.id}`)
           } else {

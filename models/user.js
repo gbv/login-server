@@ -13,7 +13,7 @@ const userSchema = new Schema({
   uri: String,
   name: String,
   identities: Schema.Types.Mixed,
-  mergedUsers: [String],
+  merged: [String],
 }, { versionKey: false })
 
 module.exports = mongoose.model("User", userSchema)

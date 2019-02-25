@@ -66,11 +66,11 @@ const verify = (req, token, tokenSecret, profile, done) => {
           let identities = Object.assign(user.identities, existingUser.identities)
           user.set("identities", {})
           user.set("identities", identities)
-          // Add previous URI to mergedUsers
-          if (!user.mergedUsers) {
-            user.mergedUsers = []
+          // Add previous URI to merged
+          if (!user.merged) {
+            user.merged = []
           }
-          user.mergedUsers.push(existingUser.uri)
+          user.merged.push(existingUser.uri)
           return User.findByIdAndRemove(existingUser.id).then(() => user.save()).then(user => {
             events.userUpdated(sessionID, user)
             req.flash("success", `${provider && provider.name} successfully connected by merging existing account.`)
