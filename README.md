@@ -59,7 +59,10 @@ npm run indexes
 ```
 
 ### Configuration
-You also need to provide two configuration files:
+
+If running the server behind a reverse proxy, make sure to include the  `X-Forwarded-Proto` header, allow all HTTP methods, and enable WebSocket proxying.
+
+You need to provide two configuration files:
 
 #### `.env`
 To configure the application:
