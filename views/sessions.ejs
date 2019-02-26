@@ -1,0 +1,86 @@
+<%- include('header'); -%>
+
+<!-- Template for /sessions route -->
+
+<p><a href="<%= baseUrl %>/account">← back</a></p>
+
+<h3>Active Sessions</h3>
+<p>There are <%= sessions.length %> active sessions including the current one.</p>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Session ID</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+  <% sessions.forEach(session => { %>
+    <tr>
+      <td><%= session._id %></td>
+      <td class="text-right">
+        <% if (session._id == sessionID) { %>
+          Current Session
+        <% } else { %>
+          <button class="btn btn-sm btn-outline-danger" onclick="removeSession('<%= session._id %>')">Remove</button>
+        <% } %>
+      </td>
+    </tr>
+  <% }) %>
+  </tbody>
+</table>
+
+<p>
+  <button class="btn btn-danger" onclick="removeSession()">Remove all sessions</button>
+</p>
+<p>
+  To remove the current session, just log out.
+</p>
+
+<h3>Active WebSockets</h3>
+<p>WebSocket connections are used by clients to communicate with the login server. To deauthorize a WebSocket connection, you need to remove the associated session.</p>
+
+<table class="table small">
+  <thead>
+    <tr>
+      <th>WebSocket ID</th>
+      <th>Associated Session ID</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% websockets.forEach(socket => { %>
+    <tr>
+      <td><%= socket.id %></td>
+      <td><%= socket.sessionID %></td>
+    </tr>
+  <% }) %>
+  </tbody>
+</table>
+
+<script>
+  function removeSession(sessionID) {
+    let url = "<%= baseUrl %>/sessions"
+    if (sessionID) {
+      url += `/${sessionID}`
+    }
+    fetch(url, {
+      credentials: "include",
+      method: "DELETE"
+    }).then(response => {
+      if (response.status == 204) {
+        return true
+      }
+      return false
+    }).catch(error => {
+      return false
+    }).then(success => {
+      if (success) {
+        location.reload()
+      } else {
+        alert("Error: Session could not be removed.")
+      }
+    })
+  }
+</script>
+
+<%- include('footer'); -%>

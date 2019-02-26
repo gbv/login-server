@@ -40,7 +40,9 @@ h3 > a:hover {
       <div style="flex: 1; text-align: right;">
         <% if (user) { %>
           Logged in as <%= user.name %><br>
-          <a href="<%= user.uri %>" target="_blank">My Data</a> • <a href="<%= baseUrl %>/logout">Logout</a>
+          <a href="<%= user.uri %>" target="_blank">My Data</a> •
+          <a href="<%= baseUrl %>/sessions">Sessions</a> •
+          <a href="<%= baseUrl %>/logout">Logout</a>
         <% } %>
       </div>
     </div>

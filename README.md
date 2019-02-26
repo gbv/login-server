@@ -19,6 +19,7 @@ This repository offers a login server to be used with the [Cocoda Mapping Tool](
 - [Web interface](#web-interface)
   - [GET /](#get)
   - [GET /account](#get-account)
+  - [GET /sessions](#get-sessions)
   - [GET /login](#get-login)
   - [GET /login/:provider](#get-loginprovider)
   - [POST /login/:provider](#post-loginprovider)
@@ -35,6 +36,8 @@ This repository offers a login server to be used with the [Cocoda Mapping Tool](
   - [GET /currentUser](#get-currentuser)
   - [GET /users/:id](#get-usersid)
   - [PATCH /users/:id](#patch-usersid)
+  - [DELETE /sessions](#delete-sessions)
+  - [DELETE /sessions/:id](#delete-sessionsid)
   - [GET /token](#get-token)
 - [WebSocket](#websocket)
   - [Event types](#event-types)
@@ -304,6 +307,9 @@ Shows a landing page with general information about the login server.
 ### GET /account
 Shows a site to manage one's user account (if already authenticated) or redirects to [`/login`] (if not authenticated).
 
+### GET /sessions
+Shows a site to manage the user's sessions (if authenticated) or redirects to [`/login`] (if not authenticated).
+
 ### GET /login
 Shows a site to login (if not authenticated) or directs to [`/account`] (if authenticated).
 
@@ -353,6 +359,12 @@ Returns a specific user.
 
 ### PATCH /users/:id
 Adjusts a specific user. Can only be used if the same user is currently logged in. Allowed properties to change: `name` (everything else will be ignored).
+
+### DELETE /sessions
+Removes all sessions for the current user, except the current session.
+
+### DELETE /sessions/:id
+Removes the session with sessionID `:id` (needs to be a session for the current user).
 
 ### GET /token
 Returns a JSON Web Token in the format:
