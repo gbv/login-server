@@ -34,8 +34,6 @@ h4 {
         <% if (user) { %>
           Logged in as <%= user.name %><br>
           <a href="<%= user.uri %>" target="_blank">My Data</a> • <a href="<%= baseUrl %>/logout">Logout</a>
-        <% } else { %>
-          <a href="<%= baseUrl %>/login">Login</a>
         <% } %>
       </div>
     </div>
