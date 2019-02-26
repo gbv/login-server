@@ -25,8 +25,8 @@ describe("WebSocket", () => {
         let ws = new WebSocket(address)
 
         // Assemble expected response types
-        const expected1 = ["open", "loggedOut", "providers", "publicKey"].sort()
-        const expected2 = ["open", "loggedOut", "providers", "publicKey", "authenticated", "loggedIn", "token"].sort()
+        const expected1 = ["open", "loggedOut", "providers", "about"].sort()
+        const expected2 = ["open", "loggedOut", "providers", "about", "authenticated", "loggedIn", "token"].sort()
 
         // Message handler
         let responses = []
@@ -44,8 +44,10 @@ describe("WebSocket", () => {
           } else if (event.type == "loggedIn") {
             expect(event.data).to.be.an("object")
             expect(event.data.user).to.be.an("object")
-          } else if (event.type == "publicKey") {
+          } else if (event.type == "about") {
             expect(event.data).to.be.an("object")
+            expect(event.data.title).to.be.a("string")
+            expect(event.data.env).to.be.a("string").and.equal("test")
             expect(event.data.publicKey).to.be.a("string")
             expect(event.data.algorithm).to.be.a("string")
           } else {
@@ -61,12 +63,6 @@ describe("WebSocket", () => {
             expect(_.isEqual(expected2, responses)).to.be.true
             done()
           }
-        })
-
-        // Send "providers" and "publicKey" request after WebSocket opened
-        ws.on("open", () => {
-          ws.send(JSON.stringify({ type: "providers" }))
-          ws.send(JSON.stringify({ type: "publicKey" }))
         })
 
       })
