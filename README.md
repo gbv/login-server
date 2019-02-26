@@ -299,7 +299,7 @@ Alternatively, you can use [passport-jwt](http://www.passportjs.org/packages/pas
 ## Web interface
 
 ### GET /
-The base URL currently redirects to [`/account`] (if logged in) or to [`/login`] (otherwise). This will be changed to a customized landing page instead.
+Shows a landing page with general information about the login server.
 
 ### GET /account
 Shows a site to manage one's user account (if already authenticated) or redirects to [`/login`] (if not authenticated).

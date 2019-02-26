@@ -121,11 +121,6 @@ app.use("/static", express.static("static"))
  * ##### Express Route Setup #####
  */
 
-// Currently redirects to /login, but will offer a API documentation later.
-app.get("/", (req, res) => {
-  res.redirect("/login")
-})
-
 const portfinder = require("portfinder")
 const fs = require("fs")
 const path = require("path")
