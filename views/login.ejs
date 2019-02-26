@@ -6,24 +6,13 @@
   By using this service, you agree that your data will be publicly available. For more information, click <a href="<%= baseUrl %>/">here</a>.
 </p>
 
-<h4>Login via</h4>
-<div class="card-columns">
 <% config.providers.forEach(provider => { %>
-  <div class="card">
-    <a href="<%= baseUrl %>/login/<%= provider.id %>">
-      <div class="card-body text-center">
-        <div style="margin-bottom: 10px; height: 28px;">
-          <% if (provider.image) { %>
-          <img src="<%= provider.image %>" height="28px" />
-          <% } %>
-        </div>
-        <p>
-          <%= provider.name %>
-        </p>
-      </div>
-    </a>
-  </div>
+<a class="btn btn-light btn-block" href="<%= baseUrl %>/login/<%= provider.id %>">
+  <% if (provider.image) { %>
+  <img src="<%= provider.image %>" height="20px" style="margin-right: 5px;" />
+  <% } %>
+  Login via <%= provider.name %>
+</a>
 <% }) %>
-</div>
 
 <%- include('footer'); -%>
