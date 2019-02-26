@@ -79,10 +79,15 @@ const bodyParser = require("body-parser")
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
-// Cookie parser
-app.use(require("cookie-parser")())
 
-// Sessions
+// Cookies/Sessions
+app.use(require("cookie-parser")(config.sessionSecret))
+let secure = false
+// Use secure cookie and trust proxy when in production
+if (config.env != "development" && config.env != "test") {
+  secure = true
+  app.set("trust proxy", 1)
+}
 const session = require("express-session")
 const mongoStore = require("./utils/mongoStore")
 app.use(session({
@@ -91,7 +96,7 @@ app.use(session({
   saveUninitialized: false,
   store: mongoStore,
   cookie: {
-    secure: config.env != "development" && config.env != "test",
+    secure,
     maxAge: 10*365*24*60*60*1000
   }
 }))
