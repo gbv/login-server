@@ -2,17 +2,12 @@
  * /about route.
  */
 
-const config = require("../config")
+const utils = require("../utils")
 
 module.exports = app => {
 
   app.get("/about", (req, res) => {
-    res.json({
-      title: config.title,
-      env: config.env,
-      publicKey: config.publicKey.toString("utf8"),
-      algorithm: config.jwtOptions.algorithm,
-    })
+    res.json(utils.prepareAbout())
   })
 
 }

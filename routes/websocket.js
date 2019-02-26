@@ -21,6 +21,12 @@ module.exports = app => {
 
     events.sendEvent(wsID, "open", null)
 
+    // Send information about the server as well as the list of providers.
+    events.sendEvent(wsID, "about", utils.prepareAbout())
+    events.sendEvent(wsID, "providers", {
+      providers: utils.prepareProviders()
+    })
+
     // Check if sessionID already exists in store. If yes, consider connection authenticated.
     mongoStore.get(req.sessionID).then(session => {
       if (session) {
@@ -39,14 +45,7 @@ module.exports = app => {
     ws.on("message", (message) => {
       try {
         message = JSON.parse(message)
-        if (message.type === "providers") {
-        // Reply with list of providers
-          events.sendEvent(wsID, "providers", {
-            providers: utils.prepareProviders()
-          })
-        } else if (message.type === "token") {
-          events.sendToken(wsID)
-        } else if (message.type === "authenticate") {
+        if (message.type === "authenticate") {
           // Handle authentication via JWT
           let token = message.token
           try {
@@ -66,12 +65,6 @@ module.exports = app => {
           } catch(error) {
             events.error(wsID, "Authentication failed.")
           }
-        } else if (message.type === "publicKey") {
-          // Reply with public key of server
-          events.sendEvent(wsID, "publicKey", {
-            publicKey: config.publicKey.toString("utf8"),
-            algorithm: config.jwtOptions.algorithm,
-          })
         } else {
           events.error(wsID, `Unknown requets type ${message.type}.`)
         }

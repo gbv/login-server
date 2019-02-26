@@ -41,7 +41,7 @@ This repository offers a login server to be used with the [Cocoda Mapping Tool](
   - [GET /token](#get-token)
 - [WebSocket](#websocket)
   - [Event types](#event-types)
-  - [Request types](#request-types)
+  - [Authenticate request](#authenticate-request)
   - [Example Usage](#example-usage)
 - [Maintainers](#maintainers)
 - [Contribute](#contribute)
@@ -381,7 +381,7 @@ See also: [JWTs](#jwts).
 The token itself will contain a `user` property (which either contains information about the currently logged in user, or is null if the user is not logged in) and a `sessionID` property which is needed to authenticate within a [WebSocket](#websocket) connection.
 
 ## WebSocket
-The WebSocket API at base URL `/` sends events about the current user and can be used for requests alternative to the [HTTP API](#http-api). Events are sent as JSON-encoded strings that look like this:
+The WebSocket API at base URL `/` sends events about the current user or session. Events are sent as JSON-encoded strings that look like this:
 
 ```json
 {
@@ -410,9 +410,9 @@ The WebSocket API at base URL `/` sends events about the current user and can be
 - `loggedIn` - sent when the user has logged in (will be sent immediately after establishing the WebSocket if the user is already logged in)
 - `loggedOut` - sent when the user has logged out (will be sent immediately after establishing the WebSocket if the user is not logged in)
 - `updated` - sent when the user was updated (e.g. added a new identity, etc.)
-- `providers` - sent as answer to a providers request via the WebSocket (consists of a property `data.providers` with a list of available providers)
-- `publicKey` - sent as answer to a publicKey request via the WebSocket (consists of properties `data.publicKey` and `data.algorithm`)
-- `token` - sent when the user has logged in and then in intervals before the previous token expires, or as answer to a token request (property `data` will have the same format as in [GET /token](#get-token))
+- `providers` - sent after WebSocket connection was established (consists of a property `data.providers` with a list of available providers)
+- `about` - sent after WebSocket connection was established (property `data` will have the same format as in [GET /about](#get-about))
+- `token` - sent when the user has logged in and then in intervals before the previous token expires (property `data` will have the same format as in [GET /token](#get-token))
 - `authenticated` - sent as a success reply when requesting authentication (see below)
 - `error` - sent as answer to a malformed message via the WebSocket (consists of a property `data.message` with an error message)
 
@@ -424,14 +424,10 @@ You can also send requests to the WebSocket. These also have to be JSON-encoded 
 }
 ```
 
-### Request types
+### Authenticate request
+This is a special request that uses a JWT acquired from [GET /token](#get-token) to associate the current WebSocket with a particular session (sent request object needs property `token`)
 
-- `providers` - returns a list of available providers (same as [GET /providers](#get-providers))
-- `publicKey` - returns the server's public key
-- `token` - returns a JWT (same as [GET /token](#get-token))
-- `authenticate` - uses a JWT acquired from [GET /token](#get-token) to associate the current WebSocket with a particular session (sent request object needs property `token`)
-
-The `authenticate` request is necessary when the WebSocket is used from a different domain than login-server. In that case, a token needs to be requested via the API (e.g. using fetch with option `credentials: "include"` or axios with option `withCredentials: true`) and be sent via the WebSocket. The token includes the encrypted sessionID that will then be associated with the WebSocket connection. Here is an example on how a workflow from a web application could look like: <https://codepen.io/stefandesu/pen/vbaJwo>
+The `authenticate` request is sometimes necessary when the WebSocket is used from a different domain than login-server. In that case, a token needs to be requested via the API (e.g. using fetch with option `credentials: "include"` or axios with option `withCredentials: true`) and be sent via the WebSocket. The token includes the encrypted sessionID that will then be associated with the WebSocket connection. Here is an example on how a workflow from a web application could look like: <https://codepen.io/stefandesu/pen/vbaJwo>
 
 ### Example Usage
 The following is a simple example on how to connect to the WebSocket.

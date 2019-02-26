@@ -24,6 +24,18 @@ function prepareProviders() {
   return config.providers.map(provider => _.omit(provider, ["template", "auth", "callbackURL", "options"]))
 }
 
+/**
+ * Prepares information about the server.
+ */
+function prepareAbout() {
+  return {
+    title: config.title,
+    env: config.env,
+    publicKey: config.publicKey.toString("utf8"),
+    algorithm: config.jwtOptions.algorithm,
+  }
+}
+
 function flashMessages(req) {
   return {
     success: req.flash("success"),
@@ -87,6 +99,7 @@ function getUserFromSession(sessionID) {
 module.exports = {
   uuid,
   prepareProviders,
+  prepareAbout,
   flashMessages,
   getToken,
   getUserFromSession,
