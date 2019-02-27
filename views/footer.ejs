@@ -3,9 +3,11 @@
       <div>
         <a href="https://www.gbv.de/datenschutz" target="_blank">Datenschutz</a>
       </div>
+      <% if (user && user.uri) { %>
       <div>
         <a href="<%= user.uri %>" target="_blank">My Data</a>
       </div>
+      <% } %>
       <div>
         <a href="<%= baseUrl %>/sessions">Sessions</a>
       </div>
