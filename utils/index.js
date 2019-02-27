@@ -14,11 +14,15 @@ const User = require("../models/user")
  * Returns a random v4 UUID.
  *
  * from: https://gist.github.com/jed/982883
+ *
+ * @returns {string}
  */
 function uuid(a){return a?(a^Math.random()*16>>a/4).toString(16):([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,uuid)}
 
 /**
  * Prepares list of providers by removing sensitive properties.
+ *
+ * @returns {object[]}
  */
 function prepareProviders() {
   return config.providers.map(provider => _.omit(provider, ["template", "auth", "callbackURL", "options"]))
@@ -26,6 +30,8 @@ function prepareProviders() {
 
 /**
  * Prepares information about the server.
+ *
+ * @returns {object}
  */
 function prepareAbout() {
   return {
@@ -36,6 +42,13 @@ function prepareAbout() {
   }
 }
 
+/**
+ * Prepares flash messages for template.
+ *
+ * @param {Request} req
+ *
+ * @returns {object}
+ */
 function flashMessages(req) {
   return {
     success: req.flash("success"),
@@ -48,8 +61,9 @@ function flashMessages(req) {
 /**
  * Returns a Promise for a JSON Web Token.
  *
- * @param {*} user
- * @param {*} sessionID
+ * @param {object} user
+ * @param {string} sessionID
+ * @returns {Promise<object>} A Promise with an object that contains a JWT in the `token` property if fulfilled, or an error if rejected.
  */
 function getToken(user, sessionID) {
   let data = {}
@@ -76,7 +90,8 @@ function getToken(user, sessionID) {
 /**
  * Returns a Promise with a user for a sessionID.
  *
- * @param {*} sessionID
+ * @param {string} sessionID
+ * @returns {Promise<object>} A Promise with an user object if fulfilled, or an error if rejected.
  */
 function getUserFromSession(sessionID) {
   return new Promise((resolve, reject) => {

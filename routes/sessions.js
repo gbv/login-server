@@ -8,7 +8,8 @@ const { websockets } = require("../lib/events")
 /**
  * Returns a Promise with all sessions for a user.
  *
- * @param {*} user
+ * @param {object} user
+ * @returns {Promise<object[]>} A Promise with an array of session objects if fulfilled, or an error if rejected.
  */
 function sessionsForUser(user) {
   return mongoose.connection.db.collection("sessions").find({ "session.passport.user": user.id }).toArray()
@@ -17,7 +18,8 @@ function sessionsForUser(user) {
 /**
  * Removes a sessionID from the database and closes associated WebSocket connections.
  *
- * @param {*} sessionID
+ * @param {string} sessionID
+ * @returns {Promise} A fulfilled Promise or an error if rejected.
  */
 function removeSession(sessionID) {
   return mongoose.connection.db.collection("sessions").deleteOne({ _id: sessionID }).then(() => {
