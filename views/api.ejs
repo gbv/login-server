@@ -1,0 +1,201 @@
+<%- include('header'); -%>
+
+<!-- Template for /api route -->
+
+<style>
+/* Make this page wider */
+.mainCard {
+  width: 1200px;
+}
+.demo > div {
+  height: 500px;
+  overflow: scroll;
+  font-size: 14px;
+}
+#log {
+  font-size: 14px;
+}
+.log-entry {
+  display: flex;
+  margin-bottom: 5px;
+}
+.log-message {
+  padding-left: 10px;
+}
+</style>
+
+<!-- login-client -->
+<script src="https://cdn.jsdelivr.net/gh/gbv/login-client/build/login-client.min.js"></script>
+<!-- node-jsonwebtoken -->
+<script src="https://cdn.jsdelivr.net/gh/stefandesu/node-jsonwebtoken@master/build/jsonwebtoken.js"></script>
+
+<h3>API Demo</h3>
+
+<p><a href="https://github.com/gbv/login-server/blob/master/views/api.ejs" target="_blank">Demo Source</a></p>
+
+<div class="container">
+  <div class="row demo">
+    <div class="col-4">
+      <div id="log"></div>
+    </div>
+    <div class="col-4">
+      <!-- Connection status -->
+      <p>
+        <strong>Status: </strong><span id="status"></span>
+      </p>
+      <!-- Current token -->
+      <p>
+          <strong>Token: </strong><span id="token"></span>
+      </p>
+      <!-- About -->
+      <p>
+        <strong>About the server:</strong>
+        <pre id="about"></pre>
+      </p>
+      <!-- Providers -->
+      <p>
+        <strong>Providers:</strong>
+        <pre id="providers"></pre>
+      </p>
+    </div>
+    <div class="col-4">
+      <!-- Login/logout buttons -->
+      <p id="loginButtons"></p>
+      <!-- User information -->
+      <p>
+        <strong>User:</strong>
+        <pre id="user"></pre>
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+const logEl = document.getElementById("log")
+const statusEl = document.getElementById("status")
+const tokenEl = document.getElementById("token")
+const aboutEl = document.getElementById("about")
+const providersEl = document.getElementById("providers")
+const loginButtonsEl = document.getElementById("loginButtons")
+const userEl = document.getElementById("user")
+
+// See: https://github.com/gbv/login-client
+let client = new LoginClient("<%= config.cleanUrl %>", { ssl: "<%= config.ssl %>" === "true" })
+
+let token = null
+let publicKey = null
+
+function log(message, color = "black") {
+  logEl.innerHTML = `<div class="log-entry" style="color: ${color}"><div class="log-message">${message}</div></div>` + logEl.innerHTML
+}
+
+// Update tokenEl regularly
+setInterval(() => {
+  jwt.verify(token, publicKey, (error, decoded) => {
+    if (error) {
+        tokenEl.innerHTML = `<span style="color:red">${error.message}</span>`
+    } else {
+      let currentTime = Date.now() / 1000
+      let validSeconds = Math.round((decoded.exp - currentTime) * 100) / 100
+      tokenEl.innerHTML = `<span style="color:green">verified!</span> (valid for <tt>${validSeconds}</tt> seconds)`
+    }
+  })
+}, 100)
+
+let windowManager = {
+  _window: null,
+  _eventType: null,
+  open(url, eventType) {
+    this._window = window.open(url)
+    this._eventType = eventType
+  },
+  event(eventType) {
+    if (eventType == this._eventType && this._window) {
+      // Close window with timeout so that success screen will be shown
+      // TODO: There must be a better way to do this.
+      setTimeout(() => {
+        this._window.close()
+        this._window = null
+      }, 100)
+    }
+  },
+}
+
+// Update loginButtonsEl
+function updateLoginButtons() {
+  loginButtonsEl.innerHTML = ""
+  for (let provider of client.providers) {
+    if (client.user && client.user.identities[provider.id]) {
+      // Skip existing providers
+      loginButtonsEl.innerHTML += `<button class="btn btn-primary btn-block btn-sm" disabled>Already connected with ${provider.name}.</button>`
+      continue
+    }
+    loginButtonsEl.innerHTML += `<button class="btn btn-primary btn-block btn-sm" id="providerButton-${provider.id}">Login/Connect with ${provider.name}</button>`
+    setTimeout(() => {
+      let buttonEl = document.getElementById("providerButton-" + provider.id)
+      if (buttonEl) {
+        buttonEl.onclick = () => {
+          windowManager.open(provider.loginURL, LoginClient.events.login)
+        }
+      }
+    }, 200)
+  }
+  // Show logout button if user is logged in
+  if (client.user) {
+    let url = `<%= baseUrl %>/logout`
+    loginButtonsEl.innerHTML += `<button class="btn btn-primary btn-block btn-sm" id="providerButton-logout">Logout (${client.user.name})</>`
+    document.getElementById("providerButton-logout").onclick = () => {
+      windowManager.open(url, LoginClient.events.logout)
+    }
+  }
+}
+
+client.addEventListener(null, event => {
+  switch (event.type) {
+    case LoginClient.events.connect:
+      log("Connected", "green")
+      statusEl.innerHTML = `<strong style="color: green;">Connected</strong> <small>(${(new Date()).toISOString()})</small>`
+      break
+    case LoginClient.events.disconnect:
+      log("Disconnected", "red")
+      statusEl.innerHTML = `<strong style="color: red;">Not Connected</strong> <small>(${(new Date()).toISOString()})</small>`
+      break
+    case LoginClient.events.login:
+      log("User logged in", "blue")
+      userEl.innerHTML = JSON.stringify(event.user, null, 2)
+      break
+    case LoginClient.events.logout:
+      log("User logged out", "orange")
+      userEl.innerHTML = "not logged in"
+      break
+    case LoginClient.events.update:
+      log("User updated", "blue")
+      userEl.innerHTML = JSON.stringify(event.user, null, 2)
+      break
+    case LoginClient.events.about:
+      log("Received about", "black")
+      publicKey = event.publicKey
+      event.type = undefined
+      aboutEl.innerHTML = JSON.stringify(event, null, 2)
+      break
+    case LoginClient.events.providers:
+      log("Received providers", "black")
+      providersEl.innerHTML = JSON.stringify(event.providers, null, 2)
+      break
+    case LoginClient.events.token:
+      log("Received token", "black")
+      token = event.token
+      break
+    case LoginClient.events.error:
+      log("Error", "red")
+      break
+  }
+  windowManager.event(event.type)
+  updateLoginButtons()
+})
+
+client.connect()
+
+</script>
+
+<%- include('footer'); -%>

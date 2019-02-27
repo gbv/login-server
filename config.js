@@ -47,6 +47,11 @@ if (!["http:", "https:"].includes(purl.protocol) || !purl.slashes || !purl.hostn
 allowedOrigins.push(`${purl.protocol}//${purl.hostname}`)
 console.log("Allowed origins:", allowedOrigins.join(", "))
 
+// Add base URL without protocol and information about SSL
+const
+  cleanUrl = baseUrl.replace(`${purl.protocol}//`, "") + "/",
+  ssl = purl.protocol == "https:"
+
 let jwtExpiresIn = parseInt(process.env.JWT_EXPIRES_IN) || 120
 if (jwtExpiresIn < 10) {
   console.warn("Warning: Minimum for JWT_EXPIRES_IN is 10 seconds.")
@@ -56,6 +61,8 @@ if (jwtExpiresIn < 10) {
 let config = {
   env,
   baseUrl: baseUrl.endsWith("/") ? baseUrl.substring(0, baseUrl.length - 1) : baseUrl,
+  cleanUrl,
+  ssl,
   port,
   database: {
     url: mongoUrl,
