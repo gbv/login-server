@@ -14,7 +14,7 @@ module.exports = app => {
     if (user && user.identities && user.identities[provider]) {
       if (user.identities.length < 2) {
       // Don't disconnect if it's the only provider left
-        req.flash("error", "You can't disconnect your last connected account.")
+        req.flash("error", "You can't disconnect your last connected identity.")
         res.redirect("/login")
         return
       }
@@ -25,17 +25,17 @@ module.exports = app => {
       user.save().then(user => {
       // Fire updated event
         events.userUpdated(req.sessionID, user)
-        req.flash("success", "Account disconnected.")
+        req.flash("success", "Identity disconnected.")
       }).catch(() => {
-        req.flash("error", "Account could not be disconnected.")
+        req.flash("error", "Identity could not be disconnected.")
       }).finally(() => {
         res.redirect("/login")
       })
     } else {
       if (user) {
-        req.flash("warning", "You can't disconnect an account that is not connected.")
+        req.flash("warning", "You can't disconnect an identity that is not connected.")
       } else {
-        req.flash("error", "You need to be logged in to disconnect an account.")
+        req.flash("error", "You need to be logged in to disconnect an identity.")
       }
       res.redirect("/login")
     }

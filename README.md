@@ -202,7 +202,7 @@ Each object in the list of providers can have the following properties:
 - `template` (optional) - A template string to generate a URI (the placeholder `{field}` can be any field provided in the `providerProfile` object, usually `{id}` or `{username}`).
 - `credentialsNecessary` (optional) - Set to `true` if username and password credentials are necessary for this provider. Instead of a redirect (for OAuth), login-server will show a login form that will send the credentials to a POST endpoint.
 - `options` (mostly required) - A options object for the strategy, often containing client credentials for the authentication endpoint.
-- `image` (optional) - An image associated with the provider. Will be shown on the login page and in the list of connected accounts. You can provide static images in the folder `static/`. The value for the property would then be `static/myimage.svg`. If the filename matches the `id` of the provider, the image will be automatically associated.
+- `image` (optional) - An image associated with the provider. Will be shown on the login page and in the list of connected identities. You can provide static images in the folder `static/`. The value for the property would then be `static/myimage.svg`. If the filename matches the `id` of the provider, the image will be automatically associated.
 
 The following is an example `providers.json` that shows how to configure each of the existing providers:
 
@@ -314,7 +314,7 @@ Shows a site to manage the user's sessions (if authenticated) or redirects to [`
 Shows a site to login (if not authenticated) or directs to [`/account`] (if authenticated).
 
 ### GET /login/:provider
-Shows a login page for a provider. For OAuth providers, this page will redirect to the provider's page to connect your account, which then redirects to [`/login/:provider/return`]. For providers using credentials, this will show a login form.
+Shows a login page for a provider. For OAuth providers, this page will redirect to the provider's page to connect your identity, which then redirects to [`/login/:provider/return`]. For providers using credentials, this will show a login form.
 
 ### POST /login/:provider
 POST endpoint for providers using credentials. If successful, it will redirect to [`/account`], otherwise it will redirect back to [`/login/:provider`].
@@ -336,7 +336,7 @@ Commits user account deletion and redirects to [`/login`].
 The server provides an OAuth redirection endpoint (redirection URI) for each OAuth [provider](#providers).
 
 ### GET /login/:provider/return
-Callback endpoint for OAuth requests. Will save the connected account to the user (or create a new user if necessary) and redirect to [`/account`].
+Callback endpoint for OAuth requests. Will save the connected identity to the user (or create a new user if necessary) and redirect to [`/account`].
 
 ## HTTP API
 

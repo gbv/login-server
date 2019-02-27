@@ -23,7 +23,7 @@ module.exports = app => {
 
     let skip = (req, res, next) => {
       if (req.user && req.user.identities && req.user.identities[providerId]) {
-      // User has already connected this account
+      // User has already connected this identity
         req.flash("info", `${provider.name} is already connected.`)
         res.redirect("/account")
       } else {
