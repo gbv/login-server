@@ -19,7 +19,7 @@ const verify = (req, token, tokenSecret, profile, done) => {
         // Found existing user
         // Fire loggedIn event
         events.userLoggedIn(sessionID, user)
-        req.flash("success", "You were logged in.")
+        req.flash("success", "You have been logged in.")
         done(null, user)
       } else {
         // Create new user
@@ -35,7 +35,7 @@ const verify = (req, token, tokenSecret, profile, done) => {
         user.save().then(user => {
           // Fire loggedIn event
           events.userLoggedIn(sessionID, user)
-          req.flash("success", "A new user account was successfully created!")
+          req.flash("success", "A new user account has been created!")
           done(null, user)
         }).catch(error => {
           done(error, null)
