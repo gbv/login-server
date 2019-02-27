@@ -15,7 +15,7 @@ module.exports = app => {
 
   _.forEach(strategies, (strategy, providerId) => {
 
-    let provider = config.providers.find(provider => provider.id === providerId)
+    let provider = utils.prepareProviders().find(provider => provider.id === providerId)
     if (!provider) {
       return
     }

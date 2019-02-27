@@ -2,7 +2,6 @@
  * Login route.
  */
 
-const config = require("../config")
 const utils = require("../utils")
 
 module.exports = app => {
@@ -13,7 +12,6 @@ module.exports = app => {
     } else {
       res.render("login", {
         user: null,
-        config,
         messages: utils.flashMessages(req),
       })
     }

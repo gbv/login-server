@@ -8,6 +8,7 @@ if (!port && config.env != "test") {
 }
 
 const _ = require("lodash")
+const utils = require("./utils")
 
 /**
  * ##### Passport Setup #####
@@ -111,8 +112,12 @@ app.set("json spaces", 2)
 // Configure view engine to render EJS templates.
 app.set("views", __dirname + "/views")
 app.set("view engine", "ejs")
-app.locals.baseUrl = config.baseUrl
-app.locals.config = config
+
+// Remove sensitive information from config and attach it to app.locals
+let localConfig = _.cloneDeep(config)
+localConfig.providers = utils.prepareProviders()
+app.locals.baseUrl = localConfig.baseUrl
+app.locals.config = localConfig
 
 // Offer static files in `/static`
 app.use("/static", express.static("static"))

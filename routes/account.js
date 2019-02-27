@@ -2,7 +2,6 @@
  * Account route.
  */
 
-const config = require("../config")
 const utils = require("../utils")
 
 module.exports = app => {
@@ -13,7 +12,6 @@ module.exports = app => {
     } else {
       res.render("account", {
         user: req.user,
-        config,
         messages: utils.flashMessages(req),
       })
     }
