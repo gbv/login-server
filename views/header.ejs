@@ -44,6 +44,8 @@ h3 > a:hover {
           <a href="<%= user.uri %>" target="_blank">My Data</a> •
           <a href="<%= baseUrl %>/sessions">Sessions</a> •
           <a href="<%= baseUrl %>/logout">Logout</a>
+        <% } else if (showLoginButton) { %>
+          <a href="<%= baseUrl %>/login">Login</a>
         <% } %>
       </div>
     </div>
