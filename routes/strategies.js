@@ -41,11 +41,7 @@ module.exports = app => {
     // Add a GET and POST route
 
       app.get(`/login/${providerId}`, skip, (req, res) => {
-        res.render("loginCredentials", {
-          provider,
-          user: req.user,
-          messages: utils.flashMessages(req),
-        })
+        res.render("loginCredentials", { provider })
       })
 
       app.post(`/login/${providerId}`,

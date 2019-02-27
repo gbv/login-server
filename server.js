@@ -55,6 +55,19 @@ app.use((req, res, next) => {
   next()
 })
 
+// Rewrite res.render to always attach user and flash messages
+app.use((req, res, next) => {
+  let render = res.render
+  res.render = (view, options, callback) => {
+    options = Object.assign({
+      user: req.user,
+      messages: utils.flashMessages(req)
+    }, options || {})
+    render.call(res, view, options, callback)
+  }
+  next()
+})
+
 // Add default headers
 app.use((req, res, next) => {
   // Allow multiple origins from config

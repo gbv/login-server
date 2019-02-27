@@ -2,17 +2,13 @@
  * /delete routes
  */
 
-const utils = require("../utils")
 const events = require("../lib/events")
 const User = require("../models/user")
 
 module.exports = app => {
 
   app.get("/delete", (req, res) => {
-    res.render("delete", {
-      user: req.user,
-      messages: utils.flashMessages(req),
-    })
+    res.render("delete")
   })
 
   // We need to use POST here because DELETE can't be opened by the browser.

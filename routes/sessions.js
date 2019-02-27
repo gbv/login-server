@@ -2,7 +2,6 @@
  * /sessions route.
  */
 
-const utils = require("../utils")
 const mongoose = require("mongoose")
 const { websockets } = require("../lib/events")
 
@@ -44,8 +43,6 @@ module.exports = app => {
         let ws = Object.values(websockets).filter(ws => ws && sessions.find(session => session._id === ws.sessionID))
         // Render page
         res.render("sessions", {
-          user: req.user,
-          messages: utils.flashMessages(req),
           sessions,
           sessionID: req.sessionID,
           websockets: ws,
