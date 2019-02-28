@@ -25,8 +25,6 @@
         <%= user.identities[provider.id].id %> %>
         <small>
           <br>
-          <!-- <a data-toggle="collapse" href="#showMore-<%= provider.id %>">▼</a> -->
-          <!-- <div class="collapse" id="showMore-<%= provider.id %>"> -->
           <% if (user.identities[provider.id].username) { %>
             <b>Username:</b> <%= user.identities[provider.id].username %><br>
           <% } %>
@@ -34,9 +32,8 @@
             <b>Name:</b> <%= user.identities[provider.id].name %><br>
           <% } %>
           <% if (user.identities[provider.id].uri) { %>
-            <b>URI:</b> <a href="<%= user.identities[provider.id].uri %>" target="_blank"><%= user.identities[provider.id].uri %></a><br>
+            <a href="<%= user.identities[provider.id].uri %>" target="_blank"><%= user.identities[provider.id].uri %></a><br>
           <% } %>
-          <!-- </div> -->
         </small>
       <% } %>
       </td>
