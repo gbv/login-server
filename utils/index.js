@@ -43,6 +43,7 @@ function prepareAbout() {
     allowedDomains: config.allowedOrigins,
     publicKey: config.publicKey.toString("utf8"),
     algorithm: config.jwtOptions.algorithm,
+    cookieMaxDays: config.cookieMaxDays,
   }
 }
 
