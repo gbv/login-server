@@ -120,6 +120,22 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 
+// Update lastUsed property of logged in user
+const Usage = require("./models/usage")
+app.use((req, res, next) => {
+  if (req.user) {
+    Usage.findById(req.user.id).then(usage => {
+      if (!usage) {
+        usage = new Usage({ _id: req.user.id })
+      }
+      usage.lastUsed = (new Date()).toISOString()
+      usage.save().catch(() => null).finally(() => next())
+    })
+  } else {
+    next()
+  }
+})
+
 // Pretty-print JSON output
 app.set("json spaces", 2)
 
