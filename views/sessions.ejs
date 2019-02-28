@@ -2,20 +2,12 @@
 
 <!-- Template for /sessions route -->
 
-<p><a href="<%= baseUrl %>/account">← back</a></p>
-
-<p>Note: The data on this page is not automatically updated. Reload the page to update.</p>
+<p>Reload the page to update session information!</p>
 
 <h3>Active Sessions</h3>
 <p>There are <%= sessions.length %> active sessions including the current one.</p>
 
 <table class="table">
-  <thead>
-    <tr>
-      <th>Session ID</th>
-      <th></th>
-    </tr>
-  </thead>
   <tbody>
   <% sessions.forEach(session => { %>
     <tr>

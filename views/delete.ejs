@@ -1,7 +1,6 @@
 <%- include('header'); -%>
 
 <!-- Template for account deletion page -->
-<a href="<%= baseUrl %>/account">← back</a>
 <div class="text-danger" style="margin-top: 30px; margin-bottom: 20px;">
   Do you really want to delete your user account? All your data will be immediately removed from the database and is not recoverable.
 </div>
@@ -12,6 +11,7 @@
     </label>
   </div>
   <div class="form-group">
+    <a href="<%= baseUrl %>/account" class="btn btn-secondary">Back to Account settings</a>
     <button type="submit" class="btn btn-danger" id="deleteButton" disabled>Delete User Account</button>
   </div>
 </form>
