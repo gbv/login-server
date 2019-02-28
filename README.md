@@ -84,6 +84,8 @@ ALLOWED_ORIGINS=
 NODE_ENV=production
 # recommended, secret used by the session
 SESSION_SECRET=
+# optional, maximum number of days a session is valid (rolling), default: 30
+COOKIE_MAX_DAYS=
 # username used for MongoDB, default: <empty>
 MONGO_USER=
 # password used for MongoDB, default: <empty>

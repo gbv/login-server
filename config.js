@@ -41,7 +41,8 @@ const
     imprint: process.env.IMPRINT_URL || "https://www.gbv.de/impressum",
     privacy: process.env.PRIVACY_URL || "https://www.gbv.de/datenschutz",
     sources: process.env.SOURCES_URL || packageData.homepage || "https://github.com/gbv/login-server"
-  }
+  },
+  cookieMaxDays = process.env.COOKIE_MAX_DAYS || 30
 
 let allowedOrigins = (process.env.ALLOWED_ORIGINS || "").split(",").filter(origin => origin != "")
 
@@ -87,6 +88,7 @@ let config = {
   title,
   package: packageData,
   urls,
+  cookieMaxDays,
 }
 
 /**

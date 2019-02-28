@@ -109,10 +109,11 @@ app.use(session({
   secret: config.sessionSecret,
   resave: false,
   saveUninitialized: false,
+  rolling: true,
   store: mongoStore,
   cookie: {
     secure,
-    maxAge: 10*365*24*60*60*1000
+    maxAge: config.cookieMaxDays * 24 * 60 * 60 * 1000
   }
 }))
 
