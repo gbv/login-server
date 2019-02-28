@@ -45,7 +45,7 @@
       </p>
       <!-- Current token -->
       <p>
-          <strong>Token: </strong><span id="token"></span>
+        <strong>Token: </strong><span id="token"></span>
       </p>
       <!-- About -->
       <p>
@@ -70,6 +70,14 @@
   </div>
 </div>
 
+<p>
+  <div class="form-group form-check">
+    <label class="form-check-label">
+      <input class="form-check-input" type="checkbox" onclick="toggleShowReceivedToken(this)" checked> Show "Received token" events
+    </label>
+  </div>
+</p>
+
 <script>
 const logEl = document.getElementById("log")
 const statusEl = document.getElementById("status")
@@ -85,8 +93,19 @@ let client = new LoginClient("<%= config.cleanUrl %>", { ssl: "<%= config.ssl %>
 let token = null
 let publicKey = null
 
-function log(message, color = "black") {
-  logEl.innerHTML = `<div class="log-entry" style="color: ${color}"><div class="log-message">${message}</div></div>` + logEl.innerHTML
+let showReceivedToken = true
+
+function toggleShowReceivedToken(checkbox) {
+  showReceivedToken = checkbox.checked
+  // Adjust existing elements
+  for (let element of document.querySelectorAll("[data-event='token']")) {
+    element.style.display = showReceivedToken ? "flex" : "none"
+  }
+}
+
+function log(message, color = "black", event = "other") {
+  let displayNone = showReceivedToken ? "" : "display: none;"
+  logEl.innerHTML = `<div class="log-entry" style="color: ${color}; ${displayNone}" data-event="${event}"><div class="log-message">${message}</div></div>` + logEl.innerHTML
 }
 
 // Update tokenEl regularly
@@ -183,7 +202,7 @@ client.addEventListener(null, event => {
       providersEl.innerHTML = JSON.stringify(event.providers, null, 2)
       break
     case LoginClient.events.token:
-      log("Received token", "black")
+      log("Received token", "black", "token")
       token = event.token
       break
     case LoginClient.events.error:
