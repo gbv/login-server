@@ -1,7 +1,7 @@
     </div>
     <div class="card-footer footer">
       <div>
-        <a href="https://www.gbv.de/datenschutz" target="_blank">Datenschutz</a>
+        <a href="<%= config.urls.privacy %>" target="_blank">Datenschutz</a>
       </div>
       <% if (user && user.uri) { %>
       <div>
@@ -12,10 +12,10 @@
         <a href="<%= baseUrl %>/sessions">Sessions</a>
       </div>
       <div>
-        <a href="https://www.gbv.de/impressum" target="_blank">Impressum</a>
+        <a href="<%= config.urls.imprint %>" target="_blank">Impressum</a>
       </div>
       <div>
-        <a href="https://github.com/gbv/login-server" target="_blank">Sources</a>
+        <a href="<%= config.urls.sources %>" target="_blank">Sources</a>
       </div>
     </div>
   </div>

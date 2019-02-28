@@ -105,6 +105,10 @@ JTW_PUBLIC_KEY_PATH=
 JWT_ALGORITHM=
 # expiration time of JWTs in seconds, default: 120, min: 10
 JWT_EXPIRES_IN=
+# URLs for footer
+IMPRINT_URL=
+PRIVACY_URL=
+SOURCES_URL=
 ```
 
 #### `providers.json`

@@ -35,7 +35,13 @@ const
   privateKeyPath = process.env.JTW_PRIVATE_KEY_PATH,
   publicKeyPath = process.env.JTW_PUBLIC_KEY_PATH,
   jwtAlgorithm = process.env.JWT_ALGORITHM || "RS256",
-  title = process.env.TITLE || "Login Server"
+  title = process.env.TITLE || "Login Server",
+  packageData = require("./package.json"),
+  urls = {
+    imprint: process.env.IMPRINT_URL || "https://www.gbv.de/impressum",
+    privacy: process.env.PRIVACY_URL || "https://www.gbv.de/datenschutz",
+    sources: process.env.SOURCES_URL || packageData.homepage || "https://github.com/gbv/login-server"
+  }
 
 let allowedOrigins = (process.env.ALLOWED_ORIGINS || "").split(",").filter(origin => origin != "")
 
@@ -44,7 +50,7 @@ if (!["http:", "https:"].includes(purl.protocol) || !purl.slashes || !purl.hostn
   console.error("Please provide a full BASE_URL in .env.")
   process.exit(1)
 }
-allowedOrigins.push(`${purl.protocol}//${purl.hostname}`)
+allowedOrigins.push(`${purl.protocol}//${purl.hostname}${purl.port != 80 && purl.port != 443 ? ":" + purl.port : ""}`)
 console.log("Allowed origins:", allowedOrigins.join(", "))
 
 // Add base URL without protocol and information about SSL
@@ -79,6 +85,8 @@ let config = {
   },
   allowedOrigins,
   title,
+  package: packageData,
+  urls,
 }
 
 /**

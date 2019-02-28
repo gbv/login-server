@@ -37,6 +37,10 @@ function prepareAbout() {
   return {
     title: config.title,
     env: config.env,
+    version: config.package.version,
+    baseUrl: config.baseUrl,
+    urls: config.urls,
+    allowedDomains: config.allowedOrigins,
     publicKey: config.publicKey.toString("utf8"),
     algorithm: config.jwtOptions.algorithm,
   }
