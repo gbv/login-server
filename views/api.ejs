@@ -105,7 +105,16 @@ function toggleShowReceivedToken(checkbox) {
 
 function log(message, color = "black", event = "other") {
   let displayNone = showReceivedToken ? "" : "display: none;"
-  logEl.innerHTML = `<div class="log-entry" style="color: ${color}; ${displayNone}" data-event="${event}"><div class="log-message">${message}</div></div>` + logEl.innerHTML
+  logEl.innerHTML = `
+<div class="log-entry" style="color: ${color}; ${displayNone}" data-event="${event}">
+  <div class="log-timestamp small">
+    ${(new Date()).toISOString()}
+  </div>
+  <div class="log-message">
+    ${message}
+  </div>
+</div>
+    ` + logEl.innerHTML
 }
 
 // Update tokenEl regularly
