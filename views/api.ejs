@@ -73,7 +73,7 @@
 <p>
   <div class="form-group form-check">
     <label class="form-check-label">
-      <input class="form-check-input" type="checkbox" onclick="toggleShowReceivedToken(this)" checked> Show "Received token" events
+      <input class="form-check-input" type="checkbox" onclick="toggleShowReceivedToken(this)"> Show "Received token" events
     </label>
   </div>
 </p>
@@ -93,7 +93,7 @@ let client = new LoginClient("<%= config.cleanUrl %>", { ssl: "<%= config.ssl %>
 let token = null
 let publicKey = null
 
-let showReceivedToken = true
+let showReceivedToken = false
 
 function toggleShowReceivedToken(checkbox) {
   showReceivedToken = checkbox.checked
