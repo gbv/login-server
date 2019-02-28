@@ -40,11 +40,11 @@ describe("GET /users", () => {
     request(app)
       .get("/users")
       .expect("Content-Type", /json/)
-      .expect(res => {
-        expect(res.body).to.be.an("array")
-        expect(res.body[0]).to.be.an("object")
-      })
-      .expect(200, done)
+      // .expect(res => {
+      //   expect(res.body).to.be.an("array")
+      //   expect(res.body[0]).to.be.an("object")
+      // })
+      .expect(403, done)
   })
 
 })
@@ -52,7 +52,7 @@ describe("GET /users", () => {
 describe("GET /users/:id", () => {
 
   it("should return the current user", done => {
-    request(app)
+    authAgent
       .get(currentUser.uri.substring(currentUser.uri.indexOf("/users")))
       .expect("Content-Type", /json/)
       .expect(res => {
