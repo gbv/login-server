@@ -104,7 +104,7 @@ function toggleShowReceivedToken(checkbox) {
 }
 
 function log(message, color = "black", event = "other") {
-  let displayNone = showReceivedToken ? "" : "display: none;"
+  let displayNone = showReceivedToken || event != "token" ? "" : "display: none;"
   logEl.innerHTML = `
 <div class="log-entry" style="color: ${color}; ${displayNone}" data-event="${event}">
   <div class="log-timestamp small">
