@@ -1,21 +1,38 @@
     </div>
+    <style>
+    .footer > div {
+      display: flex;
+      margin-bottom: 10px;
+    }
+    .footer > div > div {
+      flex: 1;
+      text-align: center;
+    }
+    </style>
     <div class="card-footer footer">
       <div>
-        <a href="<%= config.urls.privacy %>" target="_blank">Datenschutz</a>
-      </div>
-      <% if (user && user.uri) { %>
-      <div>
-        <a href="<%= user.uri %>" target="_blank">My Data</a>
-      </div>
-      <% } %>
-      <div>
-        <a href="<%= baseUrl %>/sessions">Sessions</a>
-      </div>
-      <div>
-        <a href="<%= config.urls.imprint %>" target="_blank">Impressum</a>
+        <div>
+          <a href="<%= config.urls.privacy %>" target="_blank">Datenschutz</a>
+        </div>
+        <div>
+          <a href="<%= config.urls.imprint %>" target="_blank">Impressum</a>
+        </div>
+        <div>
+          <a href="<%= config.urls.sources %>" target="_blank">Sources</a>
+        </div>
       </div>
       <div>
-        <a href="<%= config.urls.sources %>" target="_blank">Sources</a>
+        <% if (user && user.uri) { %>
+        <div>
+          <a href="<%= user.uri %>" target="_blank">My Data</a>
+        </div>
+        <% } %>
+        <div>
+          <a href="<%= baseUrl %>/sessions">Sessions</a>
+        </div>
+        <div>
+          <a href="<%= baseUrl %>/api">API</a>
+        </div>
       </div>
     </div>
   </div>
