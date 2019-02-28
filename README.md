@@ -347,15 +347,15 @@ Returns an object with keys `title` (title of the login-server instance), `env` 
 Returns a list of available providers (stripped off sensitive information).
 
 ### GET /users
-Note: This may be removed in the future.
+Currently not available and undecided whether it will be removed.
 
-Returns all users in database. If URL parameter `uri` is given, only users whose identities match one of the URIs are returned. Multiple URIs are separated by `|`.
+<!-- Returns all users in database. If URL parameter `uri` is given, only users whose identities match one of the URIs are returned. Multiple URIs are separated by `|`. -->
 
 ### GET /currentUser
 Returns the currently logged in user. Returns an 404 error when no user is logged in.
 
 ### GET /users/:id
-Returns a specific user.
+Returns a specific user. Currently restricted to one's own user ID.
 
 ### PATCH /users/:id
 Adjusts a specific user. Can only be used if the same user is currently logged in. Allowed properties to change: `name` (everything else will be ignored).

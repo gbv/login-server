@@ -10,31 +10,36 @@ const events = require("../lib/events")
 module.exports = app => {
 
   app.get("/users", (req, res) => {
-    let query = req.query || {}
-    let conditions = []
-    // Search by URI
-    if (query.uri) {
-      let uris = query.uri.split("|")
-      for (let uri of uris) {
-        conditions.push({ uri })
-        conditions.push({ merged: uri })
-        for (let provider of config.providers) {
-          conditions.push({ [`identities.${provider.id}.uri`]: uri })
-        }
-      }
-    }
-    User.find(conditions.length ? { $or: conditions } : {}).then(users => {
-      res.json(users)
-    }).catch(error => {
-      console.log(error.message)
-      res.status(500).json({ status: 500, message: "Could not retrieve users." })
-    })
+    res.status(403).json({ status: 403, message: "Unauthorized access to user list." })
+    // let query = req.query || {}
+    // let conditions = []
+    // // Search by URI
+    // if (query.uri) {
+    //   let uris = query.uri.split("|")
+    //   for (let uri of uris) {
+    //     conditions.push({ uri })
+    //     conditions.push({ merged: uri })
+    //     for (let provider of config.providers) {
+    //       conditions.push({ [`identities.${provider.id}.uri`]: uri })
+    //     }
+    //   }
+    // }
+    // User.find(conditions.length ? { $or: conditions } : {}).then(users => {
+    //   res.json(users)
+    // }).catch(error => {
+    //   console.log(error.message)
+    //   res.status(500).json({ status: 500, message: "Could not retrieve users." })
+    // })
   })
 
   app.get("/users/:id", (req, res) => {
     User.findById(req.params.id).then(user => {
       if (user) {
-        res.json(user)
+        if (req.user && req.user.id == user.id) {
+          res.json(user)
+        } else {
+          res.status(403).json({ status: 403, message: "Unauthorized access to user data." })
+        }
       } else {
         let uri = `${config.baseUrl}/users/${req.params.id}`
         User.findOne({ merged: uri }).then(user => {
