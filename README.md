@@ -420,6 +420,7 @@ The WebSocket API at base URL `/` sends events about the current user or session
 - `about` - sent after WebSocket connection was established (property `data` will have the same format as in [GET /about](#get-about))
 - `token` - sent when the user has logged in and then in intervals before the previous token expires (property `data` will have the same format as in [GET /token](#get-token))
 - `authenticated` - sent as a success reply when requesting authentication (see below)
+- `sessionAboutToExpire` - sent when the currently associated session is about to expire
 - `error` - sent as answer to a malformed message via the WebSocket (consists of a property `data.message` with an error message)
 
 You can also send requests to the WebSocket. These also have to be JSON-encoded strings in the following form:
