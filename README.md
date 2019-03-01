@@ -86,6 +86,10 @@ NODE_ENV=production
 SESSION_SECRET=
 # optional, maximum number of days a session is valid (rolling), default: 30
 COOKIE_MAX_DAYS=
+# threshold in minutes when to send "sessionAboutToExpire" events, default: 60
+SESSION_EXPIRATION_MESSAGE_THRESHOLD=
+# interval in minutes in which to check for expiring sessions, default: 5
+SESSION_EXPIRATION_MESSAGE_INTERVAL=
 # username used for MongoDB, default: <empty>
 MONGO_USER=
 # password used for MongoDB, default: <empty>
