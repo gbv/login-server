@@ -108,7 +108,7 @@ function log(message, color = "black", event = "other") {
   logEl.innerHTML = `
 <div class="log-entry" style="color: ${color}; ${displayNone}" data-event="${event}">
   <div class="log-timestamp small">
-    ${(new Date()).toISOString()}
+    <code>${(new Date()).toISOString()}</code>
   </div>
   <div class="log-message">
     ${message}
@@ -124,8 +124,8 @@ setInterval(() => {
         tokenEl.innerHTML = `<span style="color:red">${error.message}</span>`
     } else {
       let currentTime = Date.now() / 1000
-      let validSeconds = Math.round((decoded.exp - currentTime) * 100) / 100
-      tokenEl.innerHTML = `<span style="color:green">verified!</span> (valid for <tt>${validSeconds}</tt> seconds)`
+      let validSeconds = Math.round((decoded.exp - currentTime) * 10) / 10
+      tokenEl.innerHTML = `<span style="color:green">verified!</span> (valid for <tt>${validSeconds}</tt> seconds) (${byteCount(token)} bytes)`
     }
   })
 }, 100)
@@ -223,6 +223,12 @@ client.addEventListener(null, event => {
 })
 
 client.connect()
+
+// from: https://gist.github.com/mathiasbynens/1010324
+// Returns the byte count for a string
+function byteCount(s) {
+  return encodeURI(s).split(/%..|./).length - 1;
+}
 
 </script>
 
