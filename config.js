@@ -51,7 +51,7 @@ if (!["http:", "https:"].includes(purl.protocol) || !purl.slashes || !purl.hostn
   console.error("Please provide a full BASE_URL in .env.")
   process.exit(1)
 }
-allowedOrigins.push(`${purl.protocol}//${purl.hostname}${purl.port != 80 && purl.port != 443 ? ":" + purl.port : ""}`)
+allowedOrigins.push(`${purl.protocol}//${purl.hostname}${purl.port && purl.port != 80 && purl.port != 443 ? ":" + purl.port : ""}`)
 console.log("Allowed origins:", allowedOrigins.join(", "))
 
 // Add base URL without protocol and information about SSL
