@@ -65,6 +65,8 @@ module.exports = app => {
           } catch(error) {
             events.error(wsID, "Authentication failed.")
           }
+        } else if (message.type === "ping") {
+          events.sendEvent(wsID, "pong")
         } else {
           events.error(wsID, `Unknown requets type ${message.type}.`)
         }
