@@ -19,7 +19,6 @@ module.exports = app => {
     if (!provider) {
       return
     }
-    let strategyName = provider.strategy
 
     let skip = (req, res, next) => {
       if (req.user && req.user.identities && req.user.identities[providerId]) {
@@ -46,16 +45,16 @@ module.exports = app => {
 
       app.post(`/login/${providerId}`,
         apiLimiter,
-        passport.authenticate(strategyName, authenticateOptions))
+        passport.authenticate(providerId, authenticateOptions))
 
     } else {
     // Add GET routes for login redirection and return
 
       app.get(`/login/${providerId}`, skip,
-        passport.authenticate(strategyName))
+        passport.authenticate(providerId))
 
       app.get(`/login/${providerId}/return`,
-        passport.authenticate(strategyName, authenticateOptions))
+        passport.authenticate(providerId, authenticateOptions))
 
     }
   })

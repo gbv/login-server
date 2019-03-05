@@ -18,8 +18,8 @@ const User = require("./models/user")
 const strategies = require("./strategies").strategies
 
 // Use strategies in passport
-_.forEach(strategies, (strategy) => {
-  passport.use(strategy)
+_.forEach(strategies, (strategy, id) => {
+  passport.use(id, strategy)
 })
 
 // Serialize user by their id
