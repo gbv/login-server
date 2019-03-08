@@ -75,7 +75,8 @@ module.exports = app => {
       user.save().then(user => {
         events.userUpdated(req.sessionID, user)
         res.json(user)
-      }).catch(() => {
+      }).catch(error => {
+        console.error(error)
         res.status(500).json({ status: 500, message: "Modified user could not be saved." })
       })
     }

@@ -24,7 +24,11 @@ _.forEach(strategies, (strategy, id) => {
 
 // Serialize user by their id
 passport.serializeUser((user, done) => {
-  done(null, user.id)
+  if (!user) {
+    done(new Error("No user ID"))
+  } else {
+    done(null, user.id)
+  }
 })
 
 // Deserialize user by retrieving their profile with the id.
