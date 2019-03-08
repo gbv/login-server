@@ -22,17 +22,15 @@
       </td>
       <td style="word-break: break-word;">
       <% if (user.identities && user.identities[provider.id]) { %>
-        <%= user.identities[provider.id].id %> %>
+        <% if (user.identities[provider.id].name) { %>
+        <div class="mb-2">
+          <%= user.identities[provider.id].name %>
+        </div>
+        <% } %>
         <small>
-          <br>
+          <b>ID:</b> <%= user.identities[provider.id].id %><br>
           <% if (user.identities[provider.id].username) { %>
             <b>Username:</b> <%= user.identities[provider.id].username %><br>
-          <% } %>
-          <% if (user.identities[provider.id].name) { %>
-            <b>Name:</b> <%= user.identities[provider.id].name %><br>
-          <% } %>
-          <% if (user.identities[provider.id].uri) { %>
-            <a href="<%= user.identities[provider.id].uri %>" target="_blank"><%= user.identities[provider.id].uri %></a><br>
           <% } %>
         </small>
       <% } %>
@@ -47,6 +45,14 @@
       <% } %>
       </td>
     </tr>
+    <% if (user.identities && user.identities[provider.id] && user.identities[provider.id].uri) { %>
+    <tr>
+      <td class="border-top-0 mt-0"></td>
+      <td class="border-top-0 pt-0" colspan="3">
+        <a href="<%= user.identities[provider.id].uri %>" target="_blank"><%= user.identities[provider.id].uri %></a>
+      </td>
+    </tr>
+    <% } %>
   <% }) %>
   </tbody></table>
   <script>
