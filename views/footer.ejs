@@ -34,6 +34,13 @@
           <a href="<%= baseUrl %>/api">API</a>
         </div>
       </div>
+      <div>
+        <% if (user) { %>
+        <form method="get" action="<%= baseUrl %>/delete" style="width: 100%; text-align: center;">
+          <button type="submit" class="btn btn-link text-danger">Delete User Account</button>
+        </form>
+        <% } %>
+      </div>
     </div>
   </div>
 </div>
