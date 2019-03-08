@@ -23,16 +23,8 @@
       <td style="word-break: break-word;">
       <% if (user.identities && user.identities[provider.id]) { %>
         <% if (user.identities[provider.id].name) { %>
-        <div class="mb-2">
           <%= user.identities[provider.id].name %>
-        </div>
         <% } %>
-        <small>
-          <b>ID:</b> <%= user.identities[provider.id].id %><br>
-          <% if (user.identities[provider.id].username) { %>
-            <b>Username:</b> <%= user.identities[provider.id].username %><br>
-          <% } %>
-        </small>
       <% } %>
       </td>
       <td class="text-right">
