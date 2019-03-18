@@ -28,7 +28,7 @@ module.exports = app => {
         req.flash("success", "Identity disconnected.")
       }).catch(() => {
         req.flash("error", "Identity could not be disconnected.")
-      }).finally(() => {
+      }).then(() => {
         res.redirect("/login")
       })
     } else {

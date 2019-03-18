@@ -35,6 +35,6 @@ connection.then(_db => {
   })
 }).catch(error => {
   console.error("An error occurred:", error)
-}).finally(() => {
+}).then(() => {
   db && db.disconnect()
 })

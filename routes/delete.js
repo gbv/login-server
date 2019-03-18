@@ -21,7 +21,7 @@ module.exports = app => {
       req.flash("success", "Your user account has been deleted.")
     }).catch(() => {
       req.flash("error", "There was an error when trying to delete your user account.")
-    }).finally(() => {
+    }).then(() => {
       req.user = undefined
       res.redirect("/login")
     })

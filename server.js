@@ -134,7 +134,7 @@ app.use((req, res, next) => {
         usage = new Usage({ _id: req.user.id })
       }
       usage.lastUsed = (new Date()).toISOString()
-      usage.save().catch(() => null).finally(() => next())
+      usage.save().catch(() => null).then(() => next())
     })
   } else {
     next()
