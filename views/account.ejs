@@ -20,7 +20,7 @@
       <td>
         <b><%= provider.name %></b>
       </td>
-      <td style="word-break: break-word;">
+      <td style="word-break: break-all;">
       <% if (user.identities && user.identities[provider.id]) { %>
         <% if (user.identities[provider.id].name) { %>
           <%= user.identities[provider.id].name %>
