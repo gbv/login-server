@@ -17,7 +17,7 @@ This repository offers a login server to be used with the [Cocoda Mapping Tool](
   - [Providers](#providers)
 - [JWTs](#jwts)
 - [Web interface](#web-interface)
-  - [GET /](#get)
+  - [GET /](#get-)
   - [GET /account](#get-account)
   - [GET /sessions](#get-sessions)
   - [GET /login](#get-login)
