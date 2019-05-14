@@ -147,6 +147,7 @@ login-server uses [Passport](http://www.passportjs.org) ([GitHub](https://github
 - ORCID (via [passport-orcid](http://www.passportjs.org/packages/passport-orcid/))
 - Mediawiki (via [passport-mediawiki-oauth](http://www.passportjs.org/packages/passport-mediawiki-oauth/))
 - LDAP (via [passport-ldapauth](http://www.passportjs.org/packages/passport-ldapauth/))
+- Local (via [passport-local](http://www.passportjs.org/packages/passport-local/))
 
 Because strategies use different parameters in their [verify callbacks](http://www.passportjs.org/docs/configure/), each strategy has its own wrapper file in the folder `strategies/`. To add another strategy to login-server, add a file called `{name}.js` (where `{name}` is the name of the strategy that is used with `passport.authenticate`) with the following structure (GitHub as example):
 
@@ -265,6 +266,8 @@ The following is an example `providers.json` that shows how to configure each of
   }
 ]
 ```
+
+To configure local providers, please use the provided script under `bin/manage-local.js`. It will allow you to create/delete local providers, and create/delete users for local providers.
 
 ## JWTs
 login-server offers JSON Web Tokens that can be used to authenticate against other services (like [jskos-server](https://github.com/gbv/jskos-server)). [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) is used for signing the tokens.
