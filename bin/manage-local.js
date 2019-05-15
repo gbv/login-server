@@ -19,6 +19,7 @@ function loop(mode = "start", data = {}, prompt, action = null) {
   prompt = prompt || Promise.resolve(null)
   prompt.then(answer => {
     let provider = providers.find(provider => provider.id === data.provider)
+    let user = provider ? provider.options.users.find(user => user.username === data.user) : null
     console.log()
     if (action != null) {
       switch (action) {
@@ -49,7 +50,18 @@ function loop(mode = "start", data = {}, prompt, action = null) {
         break
       case "deleteUser":
         provider.options.users = provider.options.users.filter(user => user.username != data.user)
+        console.log(`Deleted user ${data.user}!`)
+        console.log()
         delete data.user
+        break
+      case "changePassword":
+        if (user) {
+          user.password = bcrypt.hashSync(answer.password, 10)
+          console.log(`Set password for user ${data.user}!`)
+          console.log()
+          delete data.password
+          delete data.user
+        }
         break
       default:
         console.warn(`Unknown action ${action}.`)
@@ -100,7 +112,7 @@ function loop(mode = "start", data = {}, prompt, action = null) {
         type: "list",
         name: "action",
         message: "Choose an action",
-        choices: ["Create new user", "Choose different provider", new inquirer.Separator(), "Delete a user", "Delete provider"]
+        choices: ["Create new user", "Manage users", "Choose different provider", new inquirer.Separator(), "Delete provider"]
       }]).then(answer => {
         switch (answer.action) {
         case "Choose different provider":
@@ -110,18 +122,18 @@ function loop(mode = "start", data = {}, prompt, action = null) {
         case "Create new user":
           loop("newUser", data, null, null)
           break
-        case "Delete a user":
+        case "Manage users":
           inquirer.prompt([{
             type: "list",
             name: "user",
-            message: "Which user do you want to delete?",
+            message: "Choose a user:",
             choices: provider.options.users.map(user => user.username).concat([{ name: "go back", value: null }])
           }]).then(({user}) => {
             if (user) {
               data.user = user
-              loop("action", data, null, "deleteUser")
+              loop("manageUser", data, null, null)
             } else {
-              loop("action", data, null, null)
+              loop("manageUser", data, null, null)
             }
           })
           break
@@ -181,6 +193,47 @@ function loop(mode = "start", data = {}, prompt, action = null) {
         },
       ])
       loop("action", data, prompt, "createUser")
+      break
+    case "manageUser":
+      prompt = inquirer.prompt([{
+        type: "list",
+        name: "action",
+        message: `Choose a user action for ${data.user}`,
+        choices: ["Change password", "Delete user", "go back"]
+      }]).then(({ action }) => {
+        switch (action) {
+        case "Change password":
+          prompt = inquirer.prompt([{
+            type: "password",
+            name: "password",
+            message: "New password:",
+            validate: (value) => {
+              let valid = value.length > 7
+              return valid || "Password muyt have at least 8 characters"
+            },
+          }])
+          loop("action", data, prompt, "changePassword")
+          break
+        case "Delete user":
+          inquirer.prompt([{
+            type: "confirm",
+            name: "really",
+            message: `Do you really want to delete user ${data.user}?`,
+            default: false
+          }]).then(({ really }) => {
+            if (really) {
+              loop("action", data, null, "deleteUser")
+            } else {
+              loop("manageUser", data, null, null)
+            }
+          })
+          break
+        case "go back":
+          data.user = null
+          loop("action", data, null, null)
+          break
+        }
+      })
       break
     default:
       console.warn(`Unknown mode ${mode}, returning to start.`)
