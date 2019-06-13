@@ -146,6 +146,7 @@ login-server uses [Passport](http://www.passportjs.org) ([GitHub](https://github
 - GitHub (via [passport-github](http://www.passportjs.org/packages/passport-github/))
 - ORCID (via [passport-orcid](http://www.passportjs.org/packages/passport-orcid/))
 - Mediawiki (via [passport-mediawiki-oauth](http://www.passportjs.org/packages/passport-mediawiki-oauth/))
+- StackExchange (via [passport-stack-exchange](http://www.passportjs.org/packages/passport-stack-exchange/))
 - LDAP (via [passport-ldapauth](http://www.passportjs.org/packages/passport-ldapauth/))
 - Local (via [passport-local](http://www.passportjs.org/packages/passport-local/))
 
@@ -247,6 +248,17 @@ The following is an example `providers.json` that shows how to configure each of
     "options": {
       "consumerKey": "abcdef1234567890",
       "consumerSecret": "abcdef1234567890abcdef1234567890"
+    }
+  },
+  {
+    "id": "stackexchange",
+    "strategy": "stackexchange",
+    "name": "StackExchange",
+    "template": "https://stackexchange.com/users/{id}",
+    "options": {
+      "clientID": "12345",
+      "clientSecret": "abcdef1234567890((",
+      "stackAppsKey": "1234567890abcdefg(("
     }
   },
   {
