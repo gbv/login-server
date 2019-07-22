@@ -8,7 +8,11 @@ module.exports = (options, provider, callback) => new Strategy(options, (req, to
   callback(req, token, tokenSecret, {
     id: profile.id,
     name: profile.displayName,
-    username: profile.username,
+    username: profile._json.username,
+    oauth: {
+      token: token,
+      token_secret: tokenSecret
+    },
     provider: provider.id
   }, done)
 })
