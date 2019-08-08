@@ -55,11 +55,16 @@ function prepareAbout() {
  * @returns {object}
  */
 function flashMessages(req) {
-  return {
-    success: req.flash("success"),
-    info: req.flash("info"),
-    warning: req.flash("warning"),
-    danger: req.flash("error")
+  // try-catch is necessary because `req.flash` needs a session store and fails if the database is not connected.
+  try {
+    return {
+      success: req.flash("success"),
+      info: req.flash("info"),
+      warning: req.flash("warning"),
+      danger: req.flash("error")
+    }
+  } catch(error) {
+    return {}
   }
 }
 

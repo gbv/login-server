@@ -36,5 +36,8 @@ connection.then(_db => {
 }).catch(error => {
   console.error("An error occurred:", error)
 }).then(() => {
-  db && db.disconnect()
+  return db.close()
+}).then(() => {
+  // Force exit because database will try to reconnect automatically
+  process.exit(0)
 })

@@ -26,7 +26,7 @@ const
   mongoDb = (process.env.MONGO_DB || "login-server") + (env == "test" ? "-test" : ""),
   mongoUrl = `mongodb://${mongoAuth}${mongoHost}:${mongoPort}/${mongoDb}`,
   mongoOptions = {
-    reconnectTries: 60,
+    reconnectTries: 5,
     reconnectInterval: 1000,
     useNewUrlParser: true
   },

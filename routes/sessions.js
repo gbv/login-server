@@ -2,7 +2,7 @@
  * /sessions route.
  */
 
-const mongoose = require("mongoose")
+const db = require("../utils/db")
 const { websockets } = require("../lib/events")
 
 /**
@@ -12,7 +12,7 @@ const { websockets } = require("../lib/events")
  * @returns {Promise<object[]>} A Promise with an array of session objects if fulfilled, or an error if rejected.
  */
 function sessionsForUser(user) {
-  return mongoose.connection.db.collection("sessions").find({ "session.passport.user": user.id }).toArray()
+  return db.collection("sessions").find({ "session.passport.user": user.id }).toArray()
 }
 
 /**
@@ -22,7 +22,7 @@ function sessionsForUser(user) {
  * @returns {Promise} A fulfilled Promise or an error if rejected.
  */
 function removeSession(sessionID) {
-  return mongoose.connection.db.collection("sessions").deleteOne({ _id: sessionID }).then(() => {
+  return db.collection("sessions").deleteOne({ _id: sessionID }).then(() => {
     // Explicitly close WebSockets associated with sessionID
     for (let socket of Object.values(websockets).filter(ws => ws && ws.sessionID == sessionID)) {
       if (socket.ws) {

@@ -1,7 +1,7 @@
 const config = require("./config")
 
 // Don't start application without a port!
-const port = config.port
+let port = config.port
 if (!port && config.env != "test") {
   console.error("Please provide PORT in .env")
   process.exit(1)
@@ -109,6 +109,26 @@ if (config.env != "development" && config.env != "test") {
 }
 const session = require("express-session")
 const mongoStore = require("./utils/mongoStore")
+// Handle database failures
+app.use((req, res, next) => {
+  if (mongoStore.options.mongooseConnection.readyState !== 1) {
+    // Catch requests and return an error
+    const error = {
+      error: "DatabaseAccessError",
+      status: 500,
+      message: "There was an error accessing the database. Please try again later.",
+    }
+    if (req.accepts("html")) {
+      // Error page
+      res.render("error", { error })
+    } else {
+      // Error as JSON
+      res.status(500).json(error)
+    }
+  } else {
+    next()
+  }
+})
 app.use(session({
   secret: config.sessionSecret,
   resave: false,
@@ -165,20 +185,15 @@ const portfinder = require("portfinder")
 const fs = require("fs")
 const path = require("path")
 
-let returnObject = {}
-let promise = require("./utils/db").then(db => {
-  returnObject.db = db
-  // For tests, find the next empty port
+const start = async () => {
+  // Port is defined at the top of the file
   if (config.env == "test") {
     portfinder.basePort = port || 3000
-    return portfinder.getPortPromise()
-  } else {
-    return port
+    port = await portfinder.getPortPromise()
   }
-}).then(port => {
-  return new Promise(resolve => {
-    returnObject.port = port
-    let listener = app.listen(port, () => {
+  const listener = await new Promise(resolve => {
+    let listener
+    listener = app.listen(port, () => {
       console.log(`Listening on port ${port}.`)
 
       // Import routes
@@ -186,12 +201,11 @@ let promise = require("./utils/db").then(db => {
         require("./routes/" + file)(app)
       })
 
-      returnObject.app = app
-      // Resolve promise
-      resolve(returnObject)
+      resolve(listener)
     })
-    returnObject.listener = listener
   })
-})
 
-module.exports = { app, server: promise }
+  return { app, listener, port }
+}
+
+module.exports = { app, server: start() }
