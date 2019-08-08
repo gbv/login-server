@@ -108,13 +108,15 @@ function getUserFromSession(sessionID) {
     // Get session from sessionID
     mongoStore.get(sessionID, (localError, session) => {
       if (localError || !session.passport.user) {
-        reject()
+        // Relay error to Promise
+        reject(localError || new Error("No passport user."))
       } else {
         // Get user from session
         User.findById(session.passport.user).then(user => {
           resolve(user)
-        }).catch(() => {
-          reject()
+        }).catch(error => {
+          // Relay error to Promise
+          reject(error)
         })
       }
     })
