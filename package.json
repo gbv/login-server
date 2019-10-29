@@ -34,7 +34,7 @@
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
     "connect-flash": "^0.1.1",
-    "connect-mongo": "^2.0.3",
+    "connect-mongo": "^3.1.0",
     "cookie-parser": "^1.4.3",
     "dotenv": "^6.2.0",
     "ejs": "^2.6.1",
