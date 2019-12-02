@@ -24,10 +24,16 @@ const verify = (req, token, tokenSecret, profile, done) => {
       } else {
         // Create new user
         let id = utils.uuid()
+        // Determine name
+        let name = profile.name
+        if (!name) {
+          // Fallback to username/id@provider
+          name = `${profile.username || profile.id}@${profile.provider}`
+        }
         user = new User({
           _id: id,
           uri: `${config.baseUrl}/users/${id}`,
-          name: profile.name,
+          name,
           identities: {
             [profile.provider]: _.omit(profile, ["provider"])
           }
