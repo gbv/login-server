@@ -181,13 +181,13 @@ app.use("/static", express.static("static"))
  * ##### Express Route Setup #####
  */
 
-const portfinder = require("portfinder")
 const fs = require("fs")
 const path = require("path")
 
 const start = async () => {
   // Port is defined at the top of the file
   if (config.env == "test") {
+    const portfinder = require("portfinder")
     portfinder.basePort = port || 3000
     port = await portfinder.getPortPromise()
   }

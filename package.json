@@ -46,7 +46,6 @@
     "inquirer": "^7.1.0",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.15",
-    "mocha-eslint": "^6.0.0",
     "mongoose": "^5.9.4",
     "node-rsa": "^1.0.7",
     "passport": "^0.4.1",
@@ -55,15 +54,16 @@
     "passport-local": "^1.0.0",
     "passport-mediawiki-oauth": "git+https://github.com/milimetric/passport-mediawiki-oauth.git",
     "passport-orcid": "0.0.4",
-    "passport-stack-exchange": "^1.0.0",
-    "portfinder": "^1.0.25"
+    "passport-stack-exchange": "^1.0.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",
     "eslint": "^6.8.0",
     "lint-staged": "^10.0.8",
     "mocha": "^7.1.0",
+    "mocha-eslint": "^6.0.0",
     "nodemon": "^2.0.2",
+    "portfinder": "^1.0.25",
     "pre-commit": "^1.2.2",
     "superagent": "^5.2.2",
     "supertest": "^4.0.2"
