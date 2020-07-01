@@ -61,6 +61,9 @@ npm install
 npm run indexes
 ```
 
+### Docker
+login-server is also available via Docker. Please refer to the documentation at https://hub.docker.com/repository/docker/coliconc/login-server for more details.
+
 ### Configuration
 
 If running the server behind a reverse proxy, make sure to include the  `X-Forwarded-Proto` header, allow all HTTP methods, and enable WebSocket proxying.
