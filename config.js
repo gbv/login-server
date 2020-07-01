@@ -32,8 +32,8 @@ const
   },
   rateLimitWindow = process.env.RATE_LIMIT_WINDOW || (60 * 1000),
   rateLimitMax = process.env.RATE_LIMIT_MAX || 10,
-  privateKeyPath = process.env.JTW_PRIVATE_KEY_PATH,
-  publicKeyPath = process.env.JTW_PUBLIC_KEY_PATH,
+  privateKeyPath = process.env.JTW_PRIVATE_KEY_PATH || "./private.key",
+  publicKeyPath = process.env.JTW_PUBLIC_KEY_PATH || "./public.key",
   jwtAlgorithm = process.env.JWT_ALGORITHM || "RS256",
   title = process.env.TITLE || "Login Server",
   packageData = require("./package.json"),
@@ -101,14 +101,14 @@ let config = {
 
 let privateKey, publicKey
 try {
-  privateKey = fs.readFileSync(privateKeyPath || "./private.key")
-  publicKey = fs.readFileSync(publicKeyPath || "./public.key")
+  privateKey = fs.readFileSync(privateKeyPath)
+  publicKey = fs.readFileSync(publicKeyPath)
   // Test keys by using jwt
   let testToken = jwt.sign({ test: "test" }, privateKey, config.jwtOptions)
   jwt.verify(testToken, publicKey)
   console.log("Loaded RSA keypair.")
 } catch(error) {
-  if (privateKeyPath || publicKeyPath || privateKey || publicKey) {
+  if (privateKey || publicKey) {
     let errorName = error.name
     let errorCode = error.code
     if (errorName === "Error" && errorCode === "ENOENT") {
@@ -120,14 +120,14 @@ try {
     }
     process.exit(1)
   }
-  console.log("Generating new keypair and saving to `./private.key` and `./public.key`...")
+  console.log(`Generating new keypair and saving to \`${privateKeyPath}\` and \`${publicKeyPath}\`...`)
   let key = new rsa({ b: 2048 })
   privateKey = key.exportKey("private")
   publicKey = key.exportKey("public")
   // Backup existing key files
-  for (let filename of ["./private", "./public"]) {
+  for (let filename of [privateKeyPath, publicKeyPath]) {
     let index = 0
-    let file = (index) => filename + (index ? `.backup.${index}` : "") + ".key"
+    let file = (index) => filename + (index ? `.backup.${index}.key` : "")
     while (fs.existsSync(file(index))) {
       index += 1
     }
@@ -137,10 +137,10 @@ try {
     }
   }
   // Save keys to files
-  fs.writeFileSync("./private.key", privateKey)
-  fs.chmodSync("./private.key", "600")
-  fs.writeFileSync("./public.key", publicKey)
-  fs.chmodSync("./public.key", "644")
+  fs.writeFileSync(privateKeyPath, privateKey)
+  fs.chmodSync(privateKeyPath, "600")
+  fs.writeFileSync(publicKeyPath, publicKey)
+  fs.chmodSync(publicKeyPath, "644")
 }
 config.privateKey = privateKey
 config.publicKey = publicKey
