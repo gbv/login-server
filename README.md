@@ -115,6 +115,8 @@ JWT_EXPIRES_IN=
 IMPRINT_URL=
 PRIVACY_URL=
 SOURCES_URL=
+# the path to the providers.json file, default: ./providers.json
+PROVIDERS_PATH=
 ```
 
 #### `providers.json`
@@ -280,6 +282,8 @@ The following is an example `providers.json` that shows how to configure each of
 ```
 
 To configure local providers, please use the provided script under `bin/manage-local.js`. It will allow you to create/delete local providers, and create/delete users for local providers.
+
+You can adjust the path to the `providers.json` file with `PROVIDERS_PATH` in `.env`.
 
 **Notes about using the MediaWiki provider:**
 - If your consumer is limited to a specific instance (e.g. Wikidata only), you need to provide the baseURL for that instance in the options, for example: `"baseURL": "https://www.wikidata.org/"`.

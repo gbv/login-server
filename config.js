@@ -153,7 +153,7 @@ config.key = new rsa(privateKey)
 if (env != "test") {
   // Load providers
   try {
-    config.providers = require("./providers.json")
+    config.providers = require(process.env.PROVIDERS_PATH || "./providers.json")
   } catch(error) {
     config.providers = []
   }

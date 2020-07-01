@@ -5,8 +5,16 @@
  */
 
 const connection = require("./db")
-const providers = require("../providers.json")
 const User = require("../models/user")
+
+require("dotenv").config()
+let providersFile = process.env.PROVIDERS_PATH || "./providers.json"
+if (providersFile.startsWith("./")) {
+  providersFile = providersFile.replace("./", "../")
+} else if (!providersFile.startsWith("/")) {
+  providersFile = `../${providersFile}`
+}
+const providers = require(providersFile)
 
 connection.then(_db => {
   db = _db
