@@ -2,8 +2,7 @@
  * Configuration
  *
  * A .env file is required.
- * Required keys: PORT
- * Recommennded keys: BASE_URL, NODE_ENV, SESSION_SECRET
+ * Recommennded keys: PORT, BASE_URL, NODE_ENV, SESSION_SECRET
  * Optional keys: MONGO_USER, MONGO_PASS, MONGO_HOST, MONGO_PORT, MONGO_DB, RATE_LIMIT_WINDOW, RATE_LIMIT_MAX
  *
  */
@@ -15,8 +14,8 @@ const jwt = require("jsonwebtoken")
 
 const
   env = process.env.NODE_ENV || "development",
-  baseUrl = process.env.BASE_URL || `http://localhost${process.env.PORT ? ":" + process.env.PORT : ""}`,
-  port = process.env.PORT,
+  port = parseInt(process.env.PORT) || 3004,
+  baseUrl = process.env.BASE_URL || `http://localhost${port != 80 ? ":" + port : ""}`,
   sessionSecret = process.env.SESSION_SECRET || "keyboard cat",
   mongoUser = process.env.MONGO_USER || "",
   mongoPass = process.env.MONGO_PASS || "",

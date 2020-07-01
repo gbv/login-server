@@ -71,7 +71,7 @@ You need to provide two configuration files:
 To configure the application:
 
 ```bash
-# required, port for express
+# recommended, port for express, default: 3004
 PORT=
 # recommended, full base URL without trailing slash, default: http://localhost[:PORT]
 # (required when used in production)
