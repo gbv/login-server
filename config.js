@@ -168,6 +168,12 @@ if (env != "test") {
   const providersFile = process.env.PROVIDERS_PATH || "./providers.json"
   try {
     config.providers = require(providersFile)
+    if (!Array.isArray(config.providers)) {
+      throw new Error("providers.json has to contain an array.")
+    }
+    if (!config.providers.length) {
+      console.warn("Warning: No providers configured. Refer to the documentation on how to configure providers: https://github.com/gbv/login-server#providers")
+    }
   } catch(error) {
     console.error(`Error: Missing or invalid providers.json at ${providersFile}; aborting startup. Please consult the documentation.`)
     process.exit(1)
