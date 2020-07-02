@@ -35,7 +35,6 @@ db.on("connected", () => {
 })
 db.on("disconnected", () => {
   console.warn("Disconnected from database")
-  setTimeout(connect, 2500)
 })
 
 module.exports = db
