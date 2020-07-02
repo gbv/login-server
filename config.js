@@ -38,8 +38,8 @@ const
   title = process.env.TITLE || "Login Server",
   packageData = require("./package.json"),
   urls = {
-    imprint: process.env.IMPRINT_URL || "https://www.gbv.de/impressum",
-    privacy: process.env.PRIVACY_URL || "https://www.gbv.de/datenschutz",
+    imprint: process.env.IMPRINT_URL,
+    privacy: process.env.PRIVACY_URL,
     sources: process.env.SOURCES_URL || packageData.homepage || "https://github.com/gbv/login-server"
   },
   cookieMaxDays = process.env.COOKIE_MAX_DAYS || 30,
@@ -70,6 +70,14 @@ let jwtExpiresIn = parseInt(process.env.JWT_EXPIRES_IN) || 120
 if (jwtExpiresIn < 10) {
   console.warn("Warning: Minimum for JWT_EXPIRES_IN is 10 seconds.")
   jwtExpiresIn = 10
+}
+
+// Show warning if there is no imprint/privacy URL
+if (!urls.imprint) {
+  console.warn("Warning: IMPRINT_URL is not configured.")
+}
+if (!urls.privacy) {
+  console.warn("Warning: PRIVACY_URL is not configured.")
 }
 
 let config = {

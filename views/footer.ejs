@@ -11,12 +11,16 @@
     </style>
     <div class="card-footer footer">
       <div>
+        <% if (config.urls.privacy) { %>
         <div>
           <a href="<%= config.urls.privacy %>" target="_blank">Datenschutz</a>
         </div>
+        <% } %>
+        <% if (config.urls.imprint) { %>
         <div>
           <a href="<%= config.urls.imprint %>" target="_blank">Impressum</a>
         </div>
+        <% } %>
         <div>
           <a href="<%= config.urls.sources %>" target="_blank">Sources</a>
         </div>

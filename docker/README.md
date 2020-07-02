@@ -76,8 +76,8 @@ There are a number of environment variables that can be used to configure login-
 | `ALLOWED_ORIGINS`    | List of allowed origins separated by comma. Provide the domain origins of all your applications that will use login-server here. | https://example.com         |
 | `NODE_ENV`           | Should be set to `production` if used in production.                                                                             | production                  |
 | `SESSION_SECRET`     | Secret used to secure sessions.                                                                                                  | some-random-string          |
-| `IMPRINT_URL`        | URL to your imprint                                                                                                              | https://example.com/imprint |
-| `PRIVACY_URL`        | URL to your privacy policy                                                                                                       | https://example.com/privacy |
+| `IMPRINT_URL`        | Strongly recommended: URL to your imprint                                                                                        | https://example.com/imprint |
+| `PRIVACY_URL`        | Strongly recommended: URL to your privacy policy                                                                                 | https://example.com/privacy |
 
 The full list of environment variables can be found [here](https://github.com/gbv/login-server#env). Depending on your MongoDB configuration, you might need to adjust the respective variables. Please do not override `JTW_PRIVATE_KEY_PATH`, `JTW_PUBLIC_KEY_PATH`, and `PROVIDERS_PATH`, as these refer to files inside the container.
 

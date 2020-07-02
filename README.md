@@ -85,6 +85,9 @@ TITLE=My Login Server
 ALLOWED_ORIGINS=
 # required for some strategies to enable production mode, default: development
 NODE_ENV=production
+# strongly recommended, imprint and privacy URLs for footer and clients
+IMPRINT_URL=
+PRIVACY_URL=
 # recommended, secret used by the session
 SESSION_SECRET=
 # optional, maximum number of days a session is valid (rolling), default: 30
@@ -114,9 +117,7 @@ JTW_PUBLIC_KEY_PATH=
 JWT_ALGORITHM=
 # expiration time of JWTs in seconds, default: 120, min: 10
 JWT_EXPIRES_IN=
-# URLs for footer
-IMPRINT_URL=
-PRIVACY_URL=
+# URL for Sources, default: https://github.com/gbv/login-server
 SOURCES_URL=
 # the path to the providers.json file, default: ./providers.json
 PROVIDERS_PATH=
