@@ -42,7 +42,7 @@ services:
 
 ```
 
-Then start the application using `docker-compose up`. This will create and start a login-server container running under host port 3004 with data persistence under `./data`:
+Then start the application using `docker-compose up -d`. This will create and start a login-server container running under host port 3004 with data persistence under `./data`:
 
 - `./data/config`: configuration files required for login-server (in particular: `private.key`, `public.key`, and `providers.json`), see below
 - `./data/static`: static files, e.g. for provider images
@@ -51,7 +51,9 @@ Then start the application using `docker-compose up`. This will create and start
 You can now access the application under `http://localhost:3004`.
 
 ## Application Setup
-Note: After adjusting any configurations, it is required to restart the application: `docker-compose restart`
+Note: After adjusting any configurations, it is required to restart or recreate the container:
+- After changing configuration files or static files, restart the container: `docker-compose restart login-server`
+- After changing `docker-compose.yml` (e.g. adjusting environment variables), recreate the container: `docker-compose up -d`
 
 ### Configuration Files
 The folder `/config` (mounted as `./data/config` if configured as above) contains three important files related to the configuration of login-server:
@@ -69,7 +71,7 @@ There are a number of environment variables that can be used to configure login-
 
 | Environment Variable | Description                                                                                                                      | Example Value               |
 |----------------------|----------------------------------------------------------------------------------------------------------------------------------|-----------------------------|
-| `BASE_URL`           | Full base URL without trailing slash. Required when used behind reverse proxy.                                                   | https://example.com/login   |
+| `BASE_URL`           | Full base URL without trailing slash. Required when used behind reverse proxy or when using a different host port.               | https://example.com/login   |
 | `TITLE`              | Title of application (shown in header)                                                                                           | My Login Server             |
 | `ALLOWED_ORIGINS`    | List of allowed origins separated by comma. Provide the domain origins of all your applications that will use login-server here. | https://example.com         |
 | `NODE_ENV`           | Should be set to `production` if used in production.                                                                             | production                  |
