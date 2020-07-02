@@ -32,7 +32,7 @@ const verify = (req, token, tokenSecret, profile, done) => {
         }
         user = new User({
           _id: id,
-          uri: `${config.baseUrl}/users/${id}`,
+          uri: `${config.baseUrl}users/${id}`,
           name,
           identities: {
             [profile.provider]: _.omit(profile, ["provider"])

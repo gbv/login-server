@@ -170,7 +170,7 @@ function updateLoginButtons() {
   }
   // Show logout button if user is logged in
   if (client.user) {
-    let url = `<%= baseUrl %>/logout`
+    let url = `<%= baseUrl %>logout`
     loginButtonsEl.innerHTML += `<button class="btn btn-primary btn-block btn-sm" id="providerButton-logout">Logout (${client.user.name})</>`
     document.getElementById("providerButton-logout").onclick = () => {
       windowManager.open(url, LoginClient.events.logout)

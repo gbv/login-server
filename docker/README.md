@@ -71,7 +71,7 @@ There are a number of environment variables that can be used to configure login-
 
 | Environment Variable | Description                                                                                                                      | Example Value               |
 |----------------------|----------------------------------------------------------------------------------------------------------------------------------|-----------------------------|
-| `BASE_URL`           | Full base URL without trailing slash. Required when used behind reverse proxy or when using a different host port.               | https://example.com/login   |
+| `BASE_URL`           | Full base URL of the application. Required when used behind reverse proxy or when using a different host port.                   | https://example.com/login/  |
 | `TITLE`              | Title of application (shown in header)                                                                                           | My Login Server             |
 | `ALLOWED_ORIGINS`    | List of allowed origins separated by comma. Provide the domain origins of all your applications that will use login-server here. | https://example.com         |
 | `NODE_ENV`           | Should be set to `production` if used in production.                                                                             | production                  |

@@ -41,7 +41,7 @@ module.exports = app => {
           res.status(403).json({ status: 403, message: "Unauthorized access to user data." })
         }
       } else {
-        let uri = `${config.baseUrl}/users/${req.params.id}`
+        let uri = `${config.baseUrl}users/${req.params.id}`
         User.findOne({ merged: uri }).then(user => {
           if (user) {
             res.redirect(`/users/${user.id}`)

@@ -14,8 +14,9 @@ const jwt = require("jsonwebtoken")
 
 const
   env = process.env.NODE_ENV || "development",
-  port = parseInt(process.env.PORT) || 3004,
-  baseUrl = process.env.BASE_URL || `http://localhost${port != 80 ? ":" + port : ""}`,
+  port = parseInt(process.env.PORT) || 3004
+let baseUrl = process.env.BASE_URL || `http://localhost${port != 80 ? ":" + port : ""}`
+const
   sessionSecret = process.env.SESSION_SECRET || "keyboard cat",
   mongoUser = process.env.MONGO_USER || "",
   mongoPass = process.env.MONGO_PASS || "",
@@ -47,6 +48,11 @@ const
 
 let allowedOrigins = (process.env.ALLOWED_ORIGINS || "").split(",").filter(origin => origin != "")
 
+// Make sure baseUrl has a trailing slash
+if (!baseUrl.endsWith("/")) {
+  baseUrl += "/"
+}
+
 let purl = url.parse(baseUrl)
 if (!["http:", "https:"].includes(purl.protocol) || !purl.slashes || !purl.hostname) {
   console.error("Please provide a full BASE_URL in .env.")
@@ -57,7 +63,7 @@ console.log("Allowed origins:", allowedOrigins.join(", "))
 
 // Add base URL without protocol and information about SSL
 const
-  cleanUrl = baseUrl.replace(`${purl.protocol}//`, "") + "/",
+  cleanUrl = baseUrl.replace(`${purl.protocol}//`, ""),
   ssl = purl.protocol == "https:"
 
 let jwtExpiresIn = parseInt(process.env.JWT_EXPIRES_IN) || 120
@@ -68,7 +74,7 @@ if (jwtExpiresIn < 10) {
 
 let config = {
   env,
-  baseUrl: baseUrl.endsWith("/") ? baseUrl.substring(0, baseUrl.length - 1) : baseUrl,
+  baseUrl,
   cleanUrl,
   ssl,
   port,
@@ -159,20 +165,20 @@ if (env != "test") {
   // Prepare providers
   let imageFormats = ["svg", "png", "jpg"]
   for (let provider of config.providers) {
-    provider.loginURL = `${baseUrl}/login/${provider.id}`,
-    provider.callbackURL = `${baseUrl}/login/${provider.id}/return`
+    provider.loginURL = `${baseUrl}login/${provider.id}`,
+    provider.callbackURL = `${baseUrl}login/${provider.id}/return`
     // Add image URL if a file for that provider can be found
     if (!provider.image) {
       for (let format of imageFormats) {
         let file = `static/${provider.id}.${format}`
         if (fs.existsSync(file)) {
-          provider.image = `${baseUrl}/${file}`
+          provider.image = `${baseUrl}${file}`
           break
         }
       }
     } else if (!provider.image.startsWith("http")) {
       // If it's a relative URL, prepend the baseUrl
-      provider.image = `${baseUrl}/${provider.image}`
+      provider.image = `${baseUrl}${provider.image}`
     }
   }
 } else {

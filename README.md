@@ -76,8 +76,8 @@ To configure the application:
 ```bash
 # recommended, port for express, default: 3004
 PORT=
-# recommended, full base URL without trailing slash, default: http://localhost[:PORT]
-# (required when used in production)
+# recommended, full base URL, default: http://localhost[:PORT]/
+# (required when used in production or behind a reverse proxy)
 BASE_URL=
 # title of application (will be shown in header)
 TITLE=My Login Server

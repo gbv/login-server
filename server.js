@@ -53,7 +53,7 @@ app.use(require("helmet")())
 app.use((req, res, next) => {
   let redirect = res.redirect
   res.redirect = target => {
-    target = config.baseUrl + (target.startsWith("/") ? "" : "/") + target
+    target = config.baseUrl + (target.startsWith("/") ? target.slice(1) : target)
     redirect.call(res, target)
   }
   next()

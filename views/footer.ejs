@@ -28,15 +28,15 @@
         </div>
         <% } %>
         <div>
-          <a href="<%= baseUrl %>/sessions">Sessions</a>
+          <a href="<%= baseUrl %>sessions">Sessions</a>
         </div>
         <div>
-          <a href="<%= baseUrl %>/api">API</a>
+          <a href="<%= baseUrl %>api">API</a>
         </div>
       </div>
       <div>
         <% if (user) { %>
-        <form method="get" action="<%= baseUrl %>/delete" style="width: 100%; text-align: center;">
+        <form method="get" action="<%= baseUrl %>delete" style="width: 100%; text-align: center;">
           <button type="submit" class="btn btn-link text-danger">Delete User Account</button>
         </form>
         <% } %>

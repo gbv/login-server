@@ -33,14 +33,14 @@ h3 > a:hover {
   <div class="card mainCard">
     <div class="card-header" style="display: flex;">
       <div style="flex: 1;">
-        <h3><a href="<%= baseUrl %>/"><%= config.title %></a></h3>
+        <h3><a href="<%= baseUrl %>"><%= config.title %></a></h3>
       </div>
       <div style="flex: 1; text-align: right;">
         <% if (user) { %>
-          Logged in as <a href="<%= baseUrl %>/account"><%= user.name %></a><br>
-          <a href="<%= baseUrl %>/logout" class="btn btn-danger btn-sm mt-2">Logout</a>
+          Logged in as <a href="<%= baseUrl %>account"><%= user.name %></a><br>
+          <a href="<%= baseUrl %>logout" class="btn btn-danger btn-sm mt-2">Logout</a>
         <% } else if (showLoginButton) { %>
-          <a href="<%= baseUrl %>/login">Login</a>
+          <a href="<%= baseUrl %>login">Login</a>
         <% } %>
       </div>
     </div>
