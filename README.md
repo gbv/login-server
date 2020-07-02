@@ -492,9 +492,27 @@ socket.addEventListener("message", (message) => {
 ## Contribute
 PRs accepted.
 
+- Please use the `dev` branch as a basis. Changes from `dev` will be merged into `master` only for new releases.
 - Please run the tests before committing.
 - Please do not skip the pre-commit hook when committing your changes.
 - If editing the README, please conform to the [standard-readme](https://github.com/RichardLitt/standard-readme) specification.
+
+### Publish
+**For maintainers only**
+
+Never work on the master branch directly. Always make changes on `dev` and then merge for a release:
+
+```bash
+# Create a new version (patch/minor/major)
+npm version patch
+# Push dev
+git push
+# Merge into master (should fast-forward merge)
+git checkout master
+git merge dev
+# Push master with tags
+git push --tags origin master
+```
 
 ## License
 MIT © 2019 Verbundzentrale des GBV (VZG)
