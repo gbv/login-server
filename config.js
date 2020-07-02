@@ -165,10 +165,12 @@ config.key = new rsa(privateKey)
 
 if (env != "test") {
   // Load providers
+  const providersFile = process.env.PROVIDERS_PATH || "./providers.json"
   try {
-    config.providers = require(process.env.PROVIDERS_PATH || "./providers.json")
+    config.providers = require(providersFile)
   } catch(error) {
-    config.providers = []
+    console.error(`Error: Missing or invalid providers.json at ${providersFile}; aborting startup. Please consult the documentation.`)
+    process.exit(1)
   }
   // Prepare providers
   let imageFormats = ["svg", "png", "jpg"]
