@@ -11,7 +11,7 @@ Currently, only `x86-64` is supported, but we are planning to add more architect
 ## Available Tags
 - The current release version is available under `latest`. However, new major versions might break compatibility of the previously used config file, therefore it is recommended to use a version tag instead.
 - We follow SemVer for versioning the application. Therefore, `x` offers the latest image for the major version x, `x.y` offers the latest image for the minor version x.y, and `x.y.z` offers the image for a specific patch version x.y.z.
-<!-- - Additionally, the latest development version is available under `dev`. -->
+- Additionally, the latest development version is available under `dev`.
 
 ## Usage
 It is recommended to run the image using [docker-compose](https://docs.docker.com/compose/) together with the required MongoDB database.
