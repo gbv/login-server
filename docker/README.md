@@ -59,7 +59,7 @@ Note: After adjusting any configurations, it is required to restart or recreate 
 The folder `/config` (mounted as `./data/config` if configured as above) contains three important files related to the configuration of login-server:
 - `private.key`: The RSA private key used to generate JWTs. If not provided, login-server will generate a keypair for you.
 - `public.key`: The RSA public key that is used to decode JWTs. This is supposed to be shared with other applications. If not provided, login-server will generate a keypair for you.
-- `providers.json`: A list (= JSON array) of configured providers. Please refer to the [GitHub README](https://github.com/gbv/login-server#providers) on how to configure providers. You might have to create this file yourself.
+- `providers.json`: A list (= JSON array) of configured providers. Please refer to the [GitHub README](https://github.com/gbv/login-server#providers) on how to configure providers. An empty providers.json file will be created on first startup; however, as there will be no providers available, login-server will not be usable without configuring at least one provider.
 
 It is possible to configure local providers (i.e. authentication using username/password). Please use the included script for this:
 ```bash
