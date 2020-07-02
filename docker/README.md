@@ -17,6 +17,7 @@ Currently, only `x86-64` is supported, but we are planning to add more architect
 It is recommended to run the image using [Docker Compose](https://docs.docker.com/compose/) together with the required MongoDB database. Note that depending on your system, it might be necessary to use `sudo docker-compose`.
 
 1. Create `docker-compose.yml`:
+
 ```yml
 version: "3"
 
@@ -46,11 +47,13 @@ services:
 ```
 
 2. Create data folders:
+
 ```bash
 mkdir -p ./data/{config,static,db}
 ```
 
 3. Start the application:
+
 ```bash
 docker-compose up -d
 ```
