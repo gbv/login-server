@@ -14,15 +14,17 @@ Currently, only `x86-64` is supported, but we are planning to add more architect
 - Additionally, the latest development version is available under `dev`.
 
 ## Usage
-It is recommended to run the image using [docker-compose](https://docs.docker.com/compose/) together with the required MongoDB database.
+It is recommended to run the image using [Docker Compose](https://docs.docker.com/compose/) together with the required MongoDB database. Note that depending on your system, it might be necessary to use `sudo docker-compose`.
 
-`docker-compose.yml`:
+1. Create `docker-compose.yml`:
 ```yml
 version: "3"
 
 services:
   login-server:
     image: coliconc/login-server
+    # replace this with your UID/GID if necessary (id -u; id -g); remove on macOS/Windows
+    user: 1000:1000
     depends_on:
       - mongo
     volumes:
@@ -36,17 +38,30 @@ services:
 
   mongo:
     image: mongo:4
+    # replace this with your UID/GID if necessary (id -u; id -g); remove on macOS/Windows
+    user: 1000:1000
     volumes:
       - ./data/db:/data/db
     restart: always
-
 ```
 
-Then start the application using `docker-compose up -d`. This will create and start a login-server container running under host port 3004 with data persistence under `./data`:
+2. Create data folders:
+```bash
+mkdir -p ./data/{config,static,db}
+```
+
+3. Start the application:
+```bash
+docker-compose up -d
+```
+
+This will create and start a login-server container running under host port 3004 with data persistence under `./data`:
 
 - `./data/config`: configuration files required for login-server (in particular: `private.key`, `public.key`, and `providers.json`), see below
 - `./data/static`: static files, e.g. for provider images
 - `./data/db`: data of the MongoDB container (note: make sure MongoDB data persistence works with your system, see section "Where to Store Data" [here](https://hub.docker.com/_/mongo))
+
+Note that the `user` directives in the compose file make sure that the generated files are owned by your host user account. Use `id -u`/`id -g` to find out your UID/GID respectively, or remove the directives if you are using Docker on macOS/Windows.
 
 You can now access the application under `http://localhost:3004`.
 
