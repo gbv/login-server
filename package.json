@@ -43,7 +43,7 @@
     "helmet": "^3.23.3",
     "inquirer": "^7.3.0",
     "jsonwebtoken": "^8.5.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "mongoose": "^5.9.21",
     "node-rsa": "^1.0.8",
     "passport": "^0.4.1",
