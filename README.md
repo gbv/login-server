@@ -513,6 +513,8 @@ git checkout master
 git merge dev
 # Push master with tags
 git push --tags origin master
+# Go back to dev
+git checkout dev
 ```
 
 ## License
