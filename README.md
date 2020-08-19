@@ -62,7 +62,7 @@ npm run indexes
 ```
 
 ### Docker
-login-server is also available via Docker. Please refer to the documentation at https://hub.docker.com/repository/docker/coliconc/login-server for more details.
+login-server is also available via Docker. Please refer to the documentation at https://hub.docker.com/r/coliconc/login-server for more details.
 
 ### Configuration
 
