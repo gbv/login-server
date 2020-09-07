@@ -47,7 +47,10 @@ const express = require("express")
 let app = express()
 
 // Use helmet to set important http headers
-app.use(require("helmet")())
+app.use(require("helmet")({
+  // TODO: Craft an appropriate CSP (with default, inline JS on webpages won't work)
+  contentSecurityPolicy: false,
+}))
 
 // Rewrite res.redirect to always prepend baseUrl
 app.use((req, res, next) => {
