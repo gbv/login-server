@@ -1,9 +1,14 @@
 <%- include('header'); -%>
 
 <!-- Template for account deletion page -->
-<div class="text-danger" style="margin-top: 30px; margin-bottom: 20px;">
-  Do you really want to delete your user account? All your data will be immediately removed from the database and is not recoverable.
-</div>
+<p class="text-danger" style="margin-top: 30px; margin-bottom: 20px;">
+  Do you really want to delete your user account? You will lose access to associated applications. All your data will be
+  immediately removed from the database and is not recoverable.
+</p>
+<p>
+  <b>Note</b> that data from associated applications (e.g. Cocoda and its mapping database) will <b>not</b> be deleted
+  when deleting your user account. Please delete that data before deleting your user account.
+</p>
 <form method="post" action="">
   <div class="form-group form-check">
     <label class="form-check-label">
