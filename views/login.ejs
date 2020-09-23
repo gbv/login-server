@@ -7,12 +7,18 @@
 </p>
 
 <% config.providers.forEach(provider => { %>
-<a class="btn btn-light btn-block" href="<%= baseUrl %>login/<%= provider.id %>">
-  <% if (provider.image) { %>
-  <img src="<%= provider.image %>" height="20px" style="margin-right: 5px;" />
-  <% } %>
-  Login via <%= provider.name %>
-</a>
+<p>
+  <a class="btn btn-light btn-block" href="<%= baseUrl %>login/<%= provider.id %>">
+    <% if (provider.image) { %>
+    <img src="<%= provider.image %>" height="20px" style="margin-right: 5px;" />
+    <% } %>
+    Login via <%= provider.name %>
+  </a>
+</p>
 <% }) %>
+
+<p>
+  If necessary, a new user account will be created on first login.
+</p>
 
 <%- include('footer'); -%>
