@@ -111,8 +111,8 @@ RATE_LIMIT_WINDOW=
 # the rate limit tries, default: 10
 RATE_LIMIT_MAX=
 # a jsonwebtoken compatible keypair
-JTW_PRIVATE_KEY_PATH=
-JTW_PUBLIC_KEY_PATH=
+JWT_PRIVATE_KEY_PATH=
+JWT_PUBLIC_KEY_PATH=
 # the jsonwebtoken algorithm used
 JWT_ALGORITHM=
 # expiration time of JWTs in seconds, default: 120, min: 10
@@ -298,7 +298,7 @@ login-server offers JSON Web Tokens that can be used to authenticate against oth
 
 By default, a new RSA keypair is generated when the application is first started (2048 bits, using [node-rsa](https://github.com/rzcoder/node-rsa)). This generated keypair will by default be available in `./private.key` and `./public.key`. You can give the `./public.key` file to any other service that needs to verify the tokens. Alternatively, the currently used public key is offered at the [/about endpoint](#get-about).
 
-You can also provide a custom path for the key files by setting `JTW_PRIVATE_KEY_PATH` and `JTW_PUBLIC_KEY_PATH` in `.env`. If one or both of the keys can't be found, the keys will be generated. By default, the `RS256` algorithm is used, but any other public key algorithm can be used by setting `JWT_ALGORITHM`.
+You can also provide a custom path for the key files by setting `JWT_PRIVATE_KEY_PATH` and `JWT_PUBLIC_KEY_PATH` in `.env`. If one or both of the keys can't be found, the keys will be generated. By default, the `RS256` algorithm is used, but any other public key algorithm can be used by setting `JWT_ALGORITHM`.
 
 By default, each token is valid for 120 seconds. You can adjust this by setting `JWT_EXPIRES_IN` in `.env`.
 
