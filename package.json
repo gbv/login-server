@@ -15,7 +15,11 @@
     "test": "NODE_ENV=test mocha --exit --timeout 10000 --slow 2000",
     "start": "nodemon server.js",
     "lint-staged": "lint-staged",
-    "indexes": "node utils/addIndexes.js"
+    "indexes": "node utils/addIndexes.js",
+    "release": "git checkout dev && git pull && npm test && npm version $SEMVER && git push && git checkout master && git merge dev && git push --follow-tags && git checkout dev",
+    "release:patch": "SEMVER=patch npm run release",
+    "release:minor": "SEMVER=minor npm run release",
+    "release:major": "SEMVER=major npm run release"
   },
   "lint-staged": {
     "**/*.js": [

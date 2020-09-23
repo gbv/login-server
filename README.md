@@ -501,20 +501,10 @@ PRs accepted.
 ### Publish
 **For maintainers only**
 
-Never work on the master branch directly. Always make changes on `dev` and then merge for a release:
+Never work on the master branch directly. Always make changes on `dev` and then run the release script:
 
 ```bash
-# Create a new version (patch/minor/major)
-npm version patch
-# Push dev
-git push
-# Merge into master (should fast-forward merge)
-git checkout master
-git merge dev
-# Push master with tags
-git push --tags origin master
-# Go back to dev
-git checkout dev
+npm run release:patch # or minor or major
 ```
 
 ## License
