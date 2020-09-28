@@ -139,6 +139,8 @@ The HTTP API and WebSocket allow client applications to interact with the login 
 
 The login server can further be used to authenticate users against other services so users can proof their identities.
 
+[login-client](https://github.com/gbv/login-client) is a JavaScript browser library specifically made to interact with login-server. It is recommended to use it instead of working directly with the API. It can be seen in action [here](https://coli-conc.gbv.de/login/api) ([source for that site](https://github.com/gbv/login-server/blob/master/views/api.ejs)).
+
 ## Test
 Tests use the same MongoDB as configured in `.env`, just with the postfix `-test` after the database name.
 
