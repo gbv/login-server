@@ -1,6 +1,6 @@
 {
   "name": "login-server",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Login Server",
   "homepage": "https://github.com/gbv/login-server",
   "repository": {
