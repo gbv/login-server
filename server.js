@@ -139,8 +139,9 @@ app.use(session({
   rolling: true,
   store: mongoStore,
   cookie: {
+    sameSite: "none",
     secure,
-    maxAge: config.cookieMaxDays * 24 * 60 * 60 * 1000
+    maxAge: config.cookieMaxDays * 24 * 60 * 60 * 1000,
   }
 }))
 
