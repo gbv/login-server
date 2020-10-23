@@ -159,6 +159,10 @@ app.use(session({
   }
 }))
 
+// Remove Same-Site: None if browser is incompatible
+const { shouldSendSameSiteNone } = require("should-send-same-site-none")
+app.use(shouldSendSameSiteNone)
+
 // Passport
 app.use(passport.initialize())
 app.use(passport.session())

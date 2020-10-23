@@ -56,7 +56,8 @@
     "passport-local": "^1.0.0",
     "passport-mediawiki-oauth": "github:milimetric/passport-mediawiki-oauth#f521966",
     "passport-orcid": "0.0.4",
-    "passport-stack-exchange": "^1.0.0"
+    "passport-stack-exchange": "^1.0.0",
+    "should-send-same-site-none": "^2.0.5"
   },
   "devDependencies": {
     "chai": "^4.2.0",
