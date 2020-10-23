@@ -50,9 +50,19 @@ let app = express()
 app.use(require("helmet")({
   // TODO: Craft an appropriate CSP (with default, inline JS on webpages won't work)
   contentSecurityPolicy: {
+    // Adjusted from https://github.com/helmetjs/helmet/blob/d75632db7dece10210e3a1db1a36d6dec686697d/middlewares/content-security-policy/index.ts#L20-L32
     directives: {
-      scriptSrc: ["'self'", "'unsafe-inline'"],
-      frameAncestors: ["'self'"].concat(config.allowedOrigins),
+      "default-src": ["'self'"],
+      "base-uri": ["'self'"],
+      "block-all-mixed-content": [],
+      "font-src": ["'self'", "https:", "data:"],
+      "frame-ancestors": ["'self'"].concat(config.allowedOrigins),
+      "img-src": ["'self'", "data:"],
+      "object-src": ["'none'"],
+      "script-src": ["'self'", "'unsafe-inline'"],
+      "script-src-attr": ["'none'"],
+      "style-src": ["'self'", "https:", "'unsafe-inline'"],
+      "upgrade-insecure-requests": [],
     },
   },
   referrerPolicy: { policy: "strict-origin-when-cross-origin" },
