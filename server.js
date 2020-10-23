@@ -49,7 +49,13 @@ let app = express()
 // Use helmet to set important http headers
 app.use(require("helmet")({
   // TODO: Craft an appropriate CSP (with default, inline JS on webpages won't work)
-  contentSecurityPolicy: false,
+  contentSecurityPolicy: {
+    directives: {
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      frameAncestors: ["'self'"].concat(config.allowedOrigins),
+    },
+  },
+  referrerPolicy: { policy: "strict-origin-when-cross-origin" },
 }))
 
 // Rewrite res.redirect to always prepend baseUrl
