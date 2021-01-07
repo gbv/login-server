@@ -85,6 +85,7 @@ let config = {
   baseUrl,
   cleanUrl,
   ssl,
+  isLocal: !process.env.BASE_URL,
   port,
   database: {
     url: mongoUrl,

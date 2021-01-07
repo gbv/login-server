@@ -51,7 +51,7 @@ app.use(require("helmet")({
   contentSecurityPolicy: {
     // Adjusted from https://github.com/helmetjs/helmet/blob/d75632db7dece10210e3a1db1a36d6dec686697d/middlewares/content-security-policy/index.ts#L20-L32
     directives: {
-      "default-src": ["'self'"],
+      "default-src": ["'self'", config.ssl ? "wss:" : "ws:"],
       "base-uri": ["'self'"],
       "block-all-mixed-content": [],
       "font-src": ["'self'", "https:", "data:"],
@@ -118,10 +118,8 @@ app.use(bodyParser.json())
 
 // Cookies/Sessions
 app.use(require("cookie-parser")(config.sessionSecret))
-let secure = false
-// Use secure cookie and trust proxy when in production
-if (config.env != "development" && config.env != "test") {
-  secure = true
+// Trust proxy when used locally
+if (config.isLocal) {
   app.set("trust proxy", 1)
 }
 const session = require("express-session")
@@ -153,8 +151,8 @@ app.use(session({
   rolling: true,
   store: mongoStore,
   cookie: {
-    sameSite: secure ? "none" : null,
-    secure,
+    sameSite: config.ssl ? "none" : null,
+    secure: config.ssl,
     maxAge: config.cookieMaxDays * 24 * 60 * 60 * 1000,
   }
 }))
