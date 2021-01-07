@@ -47,21 +47,24 @@ const express = require("express")
 let app = express()
 
 // Use helmet to set important http headers
+// Adjusted from https://github.com/helmetjs/helmet/blob/d75632db7dece10210e3a1db1a36d6dec686697d/middlewares/content-security-policy/index.ts#L20-L32
+const directives = {
+  "default-src": ["'self'", config.ssl ? "wss:" : "ws:"],
+  "base-uri": ["'self'"],
+  "block-all-mixed-content": [],
+  "font-src": ["'self'", "https:", "data:"],
+  "frame-ancestors": ["'self'"],
+  "img-src": ["'self'", "data:"],
+  "object-src": ["'none'"],
+  "script-src": ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
+  "style-src": ["'self'", "https:", "'unsafe-inline'"],
+}
+if (config.ssl) {
+  directives["upgrade-insecure-requests"] = []
+}
 app.use(require("helmet")({
   contentSecurityPolicy: {
-    // Adjusted from https://github.com/helmetjs/helmet/blob/d75632db7dece10210e3a1db1a36d6dec686697d/middlewares/content-security-policy/index.ts#L20-L32
-    directives: {
-      "default-src": ["'self'", config.ssl ? "wss:" : "ws:"],
-      "base-uri": ["'self'"],
-      "block-all-mixed-content": [],
-      "font-src": ["'self'", "https:", "data:"],
-      "frame-ancestors": ["'self'"],
-      "img-src": ["'self'", "data:"],
-      "object-src": ["'none'"],
-      "script-src": ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
-      "style-src": ["'self'", "https:", "'unsafe-inline'"],
-      "upgrade-insecure-requests": [],
-    },
+    directives,
   },
   referrerPolicy: { policy: "strict-origin-when-cross-origin" },
 }))
