@@ -51,7 +51,7 @@
     "mongoose": "^5.11.10",
     "node-rsa": "^1.1.1",
     "passport": "^0.4.1",
-    "passport-easydb": "file:../passport-easydb",
+    "passport-easydb": "^0.1.0",
     "passport-github": "^1.1.0",
     "passport-ldapauth": "^3.0.1",
     "passport-local": "^1.0.0",
