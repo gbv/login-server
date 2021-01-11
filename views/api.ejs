@@ -25,7 +25,7 @@
 </style>
 
 <!-- login-client -->
-<script src="https://cdn.jsdelivr.net/gh/gbv/login-client/build/login-client.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gbv-login-client"></script>
 <!-- node-jsonwebtoken -->
 <script src="https://cdn.jsdelivr.net/gh/stefandesu/node-jsonwebtoken@master/build/jsonwebtoken.js"></script>
 
@@ -170,7 +170,7 @@ function updateLoginButtons() {
   }
   // Show logout button if user is logged in
   if (client.user) {
-    let url = `<%= baseUrl %>/logout`
+    let url = `<%= baseUrl %>logout`
     loginButtonsEl.innerHTML += `<button class="btn btn-primary btn-block btn-sm" id="providerButton-logout">Logout (${client.user.name})</>`
     document.getElementById("providerButton-logout").onclick = () => {
       windowManager.open(url, LoginClient.events.logout)

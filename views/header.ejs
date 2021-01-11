@@ -2,6 +2,9 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <% if (redirect) { %>
+      <meta http-equiv="refresh" content="<%= redirect.delay %>; url=<%= redirect.url %>">
+      <% } %>
     <title><%= config.title %></title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bootstrap.native@2.0.25/dist/bootstrap-native-v4.min.js"></script> -->
@@ -33,14 +36,14 @@ h3 > a:hover {
   <div class="card mainCard">
     <div class="card-header" style="display: flex;">
       <div style="flex: 1;">
-        <h3><a href="<%= baseUrl %>/"><%= config.title %></a></h3>
+        <h3><a href="<%= baseUrl %>"><%= config.title %></a></h3>
       </div>
       <div style="flex: 1; text-align: right;">
         <% if (user) { %>
-          Logged in as <a href="<%= baseUrl %>/account"><%= user.name %></a><br>
-          <a href="<%= baseUrl %>/logout" class="btn btn-danger btn-sm mt-2">Logout</a>
+          Logged in as <a href="<%= baseUrl %>account"><%= user.name %></a><br>
+          <a href="<%= baseUrl %>logout" class="btn btn-danger btn-sm mt-2">Logout</a>
         <% } else if (showLoginButton) { %>
-          <a href="<%= baseUrl %>/login">Login</a>
+          <a href="<%= baseUrl %>login">Login</a>
         <% } %>
       </div>
     </div>

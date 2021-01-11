@@ -6,3 +6,6 @@ providers.json
 
 # Ignore static files
 static/*
+
+# Add .env file for Docker
+!docker/.env

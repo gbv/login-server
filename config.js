@@ -2,8 +2,7 @@
  * Configuration
  *
  * A .env file is required.
- * Required keys: PORT
- * Recommennded keys: BASE_URL, NODE_ENV, SESSION_SECRET
+ * Recommennded keys: PORT, BASE_URL, NODE_ENV, SESSION_SECRET
  * Optional keys: MONGO_USER, MONGO_PASS, MONGO_HOST, MONGO_PORT, MONGO_DB, RATE_LIMIT_WINDOW, RATE_LIMIT_MAX
  *
  */
@@ -15,8 +14,9 @@ const jwt = require("jsonwebtoken")
 
 const
   env = process.env.NODE_ENV || "development",
-  baseUrl = process.env.BASE_URL || `http://localhost${process.env.PORT ? ":" + process.env.PORT : ""}`,
-  port = process.env.PORT,
+  port = parseInt(process.env.PORT) || 3004
+let baseUrl = process.env.BASE_URL || `http://localhost${port != 80 ? ":" + port : ""}`
+const
   sessionSecret = process.env.SESSION_SECRET || "keyboard cat",
   mongoUser = process.env.MONGO_USER || "",
   mongoPass = process.env.MONGO_PASS || "",
@@ -26,20 +26,20 @@ const
   mongoDb = (process.env.MONGO_DB || "login-server") + (env == "test" ? "-test" : ""),
   mongoUrl = `mongodb://${mongoAuth}${mongoHost}:${mongoPort}/${mongoDb}`,
   mongoOptions = {
-    reconnectTries: 5,
-    reconnectInterval: 1000,
-    useNewUrlParser: true
+    useNewUrlParser: true,
+    connectTimeoutMS: 5000,
+    socketTimeoutMS: 10000,
   },
   rateLimitWindow = process.env.RATE_LIMIT_WINDOW || (60 * 1000),
   rateLimitMax = process.env.RATE_LIMIT_MAX || 10,
-  privateKeyPath = process.env.JTW_PRIVATE_KEY_PATH,
-  publicKeyPath = process.env.JTW_PUBLIC_KEY_PATH,
+  privateKeyPath = process.env.JWT_PRIVATE_KEY_PATH || "./private.key",
+  publicKeyPath = process.env.JWT_PUBLIC_KEY_PATH || "./public.key",
   jwtAlgorithm = process.env.JWT_ALGORITHM || "RS256",
   title = process.env.TITLE || "Login Server",
   packageData = require("./package.json"),
   urls = {
-    imprint: process.env.IMPRINT_URL || "https://www.gbv.de/impressum",
-    privacy: process.env.PRIVACY_URL || "https://www.gbv.de/datenschutz",
+    imprint: process.env.IMPRINT_URL,
+    privacy: process.env.PRIVACY_URL,
     sources: process.env.SOURCES_URL || packageData.homepage || "https://github.com/gbv/login-server"
   },
   cookieMaxDays = process.env.COOKIE_MAX_DAYS || 30,
@@ -47,6 +47,11 @@ const
   sessionExpirationMessageInterval = process.env.SESSION_EXPIRATION_MESSAGE_INTERVAL || 5
 
 let allowedOrigins = (process.env.ALLOWED_ORIGINS || "").split(",").filter(origin => origin != "")
+
+// Make sure baseUrl has a trailing slash
+if (!baseUrl.endsWith("/")) {
+  baseUrl += "/"
+}
 
 let purl = url.parse(baseUrl)
 if (!["http:", "https:"].includes(purl.protocol) || !purl.slashes || !purl.hostname) {
@@ -58,7 +63,7 @@ console.log("Allowed origins:", allowedOrigins.join(", "))
 
 // Add base URL without protocol and information about SSL
 const
-  cleanUrl = baseUrl.replace(`${purl.protocol}//`, "") + "/",
+  cleanUrl = baseUrl.replace(`${purl.protocol}//`, ""),
   ssl = purl.protocol == "https:"
 
 let jwtExpiresIn = parseInt(process.env.JWT_EXPIRES_IN) || 120
@@ -67,11 +72,20 @@ if (jwtExpiresIn < 10) {
   jwtExpiresIn = 10
 }
 
+// Show warning if there is no imprint/privacy URL
+if (!urls.imprint) {
+  console.warn("Warning: IMPRINT_URL is not configured.")
+}
+if (!urls.privacy) {
+  console.warn("Warning: PRIVACY_URL is not configured.")
+}
+
 let config = {
   env,
-  baseUrl: baseUrl.endsWith("/") ? baseUrl.substring(0, baseUrl.length - 1) : baseUrl,
+  baseUrl,
   cleanUrl,
   ssl,
+  isLocal: !process.env.BASE_URL,
   port,
   database: {
     url: mongoUrl,
@@ -101,14 +115,14 @@ let config = {
 
 let privateKey, publicKey
 try {
-  privateKey = fs.readFileSync(privateKeyPath || "./private.key")
-  publicKey = fs.readFileSync(publicKeyPath || "./public.key")
+  privateKey = fs.readFileSync(privateKeyPath)
+  publicKey = fs.readFileSync(publicKeyPath)
   // Test keys by using jwt
   let testToken = jwt.sign({ test: "test" }, privateKey, config.jwtOptions)
   jwt.verify(testToken, publicKey)
   console.log("Loaded RSA keypair.")
 } catch(error) {
-  if (privateKeyPath || publicKeyPath || privateKey || publicKey) {
+  if (privateKey || publicKey) {
     let errorName = error.name
     let errorCode = error.code
     if (errorName === "Error" && errorCode === "ENOENT") {
@@ -120,14 +134,14 @@ try {
     }
     process.exit(1)
   }
-  console.log("Generating new keypair and saving to `./private.key` and `./public.key`...")
+  console.log(`Generating new keypair and saving to \`${privateKeyPath}\` and \`${publicKeyPath}\`...`)
   let key = new rsa({ b: 2048 })
   privateKey = key.exportKey("private")
   publicKey = key.exportKey("public")
   // Backup existing key files
-  for (let filename of ["./private", "./public"]) {
+  for (let filename of [privateKeyPath, publicKeyPath]) {
     let index = 0
-    let file = (index) => filename + (index ? `.backup.${index}` : "") + ".key"
+    let file = (index) => filename + (index ? `.backup.${index}.key` : "")
     while (fs.existsSync(file(index))) {
       index += 1
     }
@@ -137,10 +151,10 @@ try {
     }
   }
   // Save keys to files
-  fs.writeFileSync("./private.key", privateKey)
-  fs.chmodSync("./private.key", "600")
-  fs.writeFileSync("./public.key", publicKey)
-  fs.chmodSync("./public.key", "644")
+  fs.writeFileSync(privateKeyPath, privateKey)
+  fs.chmodSync(privateKeyPath, "600")
+  fs.writeFileSync(publicKeyPath, publicKey)
+  fs.chmodSync(publicKeyPath, "644")
 }
 config.privateKey = privateKey
 config.publicKey = publicKey
@@ -152,28 +166,36 @@ config.key = new rsa(privateKey)
 
 if (env != "test") {
   // Load providers
+  const providersFile = process.env.PROVIDERS_PATH || "./providers.json"
   try {
-    config.providers = require("./providers.json")
+    config.providers = require(providersFile)
+    if (!Array.isArray(config.providers)) {
+      throw new Error("providers.json has to contain an array.")
+    }
+    if (!config.providers.length) {
+      console.warn("Warning: No providers configured. Refer to the documentation on how to configure providers: https://github.com/gbv/login-server#providers")
+    }
   } catch(error) {
-    config.providers = []
+    console.error(`Error: Missing or invalid providers.json at ${providersFile}; aborting startup. Please consult the documentation.`)
+    process.exit(1)
   }
   // Prepare providers
   let imageFormats = ["svg", "png", "jpg"]
   for (let provider of config.providers) {
-    provider.loginURL = `${baseUrl}/login/${provider.id}`,
-    provider.callbackURL = `${baseUrl}/login/${provider.id}/return`
+    provider.loginURL = `${baseUrl}login/${provider.id}`,
+    provider.callbackURL = `${baseUrl}login/${provider.id}/return`
     // Add image URL if a file for that provider can be found
     if (!provider.image) {
       for (let format of imageFormats) {
         let file = `static/${provider.id}.${format}`
         if (fs.existsSync(file)) {
-          provider.image = `${baseUrl}/${file}`
+          provider.image = `${baseUrl}${file}`
           break
         }
       }
     } else if (!provider.image.startsWith("http")) {
       // If it's a relative URL, prepend the baseUrl
-      provider.image = `${baseUrl}/${provider.image}`
+      provider.image = `${baseUrl}${provider.image}`
     }
   }
 } else {

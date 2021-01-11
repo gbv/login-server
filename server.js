@@ -47,13 +47,33 @@ const express = require("express")
 let app = express()
 
 // Use helmet to set important http headers
-app.use(require("helmet")())
+// Adjusted from https://github.com/helmetjs/helmet/blob/d75632db7dece10210e3a1db1a36d6dec686697d/middlewares/content-security-policy/index.ts#L20-L32
+const directives = {
+  "default-src": ["'self'", config.ssl ? "wss:" : "ws:"],
+  "base-uri": ["'self'"],
+  "block-all-mixed-content": [],
+  "font-src": ["'self'", "https:", "data:"],
+  "frame-ancestors": ["'self'"],
+  "img-src": ["'self'", "data:"],
+  "object-src": ["'none'"],
+  "script-src": ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
+  "style-src": ["'self'", "https:", "'unsafe-inline'"],
+}
+if (config.ssl) {
+  directives["upgrade-insecure-requests"] = []
+}
+app.use(require("helmet")({
+  contentSecurityPolicy: {
+    directives,
+  },
+  referrerPolicy: { policy: "strict-origin-when-cross-origin" },
+}))
 
 // Rewrite res.redirect to always prepend baseUrl
 app.use((req, res, next) => {
   let redirect = res.redirect
   res.redirect = target => {
-    target = config.baseUrl + (target.startsWith("/") ? "" : "/") + target
+    target = config.baseUrl + (target.startsWith("/") ? target.slice(1) : target)
     redirect.call(res, target)
   }
   next()
@@ -66,7 +86,9 @@ app.use((req, res, next) => {
     options = Object.assign({
       showLoginButton: false,
       user: req.user,
-      messages: utils.flashMessages(req)
+      messages: utils.flashMessages(req),
+      path: req.path,
+      redirect: null,
     }, options || {})
     render.call(res, view, options, callback)
   }
@@ -101,10 +123,8 @@ app.use(bodyParser.json())
 
 // Cookies/Sessions
 app.use(require("cookie-parser")(config.sessionSecret))
-let secure = false
-// Use secure cookie and trust proxy when in production
-if (config.env != "development" && config.env != "test") {
-  secure = true
+// Trust proxy when used locally
+if (config.isLocal) {
   app.set("trust proxy", 1)
 }
 const session = require("express-session")
@@ -136,10 +156,15 @@ app.use(session({
   rolling: true,
   store: mongoStore,
   cookie: {
-    secure,
-    maxAge: config.cookieMaxDays * 24 * 60 * 60 * 1000
+    sameSite: config.ssl ? "none" : null,
+    secure: config.ssl,
+    maxAge: config.cookieMaxDays * 24 * 60 * 60 * 1000,
   }
 }))
+
+// Remove Same-Site: None if browser is incompatible
+const { shouldSendSameSiteNone } = require("should-send-same-site-none")
+app.use(shouldSendSameSiteNone)
 
 // Passport
 app.use(passport.initialize())
@@ -181,13 +206,13 @@ app.use("/static", express.static("static"))
  * ##### Express Route Setup #####
  */
 
-const portfinder = require("portfinder")
 const fs = require("fs")
 const path = require("path")
 
 const start = async () => {
   // Port is defined at the top of the file
   if (config.env == "test") {
+    const portfinder = require("portfinder")
     portfinder.basePort = port || 3000
     port = await portfinder.getPortPromise()
   }

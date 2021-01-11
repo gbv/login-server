@@ -7,13 +7,28 @@
 const inquirer = require("inquirer")
 const bcrypt = require("bcryptjs")
 const fs = require("fs")
-let providersFile = "./providers.json"
-let providers = JSON.parse(fs.readFileSync(providersFile, { encoding: "utf-8" }))
 
 console.log("Login Server local user management")
 console.log("Important Note: Do not manually edit providers.json while this script is running. Any action here will override those changes!")
 
-// TODO: - Save providers to providers.json
+require("dotenv").config()
+let providersFile = process.env.PROVIDERS_PATH || "./providers.json"
+let providers
+// Try to read providers from file
+try {
+  providers = fs.readFileSync(providersFile, { encoding: "utf-8" })
+} catch(error) {
+  console.warn(`Warning: Could not read providers file at ${providersFile}; assuming empty file.`)
+  providers = "[]"
+}
+// Parse JSON
+try {
+  providers = JSON.parse(providers)
+} catch (error) {
+  console.error(`Error parsing providers from ${providersFile}. Please check the file.`)
+  console.error(error)
+  process.exit(1)
+}
 
 function loop(mode = "start", data = {}, prompt, action = null) {
   prompt = prompt || Promise.resolve(null)

@@ -5,11 +5,12 @@
 
 This repository offers a login server to be used with the [Cocoda Mapping Tool](https://github.com/gbv/cocoda). It allows users to authenticate using different providers (e.g. GitHub, ORCID). See <https://coli-conc.gbv.de/login/api> for an example on how you could use this.
 
-## Table of Contents
+## Table of Contents <!-- omit in toc -->
 
 - [Install](#install)
   - [Dependencies](#dependencies)
   - [Clone and Install](#clone-and-install)
+  - [Docker](#docker)
   - [Configuration](#configuration)
 - [Usage](#usage)
 - [Test](#test)
@@ -45,6 +46,7 @@ This repository offers a login server to be used with the [Cocoda Mapping Tool](
   - [Example Usage](#example-usage)
 - [Maintainers](#maintainers)
 - [Contribute](#contribute)
+  - [Publish](#publish)
 - [License](#license)
 
 ## Install
@@ -61,6 +63,9 @@ npm install
 npm run indexes
 ```
 
+### Docker
+login-server is also available via Docker. Please refer to the documentation at https://hub.docker.com/r/coliconc/login-server for more details.
+
 ### Configuration
 
 If running the server behind a reverse proxy, make sure to include the  `X-Forwarded-Proto` header, allow all HTTP methods, and enable WebSocket proxying.
@@ -71,10 +76,10 @@ You need to provide two configuration files:
 To configure the application:
 
 ```bash
-# required, port for express
+# recommended, port for express, default: 3004
 PORT=
-# recommended, full base URL without trailing slash, default: http://localhost[:PORT]
-# (required when used in production)
+# recommended, full base URL, default: http://localhost[:PORT]/
+# (required when used in production or behind a reverse proxy)
 BASE_URL=
 # title of application (will be shown in header)
 TITLE=My Login Server
@@ -82,6 +87,9 @@ TITLE=My Login Server
 ALLOWED_ORIGINS=
 # required for some strategies to enable production mode, default: development
 NODE_ENV=production
+# strongly recommended, imprint and privacy URLs for footer and clients
+IMPRINT_URL=
+PRIVACY_URL=
 # recommended, secret used by the session
 SESSION_SECRET=
 # optional, maximum number of days a session is valid (rolling), default: 30
@@ -105,16 +113,16 @@ RATE_LIMIT_WINDOW=
 # the rate limit tries, default: 10
 RATE_LIMIT_MAX=
 # a jsonwebtoken compatible keypair
-JTW_PRIVATE_KEY_PATH=
-JTW_PUBLIC_KEY_PATH=
+JWT_PRIVATE_KEY_PATH=
+JWT_PUBLIC_KEY_PATH=
 # the jsonwebtoken algorithm used
 JWT_ALGORITHM=
 # expiration time of JWTs in seconds, default: 120, min: 10
 JWT_EXPIRES_IN=
-# URLs for footer
-IMPRINT_URL=
-PRIVACY_URL=
+# URL for Sources, default: https://github.com/gbv/login-server
 SOURCES_URL=
+# the path to the providers.json file, default: ./providers.json
+PROVIDERS_PATH=
 ```
 
 #### `providers.json`
@@ -132,6 +140,8 @@ The web interface allows users to create and manage accounts with connections to
 The HTTP API and WebSocket allow client applications to interact with the login server, for instance to check whether a user has been logged in and to find out which identities belong to a user.
 
 The login server can further be used to authenticate users against other services so users can proof their identities.
+
+[login-client](https://github.com/gbv/login-client) is a JavaScript browser library specifically made to interact with login-server. It is recommended to use it instead of working directly with the API. It can be seen in action [here](https://coli-conc.gbv.de/login/api) ([source for that site](https://github.com/gbv/login-server/blob/master/views/api.ejs)).
 
 ## Test
 Tests use the same MongoDB as configured in `.env`, just with the postfix `-test` after the database name.
@@ -281,6 +291,8 @@ The following is an example `providers.json` that shows how to configure each of
 
 To configure local providers, please use the provided script under `bin/manage-local.js`. It will allow you to create/delete local providers, and create/delete users for local providers.
 
+You can adjust the path to the `providers.json` file with `PROVIDERS_PATH` in `.env`.
+
 **Notes about using the MediaWiki provider:**
 - If your consumer is limited to a specific instance (e.g. Wikidata only), you need to provide the baseURL for that instance in the options, for example: `"baseURL": "https://www.wikidata.org/"`.
 - There seems to be a [bug](https://phabricator.wikimedia.org/T145828) either in Mediawiki or in passport-mediawiki-oauth that causes custom callback URLs to not work. This means that you need to provide the exact callback URL when registering your consumer (e.g. `https://coli-conc.gbv.de/login/login/wikidata/return` for our login-server instance).
@@ -288,9 +300,9 @@ To configure local providers, please use the provided script under `bin/manage-l
 ## JWTs
 login-server offers JSON Web Tokens that can be used to authenticate against other services (like [jskos-server](https://github.com/gbv/jskos-server)). [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) is used for signing the tokens.
 
-By default, a new RSA keypair is generated when the application is first started (2048 bits, using [node-rsa](https://github.com/rzcoder/node-rsa)). This generated keypair will be available in `./private.key` and `./public.key`. You can give the `./public.key` file to any other service that needs to verify the tokens. Alternatively, the currently used public key is offered at the [/about endpoint](#get-about).
+By default, a new RSA keypair is generated when the application is first started (2048 bits, using [node-rsa](https://github.com/rzcoder/node-rsa)). This generated keypair will by default be available in `./private.key` and `./public.key`. You can give the `./public.key` file to any other service that needs to verify the tokens. Alternatively, the currently used public key is offered at the [/about endpoint](#get-about).
 
-You can also provide your own keypair by setting `JTW_PRIVATE_KEY_PATH` and `JTW_PUBLIC_KEY_PATH` in `.env`. By default, the `RS256` algorithm is used, but any other public key algorithm can be used by setting `JWT_ALGORITHM`.
+You can also provide a custom path for the key files by setting `JWT_PRIVATE_KEY_PATH` and `JWT_PUBLIC_KEY_PATH` in `.env`. If one or both of the keys can't be found, the keys will be generated. By default, the `RS256` algorithm is used, but any other public key algorithm can be used by setting `JWT_ALGORITHM`.
 
 By default, each token is valid for 120 seconds. You can adjust this by setting `JWT_EXPIRES_IN` in `.env`.
 
@@ -342,8 +354,12 @@ Shows a site to manage the user's sessions (if authenticated) or redirects to [`
 ### GET /login
 Shows a site to login (if not authenticated) or directs to [`/account`] (if authenticated).
 
+If the query parameter `redirect_uri` is given, the site will redirect to the specified URI after a successful login. (If the parameter is given, but empty, it will use the referrer as a URI.)
+
 ### GET /login/:provider
 Shows a login page for a provider. For OAuth providers, this page will redirect to the provider's page to connect your identity, which then redirects to [`/login/:provider/return`]. For providers using credentials, this will show a login form.
+
+This page also handles `redirect_uri` (see [`/login`] above).
 
 ### POST /login/:provider
 POST endpoint for providers using credentials. If successful, it will redirect to [`/account`], otherwise it will redirect back to [`/login/:provider`].
@@ -485,9 +501,19 @@ socket.addEventListener("message", (message) => {
 ## Contribute
 PRs accepted.
 
+- Please use the `dev` branch as a basis. Changes from `dev` will be merged into `master` only for new releases.
 - Please run the tests before committing.
 - Please do not skip the pre-commit hook when committing your changes.
 - If editing the README, please conform to the [standard-readme](https://github.com/RichardLitt/standard-readme) specification.
+
+### Publish
+**For maintainers only**
+
+Never work on the master branch directly. Always make changes on `dev` and then run the release script:
+
+```bash
+npm run release:patch # or minor or major
+```
 
 ## License
 MIT © 2019 Verbundzentrale des GBV (VZG)

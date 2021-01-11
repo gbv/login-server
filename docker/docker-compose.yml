@@ -1,0 +1,24 @@
+version: "3"
+
+services:
+  login-server:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    depends_on:
+      - mongo
+    volumes:
+      - ./data/config:/config
+      - ./data/static:/usr/src/app/static
+    environment:
+      - MONGO_HOST=mongo
+      - NODE_ENV=production
+    ports:
+      - 3004:3004
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:4
+    volumes:
+      - ./data/db:/data/db
+    restart: unless-stopped

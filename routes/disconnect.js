@@ -21,9 +21,8 @@ module.exports = app => {
       let identities = _.omit(user.identities, [provider])
       user.set("identities", {})
       user.set("identities", identities)
-      // TODO: Error handling.
       user.save().then(user => {
-      // Fire updated event
+        // Fire updated event
         events.userUpdated(req.sessionID, user)
         req.flash("success", "Identity disconnected.")
       }).catch(() => {

@@ -30,10 +30,10 @@
       <td class="text-right">
       <% if (user.identities && user.identities[provider.id]) { %>
         <% if (Object.keys(user.identities).length > 1) { %>
-        <a class="btn btn-outline-danger" href="<%= baseUrl %>/disconnect/<%= provider.id %>">Disconnect</a>
+        <a class="btn btn-outline-danger" href="<%= baseUrl %>disconnect/<%= provider.id %>">Disconnect</a>
         <% } %>
       <% } else { %>
-        <a class="btn btn-outline-primary" href="<%= baseUrl %>/login/<%= provider.id %>">Connect</a>
+        <a class="btn btn-outline-primary" href="<%= baseUrl %>login/<%= provider.id %>">Connect</a>
       <% } %>
       </td>
     </tr>

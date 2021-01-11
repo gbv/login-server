@@ -11,12 +11,16 @@
     </style>
     <div class="card-footer footer">
       <div>
+        <% if (config.urls.privacy) { %>
         <div>
           <a href="<%= config.urls.privacy %>" target="_blank">Datenschutz</a>
         </div>
+        <% } %>
+        <% if (config.urls.imprint) { %>
         <div>
           <a href="<%= config.urls.imprint %>" target="_blank">Impressum</a>
         </div>
+        <% } %>
         <div>
           <a href="<%= config.urls.sources %>" target="_blank">Sources</a>
         </div>
@@ -28,15 +32,15 @@
         </div>
         <% } %>
         <div>
-          <a href="<%= baseUrl %>/sessions">Sessions</a>
+          <a href="<%= baseUrl %>sessions">Sessions</a>
         </div>
         <div>
-          <a href="<%= baseUrl %>/api">API</a>
+          <a href="<%= baseUrl %>api">API</a>
         </div>
       </div>
       <div>
         <% if (user) { %>
-        <form method="get" action="<%= baseUrl %>/delete" style="width: 100%; text-align: center;">
+        <form method="get" action="<%= baseUrl %>delete" style="width: 100%; text-align: center;">
           <button type="submit" class="btn btn-link text-danger">Delete User Account</button>
         </form>
         <% } %>
@@ -44,5 +48,39 @@
     </div>
   </div>
 </div>
+<script>
+  /**
+   * This whole section deals with redirecting the user back to `redirect_uri`. See https://github.com/gbv/login-server/issues/61.
+   */
+  const sessionStorageKey = "redirect_uri"
+  const path = "<%= path %>"
+  if (path.includes("/login")) {
+    // save redirect_uri in sessionStorage
+    const urlParams = new URLSearchParams(window.location.search);
+    let redirect_uri = urlParams.get(sessionStorageKey)
+    if (redirect_uri === "") {
+      redirect_uri = document.referrer
+    }
+    if (redirect_uri) {
+      sessionStorage.setItem(sessionStorageKey, redirect_uri)
+    }
+  } else if (path.includes("/account")) {
+    // retrieve redirect_uri and redirect if necessary
+    const redirect_uri = sessionStorage.getItem(sessionStorageKey)
+    const redirectSeconds = 3
+    if (redirect_uri) {
+      sessionStorage.removeItem(sessionStorageKey)
+      const elements = document.querySelectorAll(".alert-success")
+      const alertElement = elements[elements.length - 1]
+      console.log(alertElement)
+      if (alertElement) {
+        alertElement.innerHTML += ` You will be redirected to <a href="${redirect_uri}">${redirect_uri}</a> in ${redirectSeconds} seconds...`
+      }
+      setTimeout(function () {
+        window.location = redirect_uri
+      }, redirectSeconds * 1000)
+    }
+  }
+</script>
 </body>
 </html>

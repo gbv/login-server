@@ -1,0 +1,14 @@
+<%- include('header'); -%>
+
+  <!-- Template for /login/:provider route -->
+
+  <p>
+    By using this service, you agree that your data will be publicly available. For more information, click
+    <a href="<%= baseUrl %>">here</a>.
+  </p>
+
+  <div class="alert alert-info">
+    You will be authenticated with <%= provider.name %> shortly...
+  </div>
+
+  <%- include('footer'); -%>
