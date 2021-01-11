@@ -352,8 +352,12 @@ Shows a site to manage the user's sessions (if authenticated) or redirects to [`
 ### GET /login
 Shows a site to login (if not authenticated) or directs to [`/account`] (if authenticated).
 
+If the query parameter `redirect_uri` is given, the site will redirect to the specified URI after a successful login. (If the parameter is given, but empty, it will use the referrer as a URI.)
+
 ### GET /login/:provider
 Shows a login page for a provider. For OAuth providers, this page will redirect to the provider's page to connect your identity, which then redirects to [`/login/:provider/return`]. For providers using credentials, this will show a login form.
+
+This page also handles `redirect_uri` (see [`/login`] above).
 
 ### POST /login/:provider
 POST endpoint for providers using credentials. If successful, it will redirect to [`/account`], otherwise it will redirect back to [`/login/:provider`].

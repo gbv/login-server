@@ -86,7 +86,9 @@ app.use((req, res, next) => {
     options = Object.assign({
       showLoginButton: false,
       user: req.user,
-      messages: utils.flashMessages(req)
+      messages: utils.flashMessages(req),
+      path: req.path,
+      redirect: null,
     }, options || {})
     render.call(res, view, options, callback)
   }

@@ -48,5 +48,39 @@
     </div>
   </div>
 </div>
+<script>
+  /**
+   * This whole section deals with redirecting the user back to `redirect_uri`. See https://github.com/gbv/login-server/issues/61.
+   */
+  const sessionStorageKey = "redirect_uri"
+  const path = "<%= path %>"
+  if (path.includes("/login")) {
+    // save redirect_uri in sessionStorage
+    const urlParams = new URLSearchParams(window.location.search);
+    let redirect_uri = urlParams.get(sessionStorageKey)
+    if (redirect_uri === "") {
+      redirect_uri = document.referrer
+    }
+    if (redirect_uri) {
+      sessionStorage.setItem(sessionStorageKey, redirect_uri)
+    }
+  } else if (path.includes("/account")) {
+    // retrieve redirect_uri and redirect if necessary
+    const redirect_uri = sessionStorage.getItem(sessionStorageKey)
+    const redirectSeconds = 3
+    if (redirect_uri) {
+      sessionStorage.removeItem(sessionStorageKey)
+      const elements = document.querySelectorAll(".alert-success")
+      const alertElement = elements[elements.length - 1]
+      console.log(alertElement)
+      if (alertElement) {
+        alertElement.innerHTML += ` You will be redirected to <a href="${redirect_uri}">${redirect_uri}</a> in ${redirectSeconds} seconds...`
+      }
+      setTimeout(function () {
+        window.location = redirect_uri
+      }, redirectSeconds * 1000)
+    }
+  }
+</script>
 </body>
 </html>

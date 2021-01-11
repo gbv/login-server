@@ -50,9 +50,17 @@ module.exports = app => {
     } else {
     // Add GET routes for login redirection and return
 
-      app.get(`/login/${providerId}`, skip,
+      // Shows a message and redirects to auth (next route)
+      // Explanation: We need this so that the client side JavaScript can parse the redirect_uri parameter if necessary.
+      app.get(`/login/${providerId}`, (req, res) => {
+        res.render("login-auth", { provider, redirect: { delay: 2, url: config.baseUrl + req.path.slice(1) + "/auth" } })
+      })
+
+      // Authenticates with a certain provider
+      app.get(`/login/${providerId}/auth`, skip,
         passport.authenticate(providerId))
 
+      // Callback route for provider
       app.get(`/login/${providerId}/return`,
         passport.authenticate(providerId, authenticateOptions))
 
