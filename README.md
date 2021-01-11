@@ -5,11 +5,12 @@
 
 This repository offers a login server to be used with the [Cocoda Mapping Tool](https://github.com/gbv/cocoda). It allows users to authenticate using different providers (e.g. GitHub, ORCID). See <https://coli-conc.gbv.de/login/api> for an example on how you could use this.
 
-## Table of Contents
+## Table of Contents <!-- omit in toc -->
 
 - [Install](#install)
   - [Dependencies](#dependencies)
   - [Clone and Install](#clone-and-install)
+  - [Docker](#docker)
   - [Configuration](#configuration)
 - [Usage](#usage)
 - [Test](#test)
@@ -45,6 +46,7 @@ This repository offers a login server to be used with the [Cocoda Mapping Tool](
   - [Example Usage](#example-usage)
 - [Maintainers](#maintainers)
 - [Contribute](#contribute)
+  - [Publish](#publish)
 - [License](#license)
 
 ## Install
