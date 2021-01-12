@@ -13,7 +13,7 @@
   <% config.providers.forEach(provider => { %>
     <tr>
       <td style="text-align: center;">
-        <img src="<%= provider.image || "static/default.svg" %>" height="18px" />
+        <img src="<%= provider.image || baseUrl + "static/default.svg" %>" height="18px" />
       </td>
       <td>
         <b><%= provider.name %></b>
