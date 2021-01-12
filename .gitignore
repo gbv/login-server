@@ -6,6 +6,7 @@ providers.json
 
 # Ignore static files
 static/*
+!static/default.svg
 
 # Add .env file for Docker
 !docker/.env
