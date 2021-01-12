@@ -5,9 +5,11 @@
 module.exports = app => {
 
   app.get("/", (req, res) => {
-    res.render("base", {
-      showLoginButton: true,
-    })
+    if (req.user) {
+      res.redirect("/account")
+    } else {
+      res.redirect("/login")
+    }
   })
 
 }

@@ -21,9 +21,6 @@
           <a href="<%= config.urls.imprint %>" target="_blank">Impressum</a>
         </div>
         <% } %>
-        <div>
-          <a href="<%= config.urls.sources %>" target="_blank">Sources</a>
-        </div>
       </div>
       <div>
         <% if (user && user.uri) { %>
@@ -32,19 +29,19 @@
         </div>
         <% } %>
         <div>
-          <a href="<%= baseUrl %>sessions">Sessions</a>
-        </div>
-        <div>
           <a href="<%= baseUrl %>api">API</a>
         </div>
+        <div>
+          <a href="<%= config.urls.sources %>" target="_blank">Sources</a>
+        </div>
       </div>
+      <% if (user) { %>
       <div>
-        <% if (user) { %>
         <form method="get" action="<%= baseUrl %>delete" style="width: 100%; text-align: center;">
           <button type="submit" class="btn btn-link text-danger">Delete User Account</button>
         </form>
-        <% } %>
       </div>
+      <% } %>
     </div>
   </div>
 </div>
