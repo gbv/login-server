@@ -8,6 +8,11 @@
     <input type="input" class="form-control" id="name" value="<%= user.name %>">
     <button type="submit" class="btn btn-primary" id="nameSubmit">Change</button>
   </form>
+  <p>
+    <small>
+      <a href="<%= user.uri %>"><%= user.uri %></a>
+    </small>
+  </p>
   <h4>Connected Identities</h4>
   <table class="table"><tbody>
   <% config.providers.forEach(provider => { %>
@@ -41,7 +46,9 @@
     <tr>
       <td class="border-top-0 mt-0"></td>
       <td class="border-top-0 pt-0" colspan="3">
-        <a href="<%= user.identities[provider.id].uri %>" target="_blank"><%= user.identities[provider.id].uri %></a>
+        <small>
+          <a href="<%= user.identities[provider.id].uri %>" target="_blank"><%= user.identities[provider.id].uri %></a>
+        </small>
       </td>
     </tr>
     <% } %>
