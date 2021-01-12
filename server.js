@@ -54,7 +54,7 @@ const directives = {
   "block-all-mixed-content": [],
   "font-src": ["'self'", "https:", "data:"],
   "frame-ancestors": ["'self'"],
-  "img-src": ["'self'", "data:"],
+  "img-src": ["'self'", "data:", "https:", "http:"],
   "object-src": ["'none'"],
   "script-src": ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
   "style-src": ["'self'", "https:", "'unsafe-inline'"],
