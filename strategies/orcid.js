@@ -11,6 +11,6 @@ module.exports = (options, provider, callback) => new Strategy(Object.assign(opt
     id: params.orcid,
     name: params.name,
     username: null,
-    provider: provider.id
+    provider: provider.id,
   }, done)
 })

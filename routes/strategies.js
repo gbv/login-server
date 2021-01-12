@@ -33,7 +33,7 @@ module.exports = app => {
     let authenticateOptions = {
       successRedirect: "/account",
       failureRedirect: `/login/${providerId}`,
-      failureFlash: "Could not verify credentials."
+      failureFlash: "Could not verify credentials.",
     }
 
     if (provider.credentialsNecessary) {

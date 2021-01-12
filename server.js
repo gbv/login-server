@@ -158,7 +158,7 @@ app.use(session({
     sameSite: config.ssl ? "none" : null,
     secure: config.ssl,
     maxAge: config.cookieMaxDays * 24 * 60 * 60 * 1000,
-  }
+  },
 }))
 
 // Remove Same-Site: None if browser is incompatible

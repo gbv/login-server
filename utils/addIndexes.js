@@ -15,6 +15,7 @@ if (providersFile.startsWith("./")) {
   providersFile = `../${providersFile}`
 }
 const providers = require(providersFile)
+let db
 
 connection.then(_db => {
   db = _db

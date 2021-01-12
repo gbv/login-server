@@ -10,6 +10,6 @@ module.exports = (options, provider, callback) => new Strategy(options, (req, ac
     name: profile._json.user._generated_displayname,
     username: profile.username,
     token: accessToken,
-    provider: provider.id
+    provider: provider.id,
   }, done)
 })

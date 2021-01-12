@@ -9,6 +9,6 @@ module.exports = (options, provider, callback) => new Strategy(options, (req, to
     id: profile.id,
     name: profile.displayName,
     username: profile.username,
-    provider: provider.id
+    provider: provider.id,
   }, done)
 })

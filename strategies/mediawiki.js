@@ -11,8 +11,8 @@ module.exports = (options, provider, callback) => new Strategy(options, (req, to
     username: profile._json.username,
     oauth: {
       token: token,
-      token_secret: tokenSecret
+      token_secret: tokenSecret,
     },
-    provider: provider.id
+    provider: provider.id,
   }, done)
 })

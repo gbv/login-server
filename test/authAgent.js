@@ -16,7 +16,7 @@ before(done => {
         .post("/login/test")
         .send({
           username: "testuser",
-          password: "testtest"
+          password: "testtest",
         })
         .expect(res => {
           expect(res.header["set-cookie"]).not.to.be.null

@@ -79,7 +79,7 @@ module.exports = app => {
     } else {
       sessionsForUser(req.user).then(sessions => {
         // Filter out session to be deleted
-        session = sessions.find(session => session._id == sessionID)
+        const session = sessions.find(session => session._id == sessionID)
         if (!session) {
           res.status(422).json({ status: 422, message: "Session not found." })
         } else if (req.user.id != session.session.passport.user) {

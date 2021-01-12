@@ -15,7 +15,7 @@ module.exports = app => {
     const wsID = utils.uuid()
     let socket = {
       sessionID: req.sessionID,
-      ws
+      ws,
     }
     events.addSocket(wsID, socket)
 
@@ -24,7 +24,7 @@ module.exports = app => {
     // Send information about the server as well as the list of providers.
     events.sendEvent(wsID, "about", utils.prepareAbout())
     events.sendEvent(wsID, "providers", {
-      providers: utils.prepareProviders()
+      providers: utils.prepareProviders(),
     })
 
     // Check if sessionID already exists in store. If yes, consider connection authenticated.

@@ -40,7 +40,7 @@ const
   urls = {
     imprint: process.env.IMPRINT_URL,
     privacy: process.env.PRIVACY_URL,
-    sources: process.env.SOURCES_URL || packageData.homepage || "https://github.com/gbv/login-server"
+    sources: process.env.SOURCES_URL || packageData.homepage || "https://github.com/gbv/login-server",
   },
   cookieMaxDays = process.env.COOKIE_MAX_DAYS || 30,
   sessionExpirationMessageThreshold = process.env.SESSION_EXPIRATION_MESSAGE_THRESHOLD || 60,
@@ -98,7 +98,7 @@ let config = {
   },
   jwtOptions: {
     algorithm: jwtAlgorithm,
-    expiresIn: jwtExpiresIn
+    expiresIn: jwtExpiresIn,
   },
   allowedOrigins,
   title,
@@ -228,11 +228,11 @@ if (env != "test") {
           {
             username: "testuser",
             password: "testtest",
-            displayName: "A Test User"
-          }
-        ]
-      }
-    }
+            displayName: "A Test User",
+          },
+        ],
+      },
+    },
   ]
 }
 

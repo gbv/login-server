@@ -64,7 +64,7 @@ function flashMessages(req) {
       success: req.flash("success"),
       info: req.flash("info"),
       warning: req.flash("warning"),
-      danger: req.flash("error")
+      danger: req.flash("error"),
     }
   } catch(error) {
     return {}

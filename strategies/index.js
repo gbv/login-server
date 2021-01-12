@@ -35,8 +35,8 @@ const verify = (req, token, tokenSecret, profile, done) => {
           uri: `${config.baseUrl}users/${id}`,
           name,
           identities: {
-            [profile.provider]: _.omit(profile, ["provider"])
-          }
+            [profile.provider]: _.omit(profile, ["provider"]),
+          },
         })
         user.save().then(user => {
           // Fire loggedIn event

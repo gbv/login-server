@@ -15,7 +15,7 @@ module.exports = (options, provider, callback) => new Strategy(options, (req, us
       name: profile.displayName,
       username: profile.username,
       uri: profile.uri,
-      provider: provider.id
+      provider: provider.id,
     }, done)
   } else {
     done(null, false)
