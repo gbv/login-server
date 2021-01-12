@@ -197,6 +197,23 @@ if (env != "test") {
       // If it's a relative URL, prepend the baseUrl
       provider.image = `${baseUrl}${provider.image}`
     }
+    // Add default URL
+    if (!provider.url) {
+      switch (provider.strategy) {
+        case "github":
+          provider.url = "https://github.com"
+          break
+        case "orcid":
+          provider.url = "https://orcid.org"
+          break
+        case "mediawiki":
+          provider.url = "https://www.mediawiki.org/wiki/MediaWiki"
+          break
+        case "stackexchange":
+          provider.url = "https://stackexchange.com"
+          break
+      }
+    }
   }
 } else {
   // Configure a test provider for tests
