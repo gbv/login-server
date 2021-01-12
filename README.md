@@ -158,6 +158,7 @@ login-server uses [Passport](http://www.passportjs.org) ([GitHub](https://github
 - Mediawiki (via [passport-mediawiki-oauth](http://www.passportjs.org/packages/passport-mediawiki-oauth/))
 - StackExchange (via [passport-stack-exchange](http://www.passportjs.org/packages/passport-stack-exchange/))
 - LDAP (via [passport-ldapauth](http://www.passportjs.org/packages/passport-ldapauth/))
+- easydb (via [passport-easydb](https://github.com/gbv/passport-easydb))
 - Local (via [passport-local](http://www.passportjs.org/packages/passport-local/))
 
 Because strategies use different parameters in their [verify callbacks](http://www.passportjs.org/docs/configure/), each strategy has its own wrapper file in the folder `strategies/`. To add another strategy to login-server, add a file called `{name}.js` (where `{name}` is the name of the strategy that is used with `passport.authenticate`) with the following structure (GitHub as example):
@@ -284,6 +285,15 @@ The following is an example `providers.json` that shows how to configure each of
         "searchBase": "dc=example,dc=com",
         "searchFilter": "(uid={{username}})"
       }
+    }
+  },
+  {
+    "id": "easydb",
+    "name": "easydb test provider",
+    "strategy": "easydb",
+    "credentialsNecessary": true,
+    "options": {
+      "url": "https://easydb5-test.example.com/api/v1/"
     }
   }
 ]
