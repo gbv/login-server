@@ -141,8 +141,6 @@ The HTTP API and WebSocket allow client applications to interact with the login 
 
 The login server can further be used to authenticate users against other services so users can proof their identities.
 
-[login-client](https://github.com/gbv/login-client) is a JavaScript browser library specifically made to interact with login-server. It is recommended to use it instead of working directly with the API. It can be seen in action [here](https://coli-conc.gbv.de/login/api) ([source for that site](https://github.com/gbv/login-server/blob/master/views/api.ejs)).
-
 ## Test
 Tests use the same MongoDB as configured in `.env`, just with the postfix `-test` after the database name.
 
@@ -397,16 +395,13 @@ Callback endpoint for OAuth requests. Will save the connected identity to the us
 
 ## HTTP API
 
+Before directly programming against HTTP API and [WebSocket API](#websocket) have a look at the [login-client](https://github.com/gbv/login-client) JavaScript browser library. It can be seen in action [here](https://coli-conc.gbv.de/login/api) ([source for that site](https://github.com/gbv/login-server/blob/master/views/api.ejs)).
+
 ### GET /about
 Returns an object with keys `title` (title of the login-server instance), `env` (environment, like `development` or `production`), `publicKey` (usually a RSA public key), and `algorithm` (the [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) algorithm used). The corresponding private key to the given public key is used when signing JWTs.
 
 ### GET /providers
 Returns a list of available providers (stripped off sensitive information).
-
-### GET /users
-Currently not available and undecided whether it will be removed.
-
-<!-- Returns all users in database. If URL parameter `uri` is given, only users whose identities match one of the URIs are returned. Multiple URIs are separated by `|`. -->
 
 ### GET /currentUser
 Returns the currently logged in user. Returns an 404 error when no user is logged in.
