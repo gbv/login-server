@@ -14,9 +14,9 @@
       <td>
         <%= session._id %>
         <% if (session.session.referrer) { %>
-          <small>
+          <br><small>
             <a href="<%= session.session.referrer %>" target="_blank">
-              <%= session.session.referrer %>
+              <%= session.session.name %>
             </a>
           </small>
         <% } %>

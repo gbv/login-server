@@ -5,6 +5,14 @@
 const db = require("../utils/db")
 const { websockets } = require("../lib/events")
 
+// Load application names
+let applications
+try {
+  applications = require("../applications.json")
+} catch (error) {
+  applications = []
+}
+
 /**
  * Returns a Promise with all sessions for a user.
  *
@@ -43,6 +51,14 @@ module.exports = app => {
       sessionsForUser(req.user).then(sessions => {
         // Get all websockets associated with one of the sessions
         let ws = Object.values(websockets).filter(ws => ws && sessions.find(session => session._id === ws.sessionID))
+        // Add application names to sessions
+        sessions.forEach(session => {
+          if (!session.session.referrer) {
+            return
+          }
+          const application = applications.find(app => session.session.referrer.includes(app.url))
+          session.session.name = (application && application.name) || session.session.referrer
+        })
         // Render page
         res.render("sessions", {
           sessions,
