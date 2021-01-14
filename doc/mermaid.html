@@ -1,0 +1,10 @@
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+for (let pre of Array.from(document.getElementsByClassName("mermaid"))) {
+  var div = document.createElement("div")
+  div.className = "mermaid"
+  div.textContent = pre.firstChild.textContent
+  pre.parentNode.replaceChild(div, pre)
+}
+mermaid.initialize({startOnLoad:true})
+</script>
