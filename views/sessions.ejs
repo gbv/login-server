@@ -14,7 +14,7 @@
       <td><%= session._id %></td>
       <td class="text-right">
         <% if (session._id == sessionID) { %>
-          Current Session
+          Current Session<br><a href="<%= baseUrl %>logout" class="btn btn-outline-danger btn-sm mt-2 mr-0">Log out</a>
         <% } else { %>
           <button class="btn btn-sm btn-outline-danger" onclick="removeSession('<%= session._id %>')">Remove</button>
         <% } %>
@@ -25,10 +25,7 @@
 </table>
 
 <p>
-  <button class="btn btn-danger" onclick="removeSession()">Remove all sessions</button>
-</p>
-<p>
-  To remove the current session, just log out.
+  <button class="btn btn-danger" onclick="removeSession()">Remove all other sessions</button>
 </p>
 
 <h3>Active WebSockets</h3>
