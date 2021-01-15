@@ -2,16 +2,9 @@
  * /sessions route.
  */
 
+const config = require("../config")
 const db = require("../utils/db")
 const { websockets } = require("../lib/events")
-
-// Load application names
-let applications
-try {
-  applications = require("../applications.json")
-} catch (error) {
-  applications = []
-}
 
 /**
  * Returns a Promise with all sessions for a user.
@@ -56,7 +49,7 @@ module.exports = app => {
           if (!session.session.referrer) {
             return
           }
-          const application = applications.find(app => session.session.referrer.includes(app.url))
+          const application = config.applications.find(app => session.session.referrer.includes(app.url))
           session.session.name = (application && application.name) || session.session.referrer
         })
         // Render page

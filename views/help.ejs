@@ -4,7 +4,7 @@
 
 <p>
   This service allows to use external identities for <a href="https://en.wikipedia.org/wiki/Single_sign-on">single sign-on</a>. By using this service, you agree that the following data of authenticated identities is saved in our database and
-  <strong>made available</strong> to <a href="sessions">selected applications</a>:
+  <strong>made available</strong> to selected applications (see below):
 </p>
 
 <ul>
@@ -23,5 +23,21 @@
   in the footer. You will also be able to delete your user account which results in the immediate removal of all your data
   from our database. <b>Note</b> that data used in associated applications will <b>not</b> be deleted when deleting your user account.
 </p>
+
+<% if (config.applications.length) { %>
+<p>
+  Applications with access to <%= config.title %>:
+  <ul>
+    <% config.applications.forEach(application => { %>
+    <li>
+      <a href="<%= application.url %>" target="_blank">
+        <%= application.name %>
+      </a>
+    </li>
+    <% }) %>
+  </ul>
+  On the <a href="<%= baseUrl %>sessions">sessions page</a>, you can assess your currently active sessions and which applications have initiated them.
+</p>
+<% } %>
 
 <%- include('footer'); -%>

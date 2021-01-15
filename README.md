@@ -33,7 +33,6 @@ This repository offers a login server to be used with the [Cocoda Mapping Tool](
 - [HTTP API](#http-api)
   - [GET /about](#get-about)
   - [GET /providers](#get-providers)
-  - [GET /users](#get-users)
   - [GET /currentUser](#get-currentuser)
   - [GET /users/:id](#get-usersid)
   - [PATCH /users/:id](#patch-usersid)
@@ -127,6 +126,48 @@ PROVIDERS_PATH=
 
 #### `providers.json`
 To configure the providers. See [Providers](#providers).
+
+#### `applications.json`
+To provide the user with information about which applications are accessing their data, and which application initiated a session's login, you can provide a list of applications in `applications.json`. The list has to be an array of objects and each objects needs to have a `url` and `name`. Example:
+
+```json
+[
+  {
+    "url": "//bartoc.org",
+    "name": "BARTOC"
+  },
+  {
+    "url": "//coli-conc.gbv.de/coli-rich/",
+    "name": "coli-rich"
+  },
+  {
+    "url": "//coli-conc.gbv.de/cocoda/app/",
+    "name": "Cocoda"
+  },
+  {
+    "url": "//coli-conc.gbv.de/cocoda/dev/",
+    "name": "Cocoda (dev)"
+  },
+  {
+    "url": "//coli-conc.gbv.de/cocoda/rvk/",
+    "name": "Cocoda (RVK)"
+  },
+  {
+    "url": "//coli-conc.gbv.de/cocoda/wikidata/",
+    "name": "Cocoda (Wikidata)"
+  },
+  {
+    "url": "//coli-conc.gbv.de/cocoda/",
+    "name": "Cocoda (other)"
+  },
+  {
+    "url": "//coli-conc.gbv.de",
+    "name": "Other coli-conc application"
+  }
+]
+```
+
+The URL should be accessible because the interface will link to it. A session is associated with an application if its referrer URL contains the application's `url`. Applications will be checked from top to bottom, so you should order it from most specific URL to least specific URL (see example above).
 
 ## Usage
 ```bash

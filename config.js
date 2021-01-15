@@ -236,5 +236,11 @@ if (env != "test") {
   ]
 }
 
+// Add application names
+try {
+  config.applications = require("./applications.json")
+} catch (error) {
+  config.applications = []
+}
 
 module.exports = config
