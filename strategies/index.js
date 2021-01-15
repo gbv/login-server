@@ -12,6 +12,10 @@ const verify = (req, token, tokenSecret, profile, done) => {
   let user = req.user
   const sessionID = req.sessionID
   let provider = config.providers.find(provider => provider.id === profile.provider)
+  // Omit username from profile if it is empty
+  if (_.isEmpty(profile.username)) {
+    delete profile.username
+  }
   if (!user) {
     // User is not yet logged in. Either find existing user or create a new user.
     User.findOne({ [`identities.${profile.provider}.id`]: profile.id }).then(user => {
