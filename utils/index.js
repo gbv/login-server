@@ -80,8 +80,12 @@ function flashMessages(req) {
  */
 function getToken(user, sessionID) {
   let data = {}
-  // Don't include `identities` in JWT payload.
-  data.user = user ? _.omit(user, ["identities"]) : null
+  if (user) {
+    // Convert from Mongoose if necessary
+    data.user = user.toObject ? user.toObject() : user
+  } else {
+    data.user = null
+  }
 
   let sessionPromise = Promise.resolve(null)
   if (sessionID) {
@@ -116,7 +120,7 @@ function getUserFromSession(sessionID) {
       } else {
         // Get user from session
         User.findById(session.passport.user).then(user => {
-          resolve(user)
+          resolve(user.toObject())
         }).catch(error => {
           // Relay error to Promise
           reject(error)
