@@ -12,7 +12,10 @@ const { websockets } = require("../lib/events")
  * @param {object} user
  * @returns {Promise<object[]>} A Promise with an array of session objects if fulfilled, or an error if rejected.
  */
-function sessionsForUser(user) {
+async function sessionsForUser(user) {
+  if (!user) {
+    return []
+  }
   return db.collection("sessions").find({ "session.passport.user": user.id }).toArray()
 }
 
@@ -37,29 +40,25 @@ function removeSession(sessionID) {
 module.exports = app => {
 
   app.get("/sessions", (req, res) => {
-    if (!req.user) {
-      res.redirect("/login")
-    } else {
-      // Get all sessions from store (via mongoose)
-      sessionsForUser(req.user).then(sessions => {
-        // Get all websockets associated with one of the sessions
-        let ws = Object.values(websockets).filter(ws => ws && sessions.find(session => session._id === ws.sessionID))
-        // Add application names to sessions
-        sessions.forEach(session => {
-          if (!session.session.referrer) {
-            return
-          }
-          const application = config.applications.find(app => session.session.referrer.includes(app.url))
-          session.session.name = (application && application.name) || session.session.referrer
-        })
-        // Render page
-        res.render("sessions", {
-          sessions,
-          sessionID: req.sessionID,
-          websockets: ws,
-        })
+    // Get all sessions from store (via mongoose)
+    sessionsForUser(req.user).then(sessions => {
+      // Get all websockets associated with one of the sessions
+      let ws = Object.values(websockets).filter(ws => ws && sessions.find(session => session._id === ws.sessionID))
+      // Add application names to sessions
+      sessions.forEach(session => {
+        if (!session.session.referrer) {
+          return
+        }
+        const application = config.applications.find(app => session.session.referrer.includes(app.url))
+        session.session.name = (application && application.name) || session.session.referrer
       })
-    }
+      // Render page
+      res.render("sessions", {
+        sessions,
+        sessionID: req.sessionID,
+        websockets: ws,
+      })
+    })
   })
 
   // Deletes all sessions for the user (except the current one)

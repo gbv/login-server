@@ -43,19 +43,19 @@ h3 > a:hover {
               Account
               <% if (path.includes("/account")) { %><span class="sr-only">(current)</span><% } %>
             </a>
-            <a class="nav-link <% if (path.includes("/sessions")) { %>active<% } %>" href="<%= baseUrl %>sessions">
-              Sessions
-              <% if (path.includes("/account")) { %><span class="sr-only">(current)</span><% } %>
-            </a>
           <% } else { %>
             <a class="nav-link <% if (path.includes("/login")) { %>active<% } %>" href="<%= baseUrl %>login">
               Login
-              <% if (path.includes("/account")) { %><span class="sr-only">(current)</span><% } %>
+              <% if (path.includes("/login")) { %><span class="sr-only">(current)</span><% } %>
             </a>
           <% } %>
+          <a class="nav-link <% if (path.includes("/sessions")) { %>active<% } %>" href="<%= baseUrl %>sessions">
+            Sessions
+            <% if (path.includes("/sessions")) { %><span class="sr-only">(current)</span><% } %>
+          </a>
           <a class="nav-link <% if (path.includes("/help")) { %>active<% } %>" href="<%= baseUrl %>help">
             About
-            <% if (path.includes("/account")) { %><span class="sr-only">(current)</span><% } %>
+            <% if (path.includes("/help")) { %><span class="sr-only">(current)</span><% } %>
           </a>
         </div>
         <form class="form-inline">

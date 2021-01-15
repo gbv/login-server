@@ -5,6 +5,8 @@
 <p>Reload the page to update session information!</p>
 
 <h3>Active Sessions</h3>
+
+<% if (sessions.length) { %>
 <p>There are <%= sessions.length %> active sessions including the current one.</p>
 
 <table class="table">
@@ -56,6 +58,11 @@
   <% }) %>
   </tbody>
 </table>
+<% } else { %>
+<p>
+  There are no active sessions. Please log in to see your sessions.
+</p>
+<% } %>
 
 <script>
   function removeSession(sessionID) {
