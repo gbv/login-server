@@ -40,6 +40,7 @@ module.exports = app => {
     // Add a GET and POST route
 
       app.get(`/login/${providerId}`, skip, (req, res) => {
+        utils.saveReferrerInSession(req)
         res.render("loginCredentials", { provider })
       })
 
@@ -53,6 +54,7 @@ module.exports = app => {
       // Shows a message and redirects to auth (next route)
       // Explanation: We need this so that the client side JavaScript can parse the redirect_uri parameter if necessary.
       app.get(`/login/${providerId}`, (req, res) => {
+        utils.saveReferrerInSession(req)
         res.render("login-auth", { provider, redirect: { delay: 2, url: config.baseUrl + req.path.slice(1) + "/auth" } })
       })
 

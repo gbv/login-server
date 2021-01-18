@@ -130,6 +130,19 @@ function getUserFromSession(sessionID) {
   })
 }
 
+/**
+ * Saves the referrer in the current session if necessary.
+ * See https://github.com/gbv/login-server/issues/70.
+ *
+ * @param {Request} req
+ */
+function saveReferrerInSession(req) {
+  const referrer = req.get("Referrer")
+  if (!req.user && req.session && referrer && !referrer.includes(config.baseUrl)) {
+    req.session.referrer = referrer
+  }
+}
+
 module.exports = {
   uuid,
   prepareProviders,
@@ -137,4 +150,5 @@ module.exports = {
   flashMessages,
   getToken,
   getUserFromSession,
+  saveReferrerInSession,
 }
