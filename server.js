@@ -122,8 +122,8 @@ app.use(bodyParser.json())
 
 // Cookies/Sessions
 app.use(require("cookie-parser")(config.sessionSecret))
-// Trust proxy when used locally
-if (config.isLocal) {
+// Trust proxy when not used locally
+if (!config.isLocal) {
   app.set("trust proxy", 1)
 }
 const session = require("express-session")
