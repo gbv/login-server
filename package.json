@@ -57,7 +57,7 @@
     "passport-github": "^1.1.0",
     "passport-ldapauth": "^3.0.1",
     "passport-local": "^1.0.0",
-    "passport-mediawiki-oauth": "github:milimetric/passport-mediawiki-oauth#f521966",
+    "passport-mediawiki-oauth": "milimetric/passport-mediawiki-oauth#f521966",
     "passport-orcid": "0.0.4",
     "passport-stack-exchange": "^1.0.0",
     "should-send-same-site-none": "^2.0.5"
