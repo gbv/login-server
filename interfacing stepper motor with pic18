@@ -1,0 +1,36 @@
+#include<p18f4520.h>
+
+void msdelay(unsigned int time)
+{
+	unsigned i,j ;
+	for(i=0;i<time;i++)    
+	for(j=0;j<1275;j++);
+}
+
+void main()
+{
+	int i;
+	ADCON1 = 0x0f;
+	ADCON1 = 0x06; // To turn off analog to digital converters
+	TRISB = 0; // PORT B as output port
+	PORTB = 0x0F;
+	while(1)
+	{
+		/*PORTB = 0x03;     //0011     P2_0=1,P2_1=1,P2_2=0,P2_3=0
+        msdelay(1);
+        PORTB = 0x06;         //0110
+        msdelay(1);
+        PORTB = 0x0C;         //1100
+        msdelay(1);
+        PORTB = 0x09;         //1001
+        msdelay(1);*/
+		PORTB=0x01;            // 0001 P2_0=1,P2_1=0,P2_2=0,P2_3=0
+        msdelay(1);
+        PORTB=0x02;           //0010
+        msdelay(1);
+        PORTB=0x04;           //0100
+        msdelay(1);
+        PORTB=0x08;           //1000
+        msdelay(1);
+	}
+}
