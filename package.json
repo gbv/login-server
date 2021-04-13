@@ -50,7 +50,7 @@
     "inquirer": "^7.3.3",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
-    "mongoose": "^5.11.19",
+    "mongoose": "^5.12.3",
     "node-rsa": "^1.1.1",
     "passport": "^0.4.1",
     "passport-easydb": "^0.1.0",
@@ -63,11 +63,11 @@
     "should-send-same-site-none": "^2.0.5"
   },
   "devDependencies": {
-    "chai": "^4.3.3",
-    "eslint": "^7.21.0",
+    "chai": "^4.3.4",
+    "eslint": "^7.24.0",
     "eslint-config-gbv": "^1.0.1",
     "lint-staged": "^10.5.4",
-    "mocha": "^8.3.1",
+    "mocha": "^8.3.2",
     "mocha-eslint": "^7.0.0",
     "nodemon": "^2.0.7",
     "portfinder": "^1.0.28",
