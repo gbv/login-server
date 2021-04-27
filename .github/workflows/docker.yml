@@ -5,6 +5,9 @@ on:
       - master
       - dev
       - test
+    tags:
+      - v*
+
 jobs:
   publish:
     runs-on: ubuntu-latest
