@@ -27,8 +27,8 @@ const
   mongoUrl = `mongodb://${mongoAuth}${mongoHost}:${mongoPort}/${mongoDb}`,
   mongoOptions = {
     useNewUrlParser: true,
-    connectTimeoutMS: 5000,
-    socketTimeoutMS: 10000,
+    connectTimeoutMS: 10000,
+    socketTimeoutMS: 20000,
   },
   rateLimitWindow = process.env.RATE_LIMIT_WINDOW || (60 * 1000),
   rateLimitMax = process.env.RATE_LIMIT_MAX || 10,

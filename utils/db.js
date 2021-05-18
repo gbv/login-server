@@ -20,7 +20,7 @@ const connect = async () => {
   try {
     await mongoose.connect(config.database.url, config.database.options)
   } catch(error) {
-    console.log("Error connecting to database, trying again in a few seconds...")
+    console.log(new Date(), "Error connecting to database, trying again in a few seconds...")
     setTimeout(connect, 2500)
   }
 }
@@ -32,10 +32,10 @@ db.on("error", () => {
   mongoose.disconnect()
 })
 db.on("connected", () => {
-  console.log("Connected to database")
+  console.log(new Date(), "Connected to database")
 })
 db.on("disconnected", () => {
-  console.warn("Disconnected from database")
+  console.warn(new Date(), "Disconnected from database")
 })
 
 module.exports = db
