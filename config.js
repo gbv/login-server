@@ -26,9 +26,9 @@ const
   mongoDb = (process.env.MONGO_DB || "login-server") + (env == "test" ? "-test" : ""),
   mongoUrl = `mongodb://${mongoAuth}${mongoHost}:${mongoPort}/${mongoDb}`,
   mongoOptions = {
-    useNewUrlParser: true,
-    connectTimeoutMS: 10000,
-    socketTimeoutMS: 20000,
+    connectTimeoutMS: 120000,
+    socketTimeoutMS: 120000,
+    heartbeatFrequencyMS: 10000,
   },
   rateLimitWindow = process.env.RATE_LIMIT_WINDOW || (60 * 1000),
   rateLimitMax = process.env.RATE_LIMIT_MAX || 10,
