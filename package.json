@@ -34,6 +34,9 @@
   "pre-commit": "lint-staged",
   "author": "Stefan Peters <stefan.peters@gbv.de>",
   "license": "MIT",
+  "engines": {
+    "node": ">=14"
+  },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.1",
