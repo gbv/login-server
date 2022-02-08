@@ -68,6 +68,7 @@ app.use(require("helmet")({
   },
   referrerPolicy: { policy: "strict-origin-when-cross-origin" },
   hsts: config.ssl,
+  crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
 }))
 
 // Rewrite res.redirect to always prepend baseUrl
