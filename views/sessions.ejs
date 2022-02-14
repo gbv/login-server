@@ -64,7 +64,7 @@
 </p>
 <% } %>
 
-<script>
+<script nonce="<%= nonceTemp %>">
   function removeSession(sessionID) {
     let url = "<%= baseUrl %>sessions"
     if (sessionID) {

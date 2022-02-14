@@ -24,8 +24,9 @@
 }
 </style>
 
+<!-- IMPORTANT: Any changes to these URLs need to be made in the CSP "script-src" header as well! -->
 <!-- login-client -->
-<script src="https://cdn.jsdelivr.net/npm/gbv-login-client"></script>
+<script src="https://cdn.jsdelivr.net/npm/gbv-login-client@1/dist/gbv-login-client.js"></script>
 <!-- node-jsonwebtoken -->
 <script src="https://cdn.jsdelivr.net/gh/stefandesu/node-jsonwebtoken@master/build/jsonwebtoken.js"></script>
 
@@ -73,12 +74,13 @@
 <p>
   <div class="form-group form-check">
     <label class="form-check-label">
-      <input class="form-check-input" type="checkbox" onclick="toggleShowReceivedToken(this)"> Show "Received token" events
+      <input id="toggleShowReceivedTokenButton" class="form-check-input" type="checkbox"> Show "Received token" events
     </label>
   </div>
 </p>
 
-<script>
+<script nonce="<%= nonceTemp %>">
+const { LoginClient } = GLC
 const logEl = document.getElementById("log")
 const statusEl = document.getElementById("status")
 const tokenEl = document.getElementById("token")
@@ -102,6 +104,9 @@ function toggleShowReceivedToken(checkbox) {
     element.style.display = showReceivedToken ? "flex" : "none"
   }
 }
+// Add handler to button
+const toggleShowReceivedTokenButton = document.getElementById("toggleShowReceivedTokenButton")
+toggleShowReceivedTokenButton.onclick = () => toggleShowReceivedToken(toggleShowReceivedTokenButton)
 
 function log(message, color = "black", event = "other") {
   let displayNone = showReceivedToken || event != "token" ? "" : "display: none;"
@@ -118,17 +123,19 @@ function log(message, color = "black", event = "other") {
 }
 
 // Update tokenEl regularly
-setInterval(() => {
+const verifyJwt = () => {
   jwt.verify(token, publicKey, (error, decoded) => {
     if (error) {
         tokenEl.innerHTML = `<span style="color:red">${error.message}</span>`
     } else {
       let currentTime = Date.now() / 1000
-      let validSeconds = Math.round((decoded.exp - currentTime) * 10) / 10
+      let validSeconds = Math.round(decoded.exp - currentTime)
       tokenEl.innerHTML = `<span style="color:green">verified!</span> (valid for <tt>${validSeconds}</tt> seconds) (${byteCount(token)} bytes)`
     }
   })
-}, 100)
+}
+setTimeout(verifyJwt, 100)
+setInterval(verifyJwt, 1000)
 
 let windowManager = {
   _window: null,

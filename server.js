@@ -47,29 +47,40 @@ const express = require("express")
 let app = express()
 
 // Use helmet to set important http headers
-// Adjusted from https://github.com/helmetjs/helmet/blob/d75632db7dece10210e3a1db1a36d6dec686697d/middlewares/content-security-policy/index.ts#L20-L32
-const directives = {
-  "default-src": ["'self'", config.ssl ? "wss:" : "ws:"],
-  "base-uri": ["'self'"],
-  "block-all-mixed-content": [],
-  "font-src": ["'self'", "https:", "data:"],
-  "frame-ancestors": ["'self'"],
-  "img-src": ["'self'", "data:", "https:", "http:"],
-  "object-src": ["'none'"],
-  "script-src": ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
-  "style-src": ["'self'", "https:", "'unsafe-inline'"],
-}
-if (config.ssl) {
-  directives["upgrade-insecure-requests"] = []
-}
 app.use(require("helmet")({
-  contentSecurityPolicy: {
-    directives,
-  },
   referrerPolicy: { policy: "strict-origin-when-cross-origin" },
   hsts: config.ssl,
   crossOriginOpenerPolicy: { policy: config.ssl ? "same-origin-allow-popups" : "unsafe-none" },
 }))
+
+// Add Helmet's CSP headers dynamically in order to add script nonces
+const crypto = require("crypto")
+app.use((req, res, next) => {
+  function generateNonce() {
+    return crypto.randomBytes(16).toString("base64")
+  }
+  res.locals.nonceFooter = generateNonce()
+  res.locals.nonceTemp = generateNonce()
+
+  // Adjusted from https://github.com/helmetjs/helmet/blob/d75632db7dece10210e3a1db1a36d6dec686697d/middlewares/content-security-policy/index.ts#L20-L32
+  const directives = {
+    "default-src": ["'self'", config.ssl ? "wss:" : "ws:"],
+    "base-uri": ["'self'"],
+    "block-all-mixed-content": [],
+    "font-src": ["'self'", "https:", "data:"],
+    "frame-ancestors": ["'self'"],
+    "img-src": ["'self'", "data:", "https:", "http:"],
+    "object-src": ["'none'"],
+    "script-src": ["https://cdn.jsdelivr.net/npm/gbv-login-client@1/dist/gbv-login-client.js", "https://cdn.jsdelivr.net/gh/stefandesu/node-jsonwebtoken@master/build/jsonwebtoken.js", `'nonce-${res.locals.nonceFooter}'`, `'nonce-${res.locals.nonceTemp}'`],
+    "style-src": ["'self'", "https:", "'unsafe-inline'"],
+  }
+  if (config.ssl) {
+    directives["upgrade-insecure-requests"] = []
+  }
+  helmet.contentSecurityPolicy({
+    directives,
+  })(req, res, next)
+})
 
 // Rewrite res.redirect to always prepend baseUrl
 app.use((req, res, next) => {
@@ -209,6 +220,7 @@ app.use("/static", express.static("static"))
 
 const fs = require("fs")
 const path = require("path")
+const { default: helmet } = require("helmet")
 
 const start = async () => {
   // Port is defined at the top of the file
