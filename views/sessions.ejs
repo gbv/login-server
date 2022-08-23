@@ -27,7 +27,7 @@
         <% if (session._id == sessionID) { %>
           Current Session<br><a href="<%= baseUrl %>logout" class="btn btn-outline-danger btn-sm mt-2 mr-0">Log out</a>
         <% } else { %>
-          <button class="btn btn-sm btn-outline-danger" onclick="removeSession('<%= session._id %>')">Remove</button>
+          <button class="btn btn-sm btn-outline-danger remove-session-button" data-session="<%= session._id %>">Remove</button>
         <% } %>
       </td>
     </tr>
@@ -36,7 +36,7 @@
 </table>
 
 <p>
-  <button class="btn btn-danger" onclick="removeSession()">Remove all other sessions</button>
+  <button id="remove-all-sessions-button" class="btn btn-danger">Remove all other sessions</button>
 </p>
 
 <h3>Active WebSockets</h3>
@@ -65,6 +65,14 @@
 <% } %>
 
 <script nonce="<%= nonceTemp %>">
+  for (const button of [document.getElementById("remove-all-sessions-button")].concat([].slice.call(document.getElementsByClassName("remove-session-button")))) {
+    button && button.addEventListener("click", ({ target }) => {
+      removeSession(target.getAttribute("data-session"))
+    }, false)
+  }
+  // document.getElementById("remove-all-sessions-button").addEventListener("click", () => {
+  //   removeSession()
+  // }, false)
   function removeSession(sessionID) {
     let url = "<%= baseUrl %>sessions"
     if (sessionID) {
