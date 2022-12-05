@@ -60,7 +60,6 @@ if (!["http:", "https:"].includes(purl.protocol) || !purl.slashes || !purl.hostn
   process.exit(1)
 }
 allowedOrigins.push(`${purl.protocol}//${purl.hostname}${purl.port && purl.port != 80 && purl.port != 443 ? ":" + purl.port : ""}`)
-console.log("Allowed origins:", allowedOrigins.join(", "))
 
 // Add base URL without protocol and information about SSL
 const
@@ -71,14 +70,6 @@ let jwtExpiresIn = parseInt(process.env.JWT_EXPIRES_IN) || 120
 if (jwtExpiresIn < 10) {
   console.warn("Warning: Minimum for JWT_EXPIRES_IN is 10 seconds.")
   jwtExpiresIn = 10
-}
-
-// Show warning if there is no imprint/privacy URL
-if (!urls.imprint) {
-  console.warn("Warning: IMPRINT_URL is not configured.")
-}
-if (!urls.privacy) {
-  console.warn("Warning: PRIVACY_URL is not configured.")
 }
 
 let config = {
@@ -265,6 +256,16 @@ config.error = (...args) => {
   if (env != "test" && config.verbosity !== false) {
     console.error(new Date(), ...args)
   }
+}
+
+config.log("Allowed origins:", allowedOrigins.join(", "))
+
+// Show warning if there is no imprint/privacy URL
+if (!urls.imprint) {
+  config.warn("Warning: IMPRINT_URL is not configured.")
+}
+if (!urls.privacy) {
+  config.warn("Warning: PRIVACY_URL is not configured.")
 }
 
 module.exports = config

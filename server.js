@@ -3,7 +3,7 @@ const config = require("./config")
 // Don't start application without a port!
 let port = config.port
 if (!port && config.env != "test") {
-  console.error("Please provide PORT in .env")
+  config.error("Please provide PORT in .env")
   process.exit(1)
 }
 
@@ -236,7 +236,7 @@ const start = async () => {
   const listener = await new Promise(resolve => {
     let listener
     listener = app.listen(port, () => {
-      console.log(`Listening on port ${port}.`)
+      config.log(`Listening on port ${port}.`)
 
       // Import routes
       fs.readdirSync(path.join(__dirname, "routes")).map(file => {

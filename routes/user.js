@@ -51,7 +51,7 @@ module.exports = app => {
         })
       }
     }).catch(error => {
-      console.log(error.message)
+      config.error(error.message)
       res.status(404).json({ status: 404, message: "User not found." })
     })
   })
@@ -76,7 +76,7 @@ module.exports = app => {
         events.userUpdated(req.sessionID, user)
         res.json(user)
       }).catch(error => {
-        console.error(error)
+        config.error(error)
         res.status(500).json({ status: 500, message: "Modified user could not be saved." })
       })
     }

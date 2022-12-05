@@ -69,7 +69,6 @@
       sessionStorage.removeItem(sessionStorageKey)
       const elements = document.querySelectorAll(".alert-success")
       const alertElement = elements[elements.length - 1]
-      console.log(alertElement)
       if (alertElement) {
         alertElement.innerHTML += ` You will be redirected to <a href="${redirect_uri}">${redirect_uri}</a> in ${redirectSeconds} seconds...`
       }

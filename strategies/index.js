@@ -119,7 +119,7 @@ const setup = callback => {
         callback(req, token, tokenSecret, profile, done)
       })
     } catch(error) {
-      console.warn(`Error configuring provider ${provider.id}.`)
+      config.warn(`Error configuring provider ${provider.id}.`)
     }
   }
 

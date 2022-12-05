@@ -121,6 +121,8 @@ JWT_EXPIRES_IN=
 SOURCES_URL=
 # the path to the providers.json file, default: ./providers.json
 PROVIDERS_PATH=
+# log = log all messages, warn = only log warnings and errors, error = only log errorsl default: log
+VERBOSITY=
 ```
 
 #### `providers.json`
