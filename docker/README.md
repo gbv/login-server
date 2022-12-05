@@ -84,6 +84,11 @@ It is possible to configure local providers (i.e. authentication using username/
 docker compose exec login-server /usr/src/app/bin/manage-local.js
 ```
 
+After adjusting the providers (either via the script or by editing `providers.json`), Login Server has to be restarted:
+```bash
+docker compose exec login-server pm2 restart server
+```
+
 ### Environment Variables
 There are a number of environment variables that can be used to configure login-server. The following is a selection of usual environment variables:
 
