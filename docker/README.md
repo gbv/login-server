@@ -14,7 +14,7 @@ Currently, only `x86-64` is supported, but we are planning to add more architect
 - Additionally, the latest development version is available under `dev`.
 
 ## Usage
-It is recommended to run the image using [Docker Compose](https://docs.docker.com/compose/) together with the required MongoDB database. Note that depending on your system, it might be necessary to use `sudo docker-compose`.
+It is recommended to run the image using [Docker Compose](https://docs.docker.com/compose/) together with the required MongoDB database. Note that depending on your system, it might be necessary to use `sudo docker compose`. For older Docker versions, use `docker-compose` instead of `docker compose`.
 
 1. Create `docker-compose.yml`:
 
@@ -55,7 +55,7 @@ mkdir -p ./data/{config,static,db}
 3. Start the application:
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 This will create and start a login-server container running under host port 3004 with data persistence under `./data`:
@@ -70,8 +70,8 @@ You can now access the application under `http://localhost:3004`.
 
 ## Application Setup
 Note: After adjusting any configurations, it is required to restart or recreate the container:
-- After changing configuration files or static files, restart the container: `docker-compose restart login-server`
-- After changing `docker-compose.yml` (e.g. adjusting environment variables), recreate the container: `docker-compose up -d`
+- After changing configuration files or static files, restart the container: `docker compose restart login-server`
+- After changing `docker-compose.yml` (e.g. adjusting environment variables), recreate the container: `docker compose up -d`
 
 ### Configuration Files
 The folder `/config` (mounted as `./data/config` if configured as above) contains three important files related to the configuration of login-server:
@@ -81,7 +81,7 @@ The folder `/config` (mounted as `./data/config` if configured as above) contain
 
 It is possible to configure local providers (i.e. authentication using username/password). Please use the included script for this:
 ```bash
-docker-compose exec login-server /usr/src/app/bin/manage-local.js
+docker compose exec login-server /usr/src/app/bin/manage-local.js
 ```
 
 ### Environment Variables
@@ -102,5 +102,5 @@ The full list of environment variables can be found [here](https://github.com/gb
 ### Database Indexes
 If you expect a large number of users on your login-server, it is recommended to add indexes to the users table. After configuring your providers, please use the following script:
 ```bash
-docker-compose exec login-server node /usr/src/app/utils/addIndexes.js
+docker compose exec login-server node /usr/src/app/utils/addIndexes.js
 ```
