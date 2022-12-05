@@ -44,7 +44,8 @@ const
   },
   cookieMaxDays = process.env.COOKIE_MAX_DAYS || 30,
   sessionExpirationMessageThreshold = process.env.SESSION_EXPIRATION_MESSAGE_THRESHOLD || 60,
-  sessionExpirationMessageInterval = process.env.SESSION_EXPIRATION_MESSAGE_INTERVAL || 5
+  sessionExpirationMessageInterval = process.env.SESSION_EXPIRATION_MESSAGE_INTERVAL || 5,
+  verbosity = process.env.VERBOSITY
 
 let allowedOrigins = (process.env.ALLOWED_ORIGINS || "").split(",").filter(origin => origin != "")
 
@@ -107,6 +108,7 @@ let config = {
   cookieMaxDays,
   sessionExpirationMessageThreshold,
   sessionExpirationMessageInterval,
+  verbosity,
 }
 
 /**
@@ -241,6 +243,28 @@ try {
   config.applications = require("./applications.json")
 } catch (error) {
   config.applications = []
+}
+
+// Logging
+if (![true, false, "log", "warn", "error"].includes(config.verbosity)) {
+  const defaultVerbosity = "log"
+  config.verbosity !== undefined && console.warn(`Invalid verbosity value "${config.verbosity}", defaulting to "${defaultVerbosity}" instead.`)
+  config.verbosity = defaultVerbosity
+}
+config.log = (...args) => {
+  if (env != "test" && (config.verbosity === true || config.verbosity === "log")) {
+    console.log(new Date(), ...args)
+  }
+}
+config.warn = (...args) => {
+  if (env != "test" && (config.verbosity === true || config.verbosity === "log" || config.verbosity === "warn")) {
+    console.warn(new Date(), ...args)
+  }
+}
+config.error = (...args) => {
+  if (env != "test" && config.verbosity !== false) {
+    console.error(new Date(), ...args)
+  }
 }
 
 module.exports = config
