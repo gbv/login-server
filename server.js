@@ -142,9 +142,12 @@ if (!config.isLocal) {
 }
 const session = require("express-session")
 const mongoStore = require("./utils/mongoStore")
+const db = require("./utils/db")
+// Connect to db on startup
+db.connect(true)
 // Handle database failures
 app.use((req, res, next) => {
-  if (mongoStore.options.mongooseConnection.readyState !== 1) {
+  if (db.connection.readyState !== 1) {
     // Catch requests and return an error
     const error = {
       error: "DatabaseAccessError",

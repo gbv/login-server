@@ -4,7 +4,7 @@
  * Run this before first launch and every time a new provider is added to providers.json.
  */
 
-const connection = require("./db")
+const { connect, disconnect } = require("./db")
 const User = require("../models/user")
 
 require("dotenv").config()
@@ -15,10 +15,8 @@ if (providersFile.startsWith("./")) {
   providersFile = `../${providersFile}`
 }
 const providers = require(providersFile)
-let db
 
-connection.then(_db => {
-  db = _db
+connect().then(() => {
   return new Promise((resolve, reject) => {
     const providerIds = providers.map(provider => provider.id)
     let output = ""
@@ -45,7 +43,7 @@ connection.then(_db => {
 }).catch(error => {
   console.error("An error occurred:", error)
 }).then(() => {
-  return db.close()
+  return disconnect()
 }).then(() => {
   // Force exit because database will try to reconnect automatically
   process.exit(0)

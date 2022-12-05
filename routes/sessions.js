@@ -3,7 +3,7 @@
  */
 
 const config = require("../config")
-const db = require("../utils/db")
+const { connection } = require("../utils/db")
 const { websockets } = require("../lib/events")
 
 /**
@@ -16,7 +16,7 @@ async function sessionsForUser(user) {
   if (!user) {
     return []
   }
-  return db.collection("sessions").find({ "session.passport.user": user.id }).toArray()
+  return connection.collection("sessions").find({ "session.passport.user": user.id }).toArray()
 }
 
 /**
@@ -26,7 +26,7 @@ async function sessionsForUser(user) {
  * @returns {Promise} A fulfilled Promise or an error if rejected.
  */
 function removeSession(sessionID) {
-  return db.collection("sessions").deleteOne({ _id: sessionID }).then(() => {
+  return connection.collection("sessions").deleteOne({ _id: sessionID }).then(() => {
     // Explicitly close WebSockets associated with sessionID
     for (let socket of Object.values(websockets).filter(ws => ws && ws.sessionID == sessionID)) {
       if (socket.ws) {

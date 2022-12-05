@@ -3,20 +3,20 @@
  */
 
 // const config = require("../config")
-const db = require("./db")
+const { connection } = require("./db")
 const session = require("express-session")
 const MongoStore = require("connect-mongo")(session)
 const mongoStore = new MongoStore({
-  mongooseConnection: db,
+  mongooseConnection: connection,
   stringify: false,
 })
 
 // Workaround for connection failures in the mongoose connection.
 // Without this, the MongoStore will not work even if the mongoose connection is reconnected.
-db.on("connected", async () => {
+connection.on("connected", async () => {
   // handleNewConnectionAsync sometimes throws an error while still doing what it should for us.
   try {
-    await mongoStore.handleNewConnectionAsync(db)
+    await mongoStore.handleNewConnectionAsync(connection)
   } catch(error) {
     // Ignore error
   }

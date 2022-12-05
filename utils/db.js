@@ -1,39 +1,68 @@
 /**
- * Configuration object for Mongoose database connection.
+ * Mongoose database connection.
  *
- * Only needs to be called once at application startup, for example:
+ * `connect` needs to be called once at application startup, for example:
  * ```javascript
- * const db = require("./utils/db")
+ * const { connection, connect } = require("./utils/db")
+ * connect(true)
  * ```
  *
- * You can use either `db.readyState` to detect the database status,
- * and `db.once("open", callback)` to detect an open connection.
+ * You can use either `connection.readyState` to detect the database status,
+ * and `connection.once("open", callback)` to detect an open connection.
  */
 
 const config = require("../config")
 const mongoose = require("mongoose")
-mongoose.Promise = global.Promise
+const connection = mongoose.connection
 
-const connect = async () => {
-  try {
-    await mongoose.connect(config.database.url, config.database.options)
-  } catch(error) {
-    console.log(new Date(), "Error connecting to database, trying again in a few seconds...")
-    setTimeout(connect, 2500)
-  }
+// Set mongoose buffering options
+mongoose.set("bufferCommands", true)
+mongoose.set("bufferTimeoutMS", 30000)
+
+connection.on("connected", () => {
+  config.log("Connected to database")
+})
+const onDisconnected = () => {
+  config.warn("Disconnected from database, waiting for automatic reconnect...")
 }
-// Connect immediately on startup
-connect()
-const db = mongoose.connection
 
-db.on("error", () => {
-  mongoose.disconnect()
-})
-db.on("connected", () => {
-  console.log(new Date(), "Connected to database")
-})
-db.on("disconnected", () => {
-  console.warn(new Date(), "Disconnected from database")
-})
-
-module.exports = db
+module.exports = {
+  mongoose,
+  connection,
+  async connect(retry = false) {
+    connection.on("disconnected", onDisconnected)
+    function addErrorHandler() {
+      connection.on("error", (error) => {
+        config.error("Database error", error)
+      })
+    }
+    // If retry === false, add error handler before connecting
+    !retry && addErrorHandler()
+    async function _connect() {
+      return await mongoose.connect(config.database.url, config.database.options)
+    }
+    let result
+    while (!result) {
+      try {
+        result = await _connect()
+      } catch (error) {
+        if (!retry) {
+          throw error
+        }
+        config.error(error)
+      }
+      if (!result) {
+        config.error("Error connecting to database, trying again in 10 seconds...")
+        await new Promise(resolve => setTimeout(resolve, 10000))
+      }
+    }
+    // If retry === true, add error handler after connecting
+    retry && addErrorHandler()
+    return result
+  },
+  disconnect() {
+    connection.removeListener("disconnected", onDisconnected)
+    config.log("Disconnected from database (on purpose)")
+    return mongoose.disconnect()
+  },
+}

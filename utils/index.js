@@ -10,7 +10,7 @@ const jwt = require("jsonwebtoken")
 const mongoStore = require("../utils/mongoStore")
 const User = require("../models/user")
 
-const db = require("./db")
+const { connection } = require("./db")
 
 /**
  * Returns a random v4 UUID.
@@ -46,7 +46,7 @@ function prepareAbout() {
     publicKey: config.publicKey.toString("utf8"),
     algorithm: config.jwtOptions.algorithm,
     cookieMaxDays: config.cookieMaxDays,
-    ok: db.readyState === 1 ? 1 : 0,
+    ok: connection.readyState === 1 ? 1 : 0,
   }
 }
 
