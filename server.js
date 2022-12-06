@@ -133,6 +133,8 @@ const bodyParser = require("body-parser")
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
+// Add /about route before session/db handling
+require("./routes/about.js")(app)
 
 // Cookies/Sessions
 app.use(require("cookie-parser")(config.sessionSecret))
