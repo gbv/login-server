@@ -55,7 +55,7 @@
     "lodash": "^4.17.21",
     "mongoose": "^6.7.5",
     "node-rsa": "^1.1.1",
-    "passport": "~0.4.1",
+    "passport": "~0.6.0",
     "passport-easydb": "^0.1.4",
     "passport-github": "^1.1.0",
     "passport-ldapauth": "^3.0.1",
