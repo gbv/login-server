@@ -51,9 +51,9 @@
     "express-ws": "^5.0.2",
     "helmet": "^6.0.1",
     "inquirer": "^8.2.5",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "lodash": "^4.17.21",
-    "mongoose": "^6.7.5",
+    "mongoose": "^6.8.3",
     "node-rsa": "^1.1.1",
     "passport": "~0.4.1",
     "passport-easydb": "^0.1.4",
@@ -67,15 +67,15 @@
   },
   "devDependencies": {
     "chai": "^4.3.7",
-    "eslint": "^8.29.0",
+    "eslint": "^8.31.0",
     "eslint-config-gbv": "^1.0.4",
     "lint-staged": "^13.1.0",
-    "mocha": "^10.1.0",
+    "mocha": "^10.2.0",
     "mocha-eslint": "^7.0.0",
     "nodemon": "^2.0.20",
     "portfinder": "^1.0.32",
     "pre-commit": "^1.2.2",
-    "superagent": "^8.0.5",
-    "supertest": "^6.3.2"
+    "superagent": "^8.0.6",
+    "supertest": "^6.3.3"
   }
 }
