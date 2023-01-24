@@ -19,6 +19,8 @@ const connection = mongoose.connection
 mongoose.set("bufferCommands", true)
 mongoose.set("bufferTimeoutMS", 30000)
 
+mongoose.set("strictQuery", false)
+
 connection.on("connected", () => {
   config.log("Connected to database")
 })
