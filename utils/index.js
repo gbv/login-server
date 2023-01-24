@@ -30,6 +30,14 @@ function prepareProviders() {
   return config.providers.map(provider => _.omit(provider, ["template", "auth", "callbackURL", "options"]))
 }
 
+function isConnectedToDatabase() {
+  return connection.readyState === 1
+}
+
+function addDatabaseEventHandler(event, callback, once = true) {
+  connection[once ? "once" : "on"](event, callback)
+}
+
 /**
  * Prepares information about the server.
  *
@@ -46,7 +54,7 @@ function prepareAbout() {
     publicKey: config.publicKey.toString("utf8"),
     algorithm: config.jwtOptions.algorithm,
     cookieMaxDays: config.cookieMaxDays,
-    ok: connection.readyState === 1 ? 1 : 0,
+    ok: isConnectedToDatabase() ? 1 : 0,
   }
 }
 
@@ -151,4 +159,6 @@ module.exports = {
   getToken,
   getUserFromSession,
   saveReferrerInSession,
+  isConnectedToDatabase,
+  addDatabaseEventHandler,
 }
