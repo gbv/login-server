@@ -142,14 +142,10 @@ app.use(require("cookie-parser")(config.sessionSecret))
 if (!config.isLocal) {
   app.set("trust proxy", 1)
 }
-const session = require("express-session")
-const mongoStore = require("./utils/mongoStore")
-const db = require("./utils/db")
-// Connect to db on startup
-db.connect(true)
+
 // Handle database failures
 app.use((req, res, next) => {
-  if (db.connection.readyState !== 1) {
+  if (!utils.isConnectedToDatabase()) {
     // Catch requests and return an error
     const error = {
       error: "DatabaseAccessError",
@@ -167,6 +163,9 @@ app.use((req, res, next) => {
     next()
   }
 })
+
+const session = require("express-session")
+const mongoStore = require("./utils/mongoStore")
 app.use(session({
   secret: config.sessionSecret,
   resave: false,
