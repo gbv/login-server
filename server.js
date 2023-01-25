@@ -9,6 +9,7 @@ if (!port && config.env != "test") {
 
 const _ = require("lodash")
 const utils = require("./utils")
+const events = require("./lib/events.js")
 
 /**
  * ##### Passport Setup #####
@@ -186,6 +187,23 @@ app.use(shouldSendSameSiteNone)
 // Passport
 app.use(passport.initialize())
 app.use(passport.session())
+
+app.use((req, res, next) => {
+  // Promisify req.logout
+  const logout = req.logout
+  const util = require("util")
+  req.logOut =
+  req.logout = util.promisify(logout).bind(req)
+
+  // Watch for sessionID changes and update IDs for WebSockets if necessary
+  const prevSessionID = req.sessionID
+  res.once("finish", () => {
+    if (prevSessionID !== req.sessionID) {
+      events.updateSessionID(prevSessionID, req.sessionID)
+    }
+  })
+  next()
+})
 
 // Update lastUsed property of logged in user
 const Usage = require("./models/usage")

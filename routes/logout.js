@@ -7,13 +7,12 @@ const events = require("../lib/events")
 module.exports = app => {
 
   app.get("/logout", async (req, res) => {
-  // Note: Note sure if `await` is even applicable here, or if `req.user = undefined` makes sense, but it seems to help with #3.
-  // Invalidate session
+    // Invalidate session
+    const sessionID = req.sessionID, user = req.user
     await req.logout()
     req.flash("success", "You have been logged out.")
     // Fire loggedOut event
-    events.userLoggedOut(req.sessionID, req.user)
-    req.user = undefined
+    events.userLoggedOut(sessionID, user)
     res.redirect("/login")
   })
 

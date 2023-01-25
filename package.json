@@ -56,7 +56,7 @@
     "mongodb": "^4.13.0",
     "mongoose": "^6.8.4",
     "node-rsa": "^1.1.1",
-    "passport": "~0.4.1",
+    "passport": "~0.6.0",
     "passport-easydb": "^0.1.4",
     "passport-github": "^1.1.0",
     "passport-ldapauth": "^3.0.1",

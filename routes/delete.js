@@ -13,11 +13,11 @@ module.exports = app => {
 
   // We need to use POST here because DELETE can't be opened by the browser.
   app.post("/delete", async (req, res) => {
-    let user = req.user
+    const sessionID = req.sessionID, user = req.user
     await req.logout()
     User.findByIdAndRemove(user.id).then(() => {
     // Fire loggedOut event
-      events.userLoggedOut(req.sessionID)
+      events.userLoggedOut(sessionID)
       req.flash("success", "Your user account has been deleted.")
     }).catch(() => {
       req.flash("error", "There was an error when trying to delete your user account.")
