@@ -136,35 +136,35 @@ To provide the user with information about which applications are accessing thei
 ```json
 [
   {
-    "url": "//bartoc.org",
+    "url": "https://bartoc.org",
     "name": "BARTOC"
   },
   {
-    "url": "//coli-conc.gbv.de/coli-rich/",
+    "url": "https://coli-conc.gbv.de/coli-rich/",
     "name": "coli-rich"
   },
   {
-    "url": "//coli-conc.gbv.de/cocoda/app/",
+    "url": "https://coli-conc.gbv.de/cocoda/app/",
     "name": "Cocoda"
   },
   {
-    "url": "//coli-conc.gbv.de/cocoda/dev/",
+    "url": "https://coli-conc.gbv.de/cocoda/dev/",
     "name": "Cocoda (dev)"
   },
   {
-    "url": "//coli-conc.gbv.de/cocoda/rvk/",
+    "url": "https://coli-conc.gbv.de/cocoda/rvk/",
     "name": "Cocoda (RVK)"
   },
   {
-    "url": "//coli-conc.gbv.de/cocoda/wikidata/",
+    "url": "https://coli-conc.gbv.de/cocoda/wikidata/",
     "name": "Cocoda (Wikidata)"
   },
   {
-    "url": "//coli-conc.gbv.de/cocoda/",
+    "url": "https://coli-conc.gbv.de/cocoda/",
     "name": "Cocoda (other)"
   },
   {
-    "url": "//coli-conc.gbv.de",
+    "url": "https://coli-conc.gbv.de",
     "name": "Other coli-conc application"
   }
 ]
