@@ -350,6 +350,7 @@ You can adjust the path to the `providers.json` file with `PROVIDERS_PATH` in `.
 **Notes about using the MediaWiki provider:**
 - If your consumer is limited to a specific instance (e.g. Wikidata only), you need to provide the baseURL for that instance in the options, for example: `"baseURL": "https://www.wikidata.org/"`.
 - There seems to be a [bug](https://phabricator.wikimedia.org/T145828) either in Mediawiki or in passport-mediawiki-oauth that causes custom callback URLs to not work. This means that you need to provide the exact callback URL when registering your consumer (e.g. `https://coli-conc.gbv.de/login/login/wikidata/return` for our login-server instance).
+- See also: https://www.mediawiki.org/wiki/OAuth/For_Developers
 
 ## JWTs
 login-server offers JSON Web Tokens that can be used to authenticate against other services (like [jskos-server](https://github.com/gbv/jskos-server)). [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) is used for signing the tokens.
