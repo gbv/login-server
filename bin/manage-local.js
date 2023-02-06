@@ -62,6 +62,12 @@ function loop(mode = "start", data = {}, prompt, action = null) {
           console.log(`Created user with username ${answer.username}!`)
           console.log()
           break
+        case "enableProvider":
+          delete provider.disabled
+          break
+        case "disableProvider":
+          provider.disabled = true
+          break
         case "deleteProvider":
           providers = providers.filter(provider => provider.id != data.provider)
           break
@@ -89,7 +95,7 @@ function loop(mode = "start", data = {}, prompt, action = null) {
     // data.provider has potentially changed, reread provider
     provider = providers.find(provider => provider.id === data.provider)
     if (provider) {
-      console.log(`Selected provider: ${provider.id} (${provider.options.users.length} existing users)`)
+      console.log(`Selected provider: ${provider.name} (ID: ${provider.id},${provider.disabled ? " disabled," : ""} ${provider.options.users.length} existing users)`)
     }
     switch (mode) {
       case "start":
@@ -98,7 +104,7 @@ function loop(mode = "start", data = {}, prompt, action = null) {
           name: "provider",
           message: "Choose a local provider",
           choices: providers.filter(provider => provider.strategy == "local").map(provider => ({
-            name: provider.name,
+            name: `${provider.name}${provider.disabled ? " (disabled)" : ""}`,
             value: provider.id,
           })).concat([new inquirer.Separator(), {
             name: "New Local Provider",
@@ -138,7 +144,7 @@ function loop(mode = "start", data = {}, prompt, action = null) {
           type: "list",
           name: "action",
           message: "Choose an action",
-          choices: ["Create new user", "Manage users", "Choose different provider", new inquirer.Separator(), "Delete provider"],
+          choices: ["Create new user", "Manage users", "Choose different provider", new inquirer.Separator(), provider.disabled ? "Enable provider" : "Disable provider", "Delete provider"],
         }]).then(answer => {
           switch (answer.action) {
             case "Choose different provider":
@@ -162,6 +168,12 @@ function loop(mode = "start", data = {}, prompt, action = null) {
                   loop("manageUser", data, null, null)
                 }
               })
+              break
+            case "Enable provider":
+              loop("action", data, null, "enableProvider")
+              break
+            case "Disable provider":
+              loop("action", data, null, "disableProvider")
               break
             case "Delete provider":
               inquirer.prompt([{

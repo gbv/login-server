@@ -165,6 +165,7 @@ if (env != "test") {
     if (!Array.isArray(config.providers)) {
       throw new Error("providers.json has to contain an array.")
     }
+    config.providers = config.providers.filter(provider => !provider.disabled)
     if (!config.providers.length) {
       console.warn("Warning: No providers configured. Refer to the documentation on how to configure providers: https://github.com/gbv/login-server#providers")
     }
