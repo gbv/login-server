@@ -30,6 +30,8 @@ try {
   process.exit(1)
 }
 
+const NEWLOCALPROVIDER = "__newlocalprovider__"
+
 function loop(mode = "start", data = {}, prompt, action = null) {
   prompt = prompt || Promise.resolve(null)
   prompt.then(answer => {
@@ -39,7 +41,7 @@ function loop(mode = "start", data = {}, prompt, action = null) {
     if (action != null) {
       switch (action) {
         case "chooseProvider":
-          if (answer.provider == "New Local Provider") {
+          if (answer.provider == NEWLOCALPROVIDER) {
             mode = "newProvider"
           } else {
             data.provider = answer.provider
@@ -95,7 +97,13 @@ function loop(mode = "start", data = {}, prompt, action = null) {
           type: "list",
           name: "provider",
           message: "Choose a local provider",
-          choices: providers.filter(provider => provider.strategy == "local").map(provider => provider.id).concat([new inquirer.Separator(), "New Local Provider"]),
+          choices: providers.filter(provider => provider.strategy == "local").map(provider => ({
+            name: provider.name,
+            value: provider.id,
+          })).concat([new inquirer.Separator(), {
+            name: "New Local Provider",
+            value: NEWLOCALPROVIDER,
+          }]),
         }])
         loop("action", data, prompt, "chooseProvider")
         break
@@ -106,6 +114,9 @@ function loop(mode = "start", data = {}, prompt, action = null) {
             name: "id",
             message: "ID:",
             validate: (value) => {
+              if (value === NEWLOCALPROVIDER) {
+                return `ID "${NEWLOCALPROVIDER}" is not allowed.`
+              }
               let valid = providers.find(provider => provider.id == value) == null && value.length != 0
               return valid || `Provider with ID ${value} already exists!`
             },
