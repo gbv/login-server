@@ -5,6 +5,8 @@ This repository offers a login server to be used with the [Cocoda Mapping Tool](
 
 - See [GitHub](https://github.com/gbv/login-server) for more information about the tool.
 
+**Note:** The old Docker Hub image (`coliconc/login-server`) is deprecated as of March 2023 and will not be updated anymore. (See [this post](https://www.docker.com/blog/we-apologize-we-did-a-terrible-job-announcing-the-end-of-docker-free-teams/) for more details.) We are moving all our Docker images to GitHub's Container Registry. From now on, new Docker images will be available under `ghcr.io/gbv/login-server` (https://github.com/gbv/login-server/pkgs/container/login-server).
+
 ## Supported Architectures
 Currently, only `x86-64` is supported, but we are planning to add more architectures soon.
 
@@ -23,7 +25,7 @@ version: "3"
 
 services:
   login-server:
-    image: coliconc/login-server
+    image: ghcr.io/gbv/login-server
     # replace this with your UID/GID if necessary (id -u; id -g); remove on macOS/Windows
     user: 1000:1000
     depends_on:
@@ -38,7 +40,7 @@ services:
     restart: always
 
   mongo:
-    image: mongo:4
+    image: mongo:5
     # replace this with your UID/GID if necessary (id -u; id -g); remove on macOS/Windows
     user: 1000:1000
     volumes:
