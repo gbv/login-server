@@ -63,7 +63,6 @@
     "passport-local": "^1.0.0",
     "passport-mediawiki-oauth": "git+https://abc@github.com/stefandesu/passport-mediawiki-oauth#0158a4f",
     "passport-orcid": "0.0.4",
-    "passport-stack-exchange": "^1.0.0",
     "should-send-same-site-none": "^2.0.5"
   },
   "devDependencies": {
