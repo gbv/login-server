@@ -181,7 +181,7 @@ The server provides a [web interface](#web-interface), a [HTTP API](#http-api) a
 
 The web interface allows users to create and manage accounts with connections to multiple identities at identity providers (see [providers](#providers)). Providers are used to authenticate users because the login server does not store any passwords (single sign-on).
 
-The HTTP API and WebSocket allow client applications to interact with the login server, for instance to check whether a user has been logged in and to find out which identities belong to a user.
+The HTTP API and WebSocket allow client applications to interact with the login server, for instance to check whether a user has been logged in and to find out which identities belong to a user (see [login-client](https://github.com/gbv/login-client) for a JavaScript library to connect web applications with login-server).
 
 The login server can further be used to authenticate users against other services so users can proof their identities.
 
