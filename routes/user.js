@@ -4,7 +4,7 @@
 
 const config = require("../config")
 const User = require("../models/user")
-const Usage = require("../models/usage")
+const utils = require("../utils")
 const _ = require("lodash")
 const events = require("../lib/events")
 
@@ -37,14 +37,8 @@ module.exports = app => {
     User.findById(req.params.id).lean().then(user => {
       if (user) {
         if (req.user && req.user.id == user._id) {
-          Usage.findById(user._id)
-            .lean()
-            .then(usage => {
-              delete usage._id
-              user.usage = usage
-            })
-            .catch(() => {})
-            .finally(() => {
+          utils.addUsageToUserObject(user)
+            .then(user => {
               res.json(user)
             })
         } else {
@@ -95,7 +89,10 @@ module.exports = app => {
   app.get("/currentUser", (req, res) => {
     let user = req.user
     if (user) {
-      res.redirect(`/users/${user.id}`)
+      utils.addUsageToUserObject(user)
+        .then(user => {
+          res.json(user)
+        })
     } else {
       res.status(401).json({ status: 401, message: "Authorization necessary." })
     }

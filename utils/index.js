@@ -9,6 +9,7 @@ const jwt = require("jsonwebtoken")
 // Imports for getUserFromSession
 const mongoStore = require("../utils/mongoStore")
 const User = require("../models/user")
+const Usage = require("../models/usage")
 
 const { connection } = require("./db")
 
@@ -151,6 +152,19 @@ function saveReferrerInSession(req) {
   }
 }
 
+async function addUsageToUserObject(user) {
+  try {
+    const usage = await Usage.findById(user._id).lean()
+    if (usage) {
+      delete usage._id
+      user.usage = usage
+    }
+  } catch (error) {
+    // ignore
+  }
+  return user
+}
+
 module.exports = {
   uuid,
   prepareProviders,
@@ -161,4 +175,5 @@ module.exports = {
   saveReferrerInSession,
   isConnectedToDatabase,
   addDatabaseEventHandler,
+  addUsageToUserObject,
 }

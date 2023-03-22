@@ -49,9 +49,9 @@ if (cli.input.length && cli.flags.withProvider.length) {
 
 process.env.VERBOSITY = "error"
 const config = require("../config")
+const utils = require("../utils")
 const db = require("../utils/db")
 const User = require("../models/user")
-const Usage = require("../models/usage")
 
 // Copied from jskos-tools
 const isValidUri = (uri) => {
@@ -81,11 +81,7 @@ const isValidUri = (uri) => {
     const users = await User.find(query).lean()
     // Add usage data
     for (const user of users) {
-      const usage = await Usage.findById(user._id).lean()
-      if (usage) {
-        delete usage._id
-        user.usage = usage
-      }
+      await utils.addUsageToUserObject(user)
     }
     users.forEach(user => console.log(JSON.stringify(user)))
   } catch (error) {
