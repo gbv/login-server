@@ -102,6 +102,28 @@ let config = {
   verbosity,
 }
 
+// Logging
+if (![true, false, "log", "warn", "error"].includes(config.verbosity)) {
+  const defaultVerbosity = "log"
+  config.verbosity !== undefined && console.warn(`Invalid verbosity value "${config.verbosity}", defaulting to "${defaultVerbosity}" instead.`)
+  config.verbosity = defaultVerbosity
+}
+config.log = (...args) => {
+  if (env != "test" && (config.verbosity === true || config.verbosity === "log")) {
+    console.log(new Date(), ...args)
+  }
+}
+config.warn = (...args) => {
+  if (env != "test" && (config.verbosity === true || config.verbosity === "log" || config.verbosity === "warn")) {
+    console.warn(new Date(), ...args)
+  }
+}
+config.error = (...args) => {
+  if (env != "test" && config.verbosity !== false) {
+    console.error(new Date(), ...args)
+  }
+}
+
 /**
  * ##### RSA Key Setup #####
  */
@@ -113,21 +135,21 @@ try {
   // Test keys by using jwt
   let testToken = jwt.sign({ test: "test" }, privateKey, config.jwtOptions)
   jwt.verify(testToken, publicKey)
-  console.log("Loaded RSA keypair.")
+  config.log("Loaded RSA keypair.")
 } catch(error) {
   if (privateKey || publicKey) {
     let errorName = error.name
     let errorCode = error.code
     if (errorName === "Error" && errorCode === "ENOENT") {
-      console.error(`Error: Could not find key at path ${error.path}.`)
+      config.error(`Error: Could not find key at path ${error.path}.`)
     } else if (errorName === "JsonWebTokenError") {
-      console.error("Error: Testing provided keypair failed (could not verify a signed token).")
+      config.error("Error: Testing provided keypair failed (could not verify a signed token).")
     } else {
-      console.error(`Error: Unkown error when loading keypair. (${errorName}, ${errorCode}, ${error.message})`)
+      config.error(`Error: Unkown error when loading keypair. (${errorName}, ${errorCode}, ${error.message})`)
     }
     process.exit(1)
   }
-  console.log(`Generating new keypair and saving to \`${privateKeyPath}\` and \`${publicKeyPath}\`...`)
+  config.log(`Generating new keypair and saving to \`${privateKeyPath}\` and \`${publicKeyPath}\`...`)
   let key = new rsa({ b: 2048 })
   privateKey = key.exportKey("private")
   publicKey = key.exportKey("public")
@@ -139,7 +161,7 @@ try {
       index += 1
     }
     if (index > 0) {
-      console.warn(`Renaming ${file(0)} to ${file(index)}...`)
+      config.warn(`Renaming ${file(0)} to ${file(index)}...`)
       fs.renameSync(file(0), file(index))
     }
   }
@@ -167,10 +189,10 @@ if (env != "test") {
     }
     config.providers = config.providers.filter(provider => !provider.disabled)
     if (!config.providers.length) {
-      console.warn("Warning: No providers configured. Refer to the documentation on how to configure providers: https://github.com/gbv/login-server#providers")
+      config.warn("Warning: No providers configured. Refer to the documentation on how to configure providers: https://github.com/gbv/login-server#providers")
     }
   } catch(error) {
-    console.error(`Error: Missing or invalid providers.json at ${providersFile}; aborting startup. Please consult the documentation.`)
+    config.error(`Error: Missing or invalid providers.json at ${providersFile}; aborting startup. Please consult the documentation.`)
     process.exit(1)
   }
   // Prepare providers
@@ -235,28 +257,6 @@ try {
   config.applications = require("./applications.json")
 } catch (error) {
   config.applications = []
-}
-
-// Logging
-if (![true, false, "log", "warn", "error"].includes(config.verbosity)) {
-  const defaultVerbosity = "log"
-  config.verbosity !== undefined && console.warn(`Invalid verbosity value "${config.verbosity}", defaulting to "${defaultVerbosity}" instead.`)
-  config.verbosity = defaultVerbosity
-}
-config.log = (...args) => {
-  if (env != "test" && (config.verbosity === true || config.verbosity === "log")) {
-    console.log(new Date(), ...args)
-  }
-}
-config.warn = (...args) => {
-  if (env != "test" && (config.verbosity === true || config.verbosity === "log" || config.verbosity === "warn")) {
-    console.warn(new Date(), ...args)
-  }
-}
-config.error = (...args) => {
-  if (env != "test" && config.verbosity !== false) {
-    console.error(new Date(), ...args)
-  }
 }
 
 config.log("Allowed origins:", allowedOrigins.join(", "))
