@@ -12,9 +12,9 @@ Usage
   This tool returns the JSON data for users in the MongoDB.
   If no IDs or URIs are given, it will return data for all users.
 
-  Always returns a JSON array, so the data can be further processed through jq.
+  Outputs one line per user (newline delimited JSON).
 
-  Note that URIs need to be quotes if they contain certain characters (like a questionmark or a space).
+  Note that URIs need to be quoted if they contain certain characters (like a question mark or a space).
 
 Options
   GNU long option         Option      Meaning
@@ -87,7 +87,7 @@ const isValidUri = (uri) => {
         user.usage = usage
       }
     }
-    console.log(users)
+    users.forEach(user => console.log(JSON.stringify(user)))
   } catch (error) {
     console.error(error)
   }
