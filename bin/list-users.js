@@ -7,7 +7,7 @@
 const meow = require("meow")
 const cli = meow(`
 Usage
-  $ ./bin/query.js [IDs or URIs] [options]
+  $ ./bin/list-users.js [IDs or URIs] [options]
 
   This tool returns the JSON data for users in the MongoDB.
   If no IDs or URIs are given, it will return data for all users.
@@ -23,9 +23,9 @@ Options
                                       can be given multiple times
 
 Examples
-  $ ./bin/query.js c0c1914a-f9d6-4b92-a624-bf44118b6619
-  $ ./bin/query.js https://github.com/stefandesu
-  $ ./bin/query.js -p github
+  $ ./bin/list-users.js c0c1914a-f9d6-4b92-a624-bf44118b6619
+  $ ./bin/list-users.js https://github.com/stefandesu
+  $ ./bin/list-users.js -p github
 `, {
   flags: {
     withProvider: {
