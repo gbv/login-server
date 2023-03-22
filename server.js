@@ -212,6 +212,7 @@ app.use((req, res, next) => {
     Usage.findById(req.user.id).then(usage => {
       if (!usage) {
         usage = new Usage({ _id: req.user.id })
+        usage.created = (new Date()).toISOString()
       }
       usage.lastUsed = (new Date()).toISOString()
       usage.save().catch(() => null).then(() => next())
