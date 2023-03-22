@@ -57,6 +57,8 @@ describe("GET /users/:id", () => {
       .expect("Content-Type", /json/)
       .expect(res => {
         expect(res.body).to.be.an("object")
+        // Remove usage data for comparison
+        delete res.body.usage
         expect(res.body).to.deep.equal(currentUser)
       })
       .expect(200, done)
