@@ -1,5 +1,4 @@
 # [Login Server](https://github.com/gbv/login-server)
-[![Build Status](https://travis-ci.com/gbv/login-server.svg?branch=master)](https://travis-ci.com/gbv/login-server)
 
 This repository offers a login server to be used with the [Cocoda Mapping Tool](https://github.com/gbv/cocoda). It allows users to authenticate using different providers (e.g. GitHub, ORCID). It is part of a larger infrastructure of [Project coli-conc](https://coli-conc.gbv.de).
 

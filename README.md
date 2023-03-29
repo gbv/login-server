@@ -1,4 +1,8 @@
 # Login Server
+[![GitHub release](https://img.shields.io/github/release/gbv/login-server.svg)](https://github.com/gbv/login-server/releases/latest)
+[![API Status](https://coli-conc-status.fly.dev/api/badge/2/status?label=API)](https://coli-conc.gbv.de/api/)
+[![License](https://img.shields.io/github/license/gbv/login-server.svg)](https://github.com/gbv/login-server/blob/master/LICENSE)
+[![Docker](https://img.shields.io/badge/Docker-ghcr.io%2Fgbv%2Flogin--server-informational)](https://github.com/gbv/login-server/blob/master/docker/README.md)
 [![Test](https://github.com/gbv/login-server/actions/workflows/test.yml/badge.svg)](https://github.com/gbv/login-server/actions/workflows/test.yml)
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg)](https://github.com/RichardLitt/standard-readme)
 
