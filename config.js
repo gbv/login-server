@@ -182,6 +182,10 @@ config.key = new rsa(privateKey)
 if (env != "test") {
   // Load providers
   const providersFile = process.env.PROVIDERS_PATH || "./providers.json"
+  // If file doesn't exist, create it with an empty array
+  if (!fs.existsSync(providersFile)) {
+    fs.writeFileSync(providersFile, "[]")
+  }
   try {
     config.providers = require(providersFile)
     if (!Array.isArray(config.providers)) {
