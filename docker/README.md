@@ -36,7 +36,7 @@ services:
       - MONGO_HOST=mongo
     ports:
       - 3004:3004
-    restart: always
+    restart: unless-stopped
 
   mongo:
     image: mongo:5
@@ -44,7 +44,7 @@ services:
     user: 1000:1000
     volumes:
       - ./data/db:/data/db
-    restart: always
+    restart: unless-stopped
 ```
 
 2. Create data folders:
