@@ -203,12 +203,11 @@ login-server uses [Passport](http://www.passportjs.org) ([GitHub](https://github
 - ORCID (via [passport-orcid](http://www.passportjs.org/packages/passport-orcid/))
 - Mediawiki (via [passport-mediawiki-oauth](http://www.passportjs.org/packages/passport-mediawiki-oauth/))
 - LDAP (via [passport-ldapauth](http://www.passportjs.org/packages/passport-ldapauth/))
+- Stack Exchange (via [passport-oauth2](https://www.passportjs.org/packages/passport-oauth2/))
 - easydb (via [passport-easydb](https://github.com/gbv/passport-easydb))
 - Local (via [passport-local](http://www.passportjs.org/packages/passport-local/))
 
 The following strategies have been implemented experimentally and could be added if needed:
-
-- StackExchange (via [passport-stack-exchange](http://www.passportjs.org/packages/passport-stack-exchange/)), see git branch [stackexchange-strategy](https://github.com/gbv/login-server/blob/stackexchange-strategy/strategies/stackexchange.js)
 
 Because strategies use different parameters in their [verify callbacks](http://www.passportjs.org/docs/configure/), each strategy has its own wrapper file in the folder `strategies/`. To add another strategy to login-server, add a file called `{name}.js` (where `{name}` is the name of the strategy that is used with `passport.authenticate`) with the following structure (GitHub as example):
 
@@ -315,7 +314,7 @@ The following is an example `providers.json` that shows how to configure each of
   {
     "id": "stackexchange",
     "strategy": "stackexchange",
-    "name": "StackExchange",
+    "name": "Stack Exchange",
     "template": "https://stackexchange.com/users/{id}",
     "options": {
       "clientID": "12345",
