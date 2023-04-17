@@ -106,7 +106,7 @@ SESSION_EXPIRATION_MESSAGE_INTERVAL=
 MONGO_USER=
 # password used for MongoDB, default: <empty>
 MONGO_PASS=
-# host used for MongoDB, default: localhost
+# host used for MongoDB, default: 127.0.0.1
 MONGO_HOST=
 # port used for MongoDB, default: 27017
 MONGO_PORT=

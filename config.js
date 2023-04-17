@@ -21,7 +21,7 @@ const
   mongoUser = process.env.MONGO_USER || "",
   mongoPass = process.env.MONGO_PASS || "",
   mongoAuth = mongoUser ? `${mongoUser}:${mongoPass}@` : "",
-  mongoHost = process.env.MONGO_HOST || "localhost",
+  mongoHost = process.env.MONGO_HOST || "127.0.0.1",
   mongoPort = process.env.MONGO_PORT || 27017,
   mongoDb = (process.env.MONGO_DB || "login-server") + (env == "test" ? "-test" : ""),
   mongoUrl = `mongodb://${mongoAuth}${mongoHost}:${mongoPort}/${mongoDb}`,
