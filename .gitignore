@@ -11,3 +11,6 @@ static/*
 
 # Add .env file for Docker
 !docker/.env
+
+# pm2 ecosystem file
+ecosystem.config.json

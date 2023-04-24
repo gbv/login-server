@@ -1,4 +1,0 @@
-{
-  "name": "login-server",
-  "script": "./server.js"
-}
