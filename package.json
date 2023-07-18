@@ -54,7 +54,7 @@
     "jsonwebtoken": "^9.0.0",
     "lodash": "^4.17.21",
     "mongodb": "^4.13.0",
-    "mongoose": "^6.9.0",
+    "mongoose": "^6.11.3",
     "node-rsa": "^1.1.1",
     "passport": "~0.6.0",
     "passport-easydb": "^0.1.4",
