@@ -54,9 +54,7 @@ This repository offers a login server to be used with the [Cocoda Mapping Tool](
 ## Install
 
 ### Dependencies
-login-server requires Node.js >= 14 and access to a [MongoDB database](https://docs.mongodb.com/manual/installation/).
-
-Note: There seems to be an [unresolved database connection issue](https://github.com/gbv/login-server/issues/98) when using Node.js 17 or later on ARM64 devices. Please use Node.js 16 in that case.
+login-server requires Node.js >= 18 and access to a [MongoDB database](https://docs.mongodb.com/manual/installation/).
 
 ### Clone and Install
 ```bash
