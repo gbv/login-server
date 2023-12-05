@@ -75,10 +75,7 @@ app.use((req, res, next) => {
     "script-src": ["https://cdn.jsdelivr.net/npm/gbv-login-client@1/dist/gbv-login-client.js", "https://cdn.jsdelivr.net/gh/stefandesu/node-jsonwebtoken@master/build/jsonwebtoken.js", `'nonce-${res.locals.nonceFooter}'`, `'nonce-${res.locals.nonceTemp}'`],
     "script-src-attr": null, // will fall back to script-src
     "style-src": ["'self'", "https:", "'unsafe-inline'"],
-    upgradeInsecureRequests: config.ssl ? [] : null,
-  }
-  if (config.ssl) {
-    directives["upgrade-insecure-requests"] = []
+    "upgrade-insecure-requests": config.ssl ? [] : null,
   }
   helmet.contentSecurityPolicy({
     directives,
