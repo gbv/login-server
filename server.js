@@ -142,6 +142,27 @@ if (!config.isLocal) {
   app.set("trust proxy", 1)
 }
 
+const oldCookieName = "connect.sid"
+// New cookie name based on hash of baseUrl (to prevent issues with special characters)
+const { createHash } = require("node:crypto")
+const baseUrlHash = createHash("sha256").update(config.baseUrl).digest("hex")
+const newCookieName = `login-server-${baseUrlHash}`
+// Rewrite cookie name for version 0.7.2
+// We're keeping the old cookie just in case it's actually from a different application (even though it's very unlikely)
+// TODO: Remove this later, in 1.0 at the latest
+app.use((req, res, next) => {
+  if (req.signedCookies[oldCookieName] && !req.signedCookies[newCookieName]) {
+    res.cookie(newCookieName, req.signedCookies[oldCookieName], {
+      sameSite: config.ssl ? "none" : "lax",
+      secure: config.ssl,
+      maxAge: config.cookieMaxDays * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+      signed: true,
+    })
+  }
+  next()
+})
+
 // Handle database failures
 app.use((req, res, next) => {
   if (!utils.isConnectedToDatabase()) {
@@ -166,6 +187,7 @@ app.use((req, res, next) => {
 const session = require("express-session")
 const mongoStore = require("./utils/mongoStore")
 app.use(session({
+  name: newCookieName,
   secret: config.sessionSecret,
   resave: false,
   saveUninitialized: false,

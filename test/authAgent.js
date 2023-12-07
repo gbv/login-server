@@ -20,6 +20,8 @@ before(done => {
         })
         .expect(res => {
           expect(res.header["set-cookie"]).not.to.be.null
+          // Do not use the default cookie name
+          expect(res.header["set-cookie"][0].startsWith("connect.sid=")).to.be.false
           expect(res.header.location.endsWith("/account")).to.be.true
         })
         .expect(302, done)
