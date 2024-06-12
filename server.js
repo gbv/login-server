@@ -197,6 +197,8 @@ app.use(session({
     sameSite: config.ssl ? "none" : "lax",
     secure: config.ssl,
     maxAge: config.cookieMaxDays * 24 * 60 * 60 * 1000,
+    httpOnly: true,
+    signed: true,
   },
 }))
 
