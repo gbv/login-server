@@ -1,5 +1,4 @@
-import chai from "chai"
-const expect = chai.expect
+import { expect } from "chai"
 import request from "supertest"
 import { server, app } from "../server.js"
 import User from "../models/user.js"

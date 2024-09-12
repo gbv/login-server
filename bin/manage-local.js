@@ -278,6 +278,8 @@ function loop(mode = "start", data = {}, prompt, action = null) {
         console.warn(`Unknown mode ${mode}, returning to start.`)
         loop()
     }
+  }).catch(() => {
+    // Ignore
   })
 }
 

@@ -30,16 +30,17 @@ Examples
   flags: {
     withProvider: {
       type: "string",
-      alias: "p",
+      shortFlag: "p",
       isMultiple: true,
     },
     help: {
       type: "boolean",
-      alias: "h",
+      shortFlag: "h",
       default: false,
     },
   },
   allowUnknownFlags: false,
+  importMeta: import.meta,
 })
 
 if (cli.input.length && cli.flags.withProvider.length) {
