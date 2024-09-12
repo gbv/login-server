@@ -20,8 +20,6 @@ It is recommended to run the image using [Docker Compose](https://docs.docker.co
 1. Create `docker-compose.yml`:
 
 ```yml
-version: "3"
-
 services:
   login-server:
     image: ghcr.io/gbv/login-server
@@ -39,7 +37,7 @@ services:
     restart: unless-stopped
 
   mongo:
-    image: mongo:5
+    image: mongo:7
     # replace this with your UID/GID if necessary (id -u; id -g); remove on macOS/Windows
     user: 1000:1000
     volumes:
