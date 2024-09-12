@@ -1,10 +1,10 @@
-const expect = require("chai").expect
-const { server } = require("../server")
-const WebSocket = require("ws")
-const _ = require("lodash")
+import { expect } from "chai"
+import { server } from "../server.js"
+import WebSocket from "ws"
+import _ from "lodash"
 
 // Use this agent for authenticated requests
-let authAgent = require("./authAgent")
+import authAgent from "./authAgent.js"
 
 describe("WebSocket", () => {
 

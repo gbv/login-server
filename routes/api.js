@@ -2,7 +2,7 @@
  * /api route.
  */
 
-module.exports = app => {
+export default app => {
 
   app.get("/api", (req, res) => {
     res.render("api")

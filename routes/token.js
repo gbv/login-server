@@ -2,9 +2,9 @@
  * Routes related to JSON Web Tokens.
  */
 
-const utils = require("../utils")
+import * as utils from "../utils/index.js"
 
-module.exports = app => {
+export default app => {
 
   app.get("/token", (req, res) => {
     utils.getToken(req.user, req.sessionID).then(token => {

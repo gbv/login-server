@@ -1,4 +1,5 @@
-const config = require("./config")
+import config, { getDirname } from "./config.js"
+const __dirname = getDirname(import.meta.url)
 
 // Don't start application without a port!
 let port = config.port
@@ -7,16 +8,16 @@ if (!port && config.env != "test") {
   process.exit(1)
 }
 
-const _ = require("lodash")
-const utils = require("./utils")
-const events = require("./lib/events.js")
+import _ from "lodash"
+import * as utils from "./utils/index.js"
+import * as events from "./lib/events.js"
 
 /**
  * ##### Passport Setup #####
  */
-const passport = require("passport")
-const User = require("./models/user")
-const strategies = require("./strategies").strategies
+import passport from "passport"
+import User from "./models/user.js"
+import { strategies } from "./strategies/index.js"
 
 // Use strategies in passport
 _.forEach(strategies, (strategy, id) => {
@@ -44,18 +45,19 @@ passport.deserializeUser((id, done) => {
 /**
  * ##### Express Setup #####
  */
-const express = require("express")
-let app = express()
+import express from "express"
+export const app = express()
 
 // Use helmet to set important http headers
-app.use(require("helmet")({
+import helmet from "helmet"
+app.use(helmet({
   referrerPolicy: { policy: "strict-origin-when-cross-origin" },
   hsts: config.ssl,
   crossOriginOpenerPolicy: { policy: config.ssl ? "same-origin-allow-popups" : "unsafe-none" },
 }))
 
 // Add Helmet's CSP headers dynamically in order to add script nonces
-const crypto = require("crypto")
+import crypto from "node:crypto"
 app.use((req, res, next) => {
   function generateNonce() {
     return crypto.randomBytes(16).toString("base64")
@@ -122,21 +124,25 @@ app.use((req, res, next) => {
 })
 
 // WebSockets
-require("express-ws")(app)
+import expressWs from "express-ws"
+expressWs(app)
 
 // Flash messages
-app.use(require("connect-flash")())
+import flash from "connect-flash"
+app.use(flash())
 
 // BodyParser
-const bodyParser = require("body-parser")
+import bodyParser from "body-parser"
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
 // Add /about route before session/db handling
-require("./routes/about.js")(app)
+import aboutRoute from "./routes/about.js"
+aboutRoute(app)
 
 // Cookies/Sessions
-app.use(require("cookie-parser")(config.sessionSecret))
+import cookieParser from "cookie-parser"
+app.use(cookieParser(config.sessionSecret))
 // Trust proxy when not used locally
 if (!config.isLocal) {
   app.set("trust proxy", 1)
@@ -144,8 +150,7 @@ if (!config.isLocal) {
 
 const oldCookieName = "connect.sid"
 // New cookie name based on hash of baseUrl (to prevent issues with special characters)
-const { createHash } = require("node:crypto")
-const baseUrlHash = createHash("sha256").update(config.baseUrl).digest("hex")
+const baseUrlHash = crypto.createHash("sha256").update(config.baseUrl).digest("hex")
 const newCookieName = `login-server-${baseUrlHash}`
 // Rewrite cookie name for version 0.7.2
 // We're keeping the old cookie just in case it's actually from a different application (even though it's very unlikely)
@@ -184,8 +189,8 @@ app.use((req, res, next) => {
   }
 })
 
-const session = require("express-session")
-const mongoStore = require("./utils/mongoStore")
+import session from "express-session"
+import mongoStore from "./utils/mongoStore.js"
 app.use(session({
   name: newCookieName,
   secret: config.sessionSecret,
@@ -203,17 +208,17 @@ app.use(session({
 }))
 
 // Remove Same-Site: None if browser is incompatible
-const { shouldSendSameSiteNone } = require("should-send-same-site-none")
+import { shouldSendSameSiteNone } from "should-send-same-site-none"
 app.use(shouldSendSameSiteNone)
 
 // Passport
 app.use(passport.initialize())
 app.use(passport.session())
 
+import util from "node:util"
 app.use((req, res, next) => {
   // Promisify req.logout
   const logout = req.logout
-  const util = require("util")
   req.logOut =
   req.logout = util.promisify(logout).bind(req)
 
@@ -228,7 +233,7 @@ app.use((req, res, next) => {
 })
 
 // Update lastUsed property of logged in user
-const Usage = require("./models/usage")
+import Usage from "./models/usage.js"
 app.use((req, res, next) => {
   if (req.user) {
     Usage.findById(req.user.id).then(usage => {
@@ -264,14 +269,13 @@ app.use("/static", express.static("static"))
  * ##### Express Route Setup #####
  */
 
-const fs = require("fs")
-const path = require("path")
-const { default: helmet } = require("helmet")
+import fs from "node:fs"
+import path from "node:path"
 
+import portfinder from "portfinder"
 const start = async () => {
   // Port is defined at the top of the file
   if (config.env == "test") {
-    const portfinder = require("portfinder")
     portfinder.basePort = port || 3000
     port = await portfinder.getPortPromise()
   }
@@ -282,7 +286,7 @@ const start = async () => {
 
       // Import routes
       fs.readdirSync(path.join(__dirname, "routes")).map(file => {
-        require("./routes/" + file)(app)
+        import(`./routes/${file}`).then(route => route.default(app))
       })
 
       resolve(listener)
@@ -292,4 +296,4 @@ const start = async () => {
   return { app, listener, port }
 }
 
-module.exports = { app, server: start() }
+export const server = start()

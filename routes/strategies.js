@@ -2,16 +2,17 @@
  * Strategy routes.
  */
 
-const config = require("../config")
-const utils = require("../utils")
-const strategies = require("../strategies").strategies
+import config from "../config.js"
+import * as utils from "../utils/index.js"
+import { strategies } from "../strategies/index.js"
 
-const _ = require("lodash")
-const passport = require("passport")
-const apiLimiter = require("express-rate-limit")(config.rateLimitOptions)
+import _ from "lodash"
+import passport from "passport"
+import expressRateLimit from "express-rate-limit"
+const apiLimiter = expressRateLimit(config.rateLimitOptions)
 
 
-module.exports = app => {
+export default app => {
 
   _.forEach(strategies, (strategy, providerId) => {
 

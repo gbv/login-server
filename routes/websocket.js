@@ -2,13 +2,13 @@
  * WebSocket
  */
 
-const config = require("../config")
-const utils = require("../utils")
-const mongoStore = require("../utils/mongoStore")
-const events = require("../lib/events")
-const jwt = require("jsonwebtoken")
+import config from "../config.js"
+import * as utils from "../utils/index.js"
+import mongoStore from "../utils/mongoStore.js"
+import * as events from "../lib/events.js"
+import jwt from "jsonwebtoken"
 
-module.exports = app => {
+export default app => {
 
   app.ws("/", (ws, req) => {
     // Generate a unique identifier for this WebSocket

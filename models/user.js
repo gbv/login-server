@@ -5,7 +5,7 @@
  * It should contain key-value-pairs with the key being the provider/strategy and the value being a profile object with keys `id`, `uri`, `name`, and `username`.
  */
 
-const mongoose = require("mongoose")
+import mongoose from "mongoose"
 const Schema = mongoose.Schema
 
 const userSchema = new Schema({
@@ -16,4 +16,4 @@ const userSchema = new Schema({
   merged: [String],
 }, { versionKey: false })
 
-module.exports = mongoose.model("User", userSchema)
+export default mongoose.model("User", userSchema)

@@ -2,7 +2,7 @@
  * Mongoose Schema for a user's usage data.
  */
 
-const mongoose = require("mongoose")
+import mongoose from "mongoose"
 const Schema = mongoose.Schema
 
 const usageSchema = new Schema({
@@ -11,4 +11,4 @@ const usageSchema = new Schema({
   lastUsed: String,
 }, { versionKey: false })
 
-module.exports = mongoose.model("Usage", usageSchema)
+export default mongoose.model("Usage", usageSchema)

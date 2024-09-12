@@ -2,7 +2,7 @@
  * Help route.
  */
 
-module.exports = app => {
+export default app => {
 
   app.get("/help", (req, res) => {
     res.render("help")

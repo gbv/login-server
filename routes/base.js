@@ -2,7 +2,7 @@
  * Base (/) route.
  */
 
-module.exports = app => {
+export default app => {
 
   app.get("/", (req, res) => {
     if (req.user) {

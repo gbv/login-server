@@ -4,14 +4,15 @@
  * A small program to manage local providers and users.
  */
 
-const inquirer = require("inquirer")
-const bcrypt = require("bcryptjs")
-const fs = require("fs")
+import inquirer from "inquirer"
+import bcrypt from "bcryptjs"
+import fs from "node:fs"
 
 console.log("Login Server local user management")
 console.log("Important Note: Do not manually edit providers.json while this script is running. Any action here will override those changes!")
 
-require("dotenv").config()
+import dotenv from "dotenv"
+dotenv.config()
 let providersFile = process.env.PROVIDERS_PATH || "./providers.json"
 let providers
 // Try to read providers from file

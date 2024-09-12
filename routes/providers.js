@@ -2,9 +2,9 @@
  * Providers route.
  */
 
-const utils = require("../utils")
+import * as utils from "../utils/index.js"
 
-module.exports = app => {
+export default app => {
 
   app.get("/providers", (req, res) => {
     res.json(utils.prepareProviders())

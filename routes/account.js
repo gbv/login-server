@@ -2,7 +2,7 @@
  * Account route.
  */
 
-module.exports = app => {
+export default app => {
 
   app.get("/account", (req, res) => {
     if (!req.user) {

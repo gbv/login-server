@@ -2,10 +2,10 @@
  * /disconnect route
  */
 
-const _ = require("lodash")
-const events = require("../lib/events")
+import _ from "lodash"
+import * as events from "../lib/events.js"
 
-module.exports = app => {
+export default app => {
 
   // Disconnect route
   app.get("/disconnect/:provider", (req, res) => {

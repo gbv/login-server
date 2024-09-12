@@ -2,9 +2,9 @@
  * OAuth Stategy for GitHub.
  */
 
-const Strategy = require("passport-github").Strategy
+import { Strategy } from "passport-github"
 
-module.exports = (options, provider, callback) => new Strategy(options, (req, token, tokenSecret, profile, done) => {
+export default (options, provider, callback) => new Strategy(options, (req, token, tokenSecret, profile, done) => {
   callback(req, token, tokenSecret, {
     id: profile.id,
     name: profile.displayName,

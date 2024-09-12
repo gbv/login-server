@@ -2,13 +2,13 @@
  * User routes.
  */
 
-const config = require("../config")
-const User = require("../models/user")
-const utils = require("../utils")
-const _ = require("lodash")
-const events = require("../lib/events")
+import config from "../config.js"
+import User from "../models/user.js"
+import * as utils from "../utils/index.js"
+import _ from "lodash"
+import * as events from "../lib/events.js"
 
-module.exports = app => {
+export default app => {
 
   app.get("/users", (req, res) => {
     res.status(403).json({ status: 403, message: "Unauthorized access to user list." })

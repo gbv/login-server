@@ -2,9 +2,9 @@
  * /logout route
  */
 
-const events = require("../lib/events")
+import * as events from "../lib/events.js"
 
-module.exports = app => {
+export default app => {
 
   app.get("/logout", async (req, res) => {
     // Invalidate session

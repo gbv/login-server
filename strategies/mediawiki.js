@@ -2,9 +2,9 @@
  * OAuth Stategy for Mediawiki.
  */
 
-const Strategy = require("passport-mediawiki-oauth").OAuthStrategy
+import { OAuthStrategy as Strategy } from "passport-mediawiki-oauth"
 
-module.exports = (options, provider, callback) => new Strategy(options, (req, token, tokenSecret, profile, done) => {
+export default (options, provider, callback) => new Strategy(options, (req, token, tokenSecret, profile, done) => {
   callback(req, token, tokenSecret, {
     id: profile.id,
     name: profile.displayName,

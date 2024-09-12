@@ -2,9 +2,9 @@
  * /about route.
  */
 
-const utils = require("../utils")
+import * as utils from "../utils/index.js"
 
-module.exports = app => {
+export default app => {
 
   app.get("/about", (req, res) => {
     res.json(utils.prepareAbout())

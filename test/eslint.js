@@ -4,7 +4,6 @@ import { ESLint } from "eslint"
 const eslint = new ESLint()
 const results = await eslint.lintFiles([
   "**/*.js",
-  "**/*.mjs",
 ])
 
 describe("ESLint Errors", () => {

@@ -1,8 +1,8 @@
-const chai = require("chai")
+import chai from "chai"
 const expect = chai.expect
-const request = require("supertest")
-const { server, app }  = require("../server")
-const User = require("../models/user")
+import request from "supertest"
+import { server, app } from "../server.js"
+import User from "../models/user.js"
 
 // Use this agent for authenticated requests
 let authAgent = request.agent(app)
@@ -34,4 +34,4 @@ after(() => {
   return User.deleteMany({})
 })
 
-module.exports = authAgent
+export default authAgent

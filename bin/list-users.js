@@ -4,7 +4,7 @@
  * A small tool to query user data from the database.
  */
 
-const meow = require("meow")
+import meow from "meow"
 const cli = meow(`
 Usage
   $ ./bin/list-users.js [IDs or URIs] [options]
@@ -48,10 +48,10 @@ if (cli.input.length && cli.flags.withProvider.length) {
 }
 
 process.env.VERBOSITY = "error"
-const config = require("../config")
-const utils = require("../utils")
-const db = require("../utils/db")
-const User = require("../models/user")
+import config from "../config.js"
+import * as utils from "../utils/index.js"
+import * as db from "../utils/db.js"
+import User from "../models/user.js"
 
 // Copied from jskos-tools
 const isValidUri = (uri) => {

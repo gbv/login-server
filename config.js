@@ -6,11 +6,27 @@
  * Optional keys: MONGO_USER, MONGO_PASS, MONGO_HOST, MONGO_PORT, MONGO_DB, RATE_LIMIT_WINDOW, RATE_LIMIT_MAX
  *
  */
-require("dotenv").config()
-const fs = require("fs")
-const url = require("url")
-const rsa = require("node-rsa")
-const jwt = require("jsonwebtoken")
+import * as dotenv from "dotenv"
+dotenv.config()
+import fs from "node:fs"
+import path from "node:path"
+import { fileURLToPath } from "node:url"
+import rsa from "node-rsa"
+import jwt from "jsonwebtoken"
+
+export function getDirname(url) {
+  return path.dirname(fileURLToPath(url))
+}
+const __dirname = getDirname(import.meta.url)
+/**
+ * Reads and parses a JSON file.
+ *
+ * @param {string} file JSON file relative to root folder of repository
+ * @returns parsed JSON
+ */
+export function readJSON(file) {
+  return JSON.parse(fs.readFileSync(path.resolve(__dirname, file)))
+}
 
 const
   env = process.env.NODE_ENV || "development",
@@ -36,7 +52,7 @@ const
   publicKeyPath = process.env.JWT_PUBLIC_KEY_PATH || "./public.key",
   jwtAlgorithm = process.env.JWT_ALGORITHM || "RS256",
   title = process.env.TITLE || "Login Server",
-  packageData = require("./package.json"),
+  packageData = readJSON("./package.json"),
   urls = {
     imprint: process.env.IMPRINT_URL,
     privacy: process.env.PRIVACY_URL,
@@ -54,8 +70,8 @@ if (!baseUrl.endsWith("/")) {
   baseUrl += "/"
 }
 
-let purl = url.parse(baseUrl)
-if (!["http:", "https:"].includes(purl.protocol) || !purl.slashes || !purl.hostname) {
+let purl = new URL(baseUrl)
+if (!["http:", "https:"].includes(purl.protocol) || !purl.hostname) {
   console.error("Please provide a full BASE_URL in .env.")
   process.exit(1)
 }
@@ -187,7 +203,7 @@ if (env != "test") {
     fs.writeFileSync(providersFile, "[]")
   }
   try {
-    config.providers = require(providersFile)
+    config.providers = readJSON(providersFile)
     if (!Array.isArray(config.providers)) {
       throw new Error("providers.json has to contain an array.")
     }
@@ -258,7 +274,7 @@ if (env != "test") {
 
 // Add application names
 try {
-  config.applications = require("./applications.json")
+  config.applications = readJSON("./applications.json")
 } catch (error) {
   config.applications = []
 }
@@ -273,4 +289,4 @@ if (!urls.privacy) {
   config.warn("Warning: PRIVACY_URL is not configured.")
 }
 
-module.exports = config
+export default config

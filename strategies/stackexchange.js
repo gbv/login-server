@@ -2,11 +2,11 @@
  * OAuth2 Stategy adjusted for Stack Exchange.
  */
 
-const Strategy = require("passport-oauth2").Strategy
-const axios = require("axios")
-const config = require("../config")
+import { Strategy } from "passport-oauth2"
+import axios from "axios"
+import config from "../config.js"
 
-module.exports = (options, provider, callback) => {
+export default (options, provider, callback) => {
   const profileURL = "https://api.stackexchange.com/2.3/me"
   options.authorizationURL = "https://stackexchange.com/oauth"
   options.tokenURL = "https://stackexchange.com/oauth/access_token"

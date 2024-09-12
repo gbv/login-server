@@ -2,13 +2,13 @@
  * Imports and configures all available stategies.
  */
 
-const _ = require("lodash")
-const config = require("../config")
-const utils = require("../utils")
-const events = require("../lib/events")
-const User = require("../models/user")
+import _ from "lodash"
+import config from "../config.js"
+import * as utils from "../utils/index.js"
+import * as events from "../lib/events.js"
+import User from "../models/user.js"
 
-const verify = (req, token, tokenSecret, profile, done) => {
+export const verify = (req, token, tokenSecret, profile, done) => {
   let user = req.user
   const sessionID = req.sessionID
   let provider = config.providers.find(provider => provider.id === profile.provider)
@@ -98,6 +98,12 @@ const verify = (req, token, tokenSecret, profile, done) => {
   }
 }
 
+export const strategyForProvider = {}
+
+for (const provider of config.providers) {
+  strategyForProvider[provider.strategy] = (await import(`./${provider.strategy}.js`)).default
+}
+
 const setup = callback => {
   let result = {}
 
@@ -107,7 +113,7 @@ const setup = callback => {
       callbackURL: provider.callbackURL,
     }, provider.options)
     try {
-      result[provider.id] = require(`./${provider.strategy}`)(options, provider, (req, token, tokenSecret, profile, done) => {
+      result[provider.id] = strategyForProvider[provider.strategy](options, provider, (req, token, tokenSecret, profile, done) => {
         // Add URI to profile
         let uri = provider.template
         if (uri) {
@@ -126,8 +132,4 @@ const setup = callback => {
   return result
 }
 
-// Export verify function for testing purposes
-module.exports = {
-  verify,
-  strategies: setup(verify),
-}
+export const strategies = setup(verify)

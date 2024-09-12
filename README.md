@@ -15,6 +15,9 @@ This repository offers a login server to be used with the [Cocoda Mapping Tool](
   - [Clone and Install](#clone-and-install)
   - [Docker](#docker)
   - [Configuration](#configuration)
+    - [`.env`](#env)
+    - [`providers.json`](#providersjson)
+    - [`applications.json`](#applicationsjson)
 - [Usage](#usage)
 - [Test](#test)
 - [Strategies](#strategies)
@@ -215,11 +218,10 @@ Because strategies use different parameters in their [verify callbacks](http://w
  */
 
 // Import strategy here
-const Strategy = require("passport-github").Strategy
+import { Strategy } from "passport-github"
 
 // Don't change this part!
-module.exports =
-  (options, provider, callback) => new Strategy(options,
+export default (options, provider, callback) => new Strategy(options,
     // Strategies have different callback parameters.
     // `req` is always the first and the `done` callback is always last.
     (req, token, tokenSecret, profile, done) => {
@@ -370,7 +372,7 @@ Tokens get be received either through the [/token endpoint](#get-token) or by us
 Example how to verify a token:
 
 ```javascript
-const jwt = require("jsonwebtoken")
+import jwt from "jsonwebtoken"
 
 // token, e.g. from user request
 let token = "..."

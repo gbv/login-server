@@ -1,6 +1,6 @@
-const expect = require("chai").expect
-const request = require("supertest")
-const { app } = require("../server")
+import { expect } from "chai"
+import request from "supertest"
+import { app } from "../server.js"
 
 describe("GET /providers", () => {
 

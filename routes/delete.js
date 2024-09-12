@@ -2,10 +2,10 @@
  * /delete routes
  */
 
-const events = require("../lib/events")
-const User = require("../models/user")
+import * as events from "../lib/events.js"
+import User from "../models/user.js"
 
-module.exports = app => {
+export default app => {
 
   app.get("/delete", (req, res) => {
     res.render("delete")

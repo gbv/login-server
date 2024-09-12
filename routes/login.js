@@ -2,9 +2,9 @@
  * Login route.
  */
 
-const utils = require("../utils")
+import * as utils from "../utils/index.js"
 
-module.exports = app => {
+export default app => {
 
   app.get("/login", (req, res) => {
     utils.saveReferrerInSession(req)

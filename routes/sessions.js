@@ -2,9 +2,9 @@
  * /sessions route.
  */
 
-const config = require("../config")
-const { connection } = require("../utils/db")
-const { websockets } = require("../lib/events")
+import config from "../config.js"
+import { connection } from "../utils/db.js"
+import { websockets } from "../lib/events.js"
 
 /**
  * Returns a Promise with all sessions for a user.
@@ -37,7 +37,7 @@ function removeSession(sessionID) {
   })
 }
 
-module.exports = app => {
+export default app => {
 
   app.get("/sessions", (req, res) => {
     // Get all sessions from store (via mongoose)

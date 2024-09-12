@@ -4,10 +4,10 @@
  * Use bin/manage-local.js to manage local providers and users.
  */
 
-const Strategy = require("passport-local").Strategy
-const bcrypt = require("bcryptjs")
+import { Strategy } from "passport-local"
+import bcrypt from "bcryptjs"
 
-module.exports = (options, provider, callback) => new Strategy(options, (req, username, password, done) => {
+export default (options, provider, callback) => new Strategy(options, (req, username, password, done) => {
   let profile = provider.options.users.find(user => username == user.username && bcrypt.compareSync(password, user.password))
   if (profile) {
     callback(req, null, null, {

@@ -2,16 +2,17 @@
  * Utility functions
  */
 
-const _ = require("lodash")
-const config = require("../config")
-const jwt = require("jsonwebtoken")
+import _ from "lodash"
+import config from "../config.js"
+export { readJSON } from "../config.js"
+import jwt from "jsonwebtoken"
 
 // Imports for getUserFromSession
-const mongoStore = require("../utils/mongoStore")
-const User = require("../models/user")
-const Usage = require("../models/usage")
+import mongoStore from "../utils/mongoStore.js"
+import User from "../models/user.js"
+import Usage from "../models/usage.js"
 
-const { connection } = require("./db")
+import { connection } from "./db.js"
 
 /**
  * Returns a random v4 UUID.
@@ -167,7 +168,7 @@ async function addUsageToUserObject(user) {
   return user
 }
 
-module.exports = {
+export {
   uuid,
   prepareProviders,
   prepareAbout,

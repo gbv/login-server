@@ -2,9 +2,9 @@
  * LDAP Stategy.
  */
 
-const Strategy = require("passport-ldapauth")
+import Strategy from "passport-ldapauth"
 
-module.exports = (options, provider, callback) => new Strategy(options, (req, profile, done) => {
+export default (options, provider, callback) => new Strategy(options, (req, profile, done) => {
   callback(req, null, null, {
     id: profile.uid,
     name: profile.cn,
