@@ -57,7 +57,7 @@ This repository offers a login server to be used with the [Cocoda Mapping Tool](
 ## Install
 
 ### Dependencies
-login-server requires Node.js >= 18 and access to a [MongoDB database](https://docs.mongodb.com/manual/installation/).
+login-server requires Node.js (>= v18, v20 recommended) and access to a [MongoDB database](https://docs.mongodb.com/manual/installation/) (>= v5, v7 recommended).
 
 ### Clone and Install
 ```bash
