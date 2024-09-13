@@ -15,7 +15,7 @@ export default app => {
   app.post("/delete", async (req, res) => {
     const sessionID = req.sessionID, user = req.user
     await req.logout()
-    User.findByIdAndRemove(user.id).then(() => {
+    User.findByIdAndDelete(user.id).then(() => {
     // Fire loggedOut event
       events.userLoggedOut(sessionID)
       req.flash("success", "Your user account has been deleted.")

@@ -81,7 +81,7 @@ export const verify = (req, token, tokenSecret, profile, done) => {
             user.merged = []
           }
           user.merged.push(existingUser.uri)
-          return User.findByIdAndRemove(existingUser.id).then(() => user.save()).then(user => {
+          return User.findByIdAndDelete(existingUser.id).then(() => user.save()).then(user => {
             events.userUpdated(sessionID, user)
             req.flash("success", `${provider && provider.name} successfully connected by merging existing account.`)
             done(null, user)
