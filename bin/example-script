@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Example script for script strategy. Allows any username as long as the password is "$USERNAME-123".
+
+if [[ $PASSWORD != "$USERNAME-123" ]]; then
+  echo "{\"message\":\"Wrong password\"}"
+else
+  echo "{\"id\":\"$USERNAME\"}"
+fi
