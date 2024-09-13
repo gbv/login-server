@@ -13,36 +13,6 @@ import * as utils from "./utils/index.js"
 import * as events from "./lib/events.js"
 
 /**
- * ##### Passport Setup #####
- */
-import passport from "passport"
-import User from "./models/user.js"
-import { strategies } from "./strategies/index.js"
-
-// Use strategies in passport
-_.forEach(strategies, (strategy, id) => {
-  passport.use(id, strategy)
-})
-
-// Serialize user by their id
-passport.serializeUser((user, done) => {
-  if (!user) {
-    done(new Error("No user ID"))
-  } else {
-    done(null, user.id)
-  }
-})
-
-// Deserialize user by retrieving their profile with the id.
-passport.deserializeUser((id, done) => {
-  User.findById(id).then(user => {
-    done(null, user)
-  }).catch(error => {
-    done(error, null)
-  })
-})
-
-/**
  * ##### Express Setup #####
  */
 import express from "express"
@@ -127,10 +97,6 @@ app.use((req, res, next) => {
 import expressWs from "express-ws"
 expressWs(app)
 
-// Flash messages
-import flash from "connect-flash"
-app.use(flash())
-
 // BodyParser
 import bodyParser from "body-parser"
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -140,9 +106,6 @@ app.use(bodyParser.json())
 import aboutRoute from "./routes/about.js"
 aboutRoute(app)
 
-// Cookies/Sessions
-import cookieParser from "cookie-parser"
-app.use(cookieParser(config.sessionSecret))
 // Trust proxy when not used locally
 if (!config.isLocal) {
   app.set("trust proxy", 1)
@@ -195,9 +158,39 @@ app.use(session({
 import { shouldSendSameSiteNone } from "should-send-same-site-none"
 app.use(shouldSendSameSiteNone)
 
+/**
+ * ##### Passport Setup #####
+ */
+import passport from "passport"
+import User from "./models/user.js"
+import { strategies } from "./strategies/index.js"
+
+// Use strategies in passport
+_.forEach(strategies, (strategy, id) => {
+  passport.use(id, strategy)
+})
+
 // Passport
 app.use(passport.initialize())
 app.use(passport.session())
+
+// Serialize user by their id
+passport.serializeUser((user, done) => {
+  if (!user) {
+    done(new Error("No user ID"))
+  } else {
+    done(null, user.id)
+  }
+})
+
+// Deserialize user by retrieving their profile with the id.
+passport.deserializeUser((id, done) => {
+  User.findById(id).then(user => {
+    done(null, user)
+  }).catch(error => {
+    done(error, null)
+  })
+})
 
 import util from "node:util"
 app.use((req, res, next) => {
@@ -215,6 +208,10 @@ app.use((req, res, next) => {
   })
   next()
 })
+
+// Flash messages
+import flash from "connect-flash"
+app.use(flash())
 
 // Update lastUsed property of logged in user
 import Usage from "./models/usage.js"
