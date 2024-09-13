@@ -52,6 +52,7 @@ This repository offers a login server to be used with the [Cocoda Mapping Tool](
 - [Maintainers](#maintainers)
 - [Contribute](#contribute)
   - [Publish](#publish)
+- [Related Works](#related-works)
 - [License](#license)
 
 ## Install
@@ -572,6 +573,9 @@ Never work on the master branch directly. Always make changes on `dev` and then 
 ```bash
 npm run release:patch # or minor or major
 ```
+
+## Related Works
+- https://github.com/netlify/gotrue
 
 ## License
 MIT © 2019 Verbundzentrale des GBV (VZG)
