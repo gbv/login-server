@@ -33,6 +33,7 @@ export default app => {
 
     let authenticateOptions = {
       successRedirect: "/account",
+      successFlash: true,
       failureRedirect: `/login/${providerId}`,
       failureFlash: "Could not verify credentials.",
       keepSessionInfo: true,
