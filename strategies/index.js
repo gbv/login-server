@@ -23,7 +23,8 @@ export const verify = (req, token, tokenSecret, profile, done) => {
         // Found existing user
         // Fire loggedIn event
         events.userLoggedIn(sessionID, user)
-        done(null, user, { message: "You have been logged in." })
+        req.flash("success", "You have been logged in.")
+        done(null, user)
       } else {
         // Create new user
         let id = utils.uuid()
@@ -44,7 +45,8 @@ export const verify = (req, token, tokenSecret, profile, done) => {
         user.save().then(user => {
           // Fire loggedIn event
           events.userLoggedIn(sessionID, user)
-          done(null, user, { message: "A new user account has been created!" })
+          req.flash("success", "A new user account has been created!")
+          done(null, user)
         }).catch(error => {
           done(error, null)
         })
@@ -63,7 +65,8 @@ export const verify = (req, token, tokenSecret, profile, done) => {
         user.set("identities", identities)
         return user.save().then(user => {
           events.userUpdated(sessionID, user)
-          done(null, user, { message: `${provider && provider.name} successfully connected.` })
+          req.flash("success", `${provider && provider.name} successfully connected.`)
+          done(null, user)
         })
       } else {
         const intersection = _.intersection(_.keys(user.identities), _.keys(existingUser.identities))
@@ -80,7 +83,8 @@ export const verify = (req, token, tokenSecret, profile, done) => {
           user.merged.push(existingUser.uri)
           return User.findByIdAndDelete(existingUser.id).then(() => user.save()).then(user => {
             events.userUpdated(sessionID, user)
-            done(null, user, { message: `${provider && provider.name} successfully connected by merging existing account.` })
+            req.flash("success", `${provider && provider.name} successfully connected by merging existing account.`)
+            done(null, user)
           })
         } else {
           // There is a conflict with identities.
