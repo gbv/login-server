@@ -35,6 +35,7 @@ export default app => {
       successRedirect: "/account",
       failureRedirect: `/login/${providerId}`,
       failureFlash: "Could not verify credentials.",
+      keepSessionInfo: true,
     }
 
     if (provider.credentialsNecessary) {
