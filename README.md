@@ -191,6 +191,8 @@ The HTTP API and WebSocket allow client applications to interact with the login 
 
 The login server can further be used to authenticate users against other services so users can proof their identities.
 
+Directory [`bin`](bin) contains helper script for administration of a server instance such as listing user accounts and managing local providers.
+
 ## Test
 Tests use the same MongoDB as configured in `.env`, just with the postfix `-test` after the database name.
 
