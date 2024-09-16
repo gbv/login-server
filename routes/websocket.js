@@ -10,7 +10,7 @@ import jwt from "jsonwebtoken"
 
 export default app => {
 
-  app.ws("/", (ws, req) => {
+  app.ws("/", async (ws, req) => {
     // Generate a unique identifier for this WebSocket
     const wsID = utils.uuid()
     let socket = {
@@ -22,17 +22,20 @@ export default app => {
     events.sendEvent(wsID, "open", null)
 
     // Send information about the server as well as the list of providers.
-    events.sendEvent(wsID, "about", utils.prepareAbout())
+    events.sendEvent(wsID, "about", await utils.prepareAbout())
     events.sendEvent(wsID, "providers", {
       providers: utils.prepareProviders(),
     })
 
     // Check if sessionID already exists in store. If yes, consider connection authenticated.
-    mongoStore.get(req.sessionID).then(session => {
+    try {
+      const session = await mongoStore.get(req.sessionID)
       if (session) {
         events.sendEvent(wsID, "authenticated")
       }
-    }).catch(() => {})
+    } catch (error) {
+      // ignore error
+    }
 
 
     if (req.user) {
