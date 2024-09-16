@@ -208,8 +208,7 @@ login-server uses [Passport](http://www.passportjs.org) ([GitHub](https://github
 - Stack Exchange (via [passport-oauth2](https://www.passportjs.org/packages/passport-oauth2/))
 - easydb (via [passport-easydb](https://github.com/gbv/passport-easydb))
 - Local (via [passport-local](http://www.passportjs.org/packages/passport-local/))
-
-The following strategies have been implemented experimentally and could be added if needed:
+- Script (see https://github.com/gbv/login-server/issues/117)
 
 Because strategies use different parameters in their [verify callbacks](http://www.passportjs.org/docs/configure/), each strategy has its own wrapper file in the folder `strategies/`. To add another strategy to login-server, add a file called `{name}.js` (where `{name}` is the name of the strategy that is used with `passport.authenticate`) with the following structure (GitHub as example):
 
@@ -346,6 +345,16 @@ The following is an example `providers.json` that shows how to configure each of
     "options": {
       "url": "https://easydb5-test.example.com/api/v1/"
     }
+  },
+  {
+    "id": "some-script",
+    "strategy": "script",
+    "name": "Some Script",
+    "credentialsNecessary": true,
+    "template": "https://example.org/some-script/{id}",
+    "options": {
+      "script": "./bin/example-script"
+    }
   }
 ]
 ```
@@ -358,6 +367,14 @@ You can adjust the path to the `providers.json` file with `PROVIDERS_PATH` in `.
 - If your consumer is limited to a specific instance (e.g. Wikidata only), you need to provide the baseURL for that instance in the options, for example: `"baseURL": "https://www.wikidata.org/"`.
 - There seems to be a [bug](https://phabricator.wikimedia.org/T145828) either in Mediawiki or in passport-mediawiki-oauth that causes custom callback URLs to not work. This means that you need to provide the exact callback URL when registering your consumer (e.g. `https://coli-conc.gbv.de/login/login/wikidata/return` for our login-server instance).
 - See also: https://www.mediawiki.org/wiki/OAuth/For_Developers
+
+**Notes about using the Script provider:**
+- The Script provider is currently implemented inside Login Server (see [`lib/script-strategy.js`](https://github.com/gbv/login-server/blob/master/lib/script-strategy.js)).
+- The script's path (provided in `options.script`) can either be relative to Login Server's root folder, or an absolute path (recommended for Docker).
+- An example for a very basic Bash script can be found in [`bin/example-script`](https://github.com/gbv/login-server/blob/master/bin/example-script).
+- The script needs to be executable (`chmod +x`).
+- The script needs to return valid JSON with the `id` value being set when authentication was successful. Optionally, `name` can be provided and will be used as the display name.
+- Whatever language or environment the script is using needs to be available on the host that is running Login Server. When run inside a Docker container, only Bash and Node.js v20 are available. To use a different language, you need to extend Login Server's Docker image and install the required dependencies yourself.
 
 ## JWTs
 login-server offers JSON Web Tokens that can be used to authenticate against other services (like [jskos-server](https://github.com/gbv/jskos-server)). [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) is used for signing the tokens.
