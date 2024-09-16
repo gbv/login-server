@@ -2,6 +2,9 @@ FROM node:20-alpine
 
 WORKDIR /usr/src/app
 
+# Install Bash (mostly for script strategy)
+RUN apk add --no-cache bash
+
 # Copy and install dependencies
 COPY package*.json ./
 RUN npm ci --omit=dev
