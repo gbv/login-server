@@ -47,7 +47,20 @@ function addDatabaseEventHandler(event, callback, once = true) {
  *
  * @returns {object}
  */
-function prepareAbout() {
+async function prepareAbout() {
+  let userCount, providers, userCountByProvider, sessionCount
+  try {
+    userCount = await User.countDocuments()
+    providers = config.providers.map(provider => provider.id)
+    userCountByProvider = {}
+    for (const provider of providers) {
+      const count = await User.countDocuments({ [`identities.${provider}`]: { $exists: true }})
+      userCountByProvider[provider] = count
+    }
+    sessionCount = await mongoStore.length()
+  } catch (error) {
+    // ignore error
+  }
   return {
     title: config.title,
     env: config.env,
@@ -58,6 +71,11 @@ function prepareAbout() {
     publicKey: config.publicKey.toString("utf8"),
     algorithm: config.jwtOptions.algorithm,
     cookieMaxDays: config.cookieMaxDays,
+    statistics: {
+      userCount,
+      userCountByProvider,
+      sessionCount,
+    },
     ok: isConnectedToDatabase() ? 1 : 0,
   }
 }
