@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env -S VERBOSITY=error node
 
 /**
  * A small tool to query user data from the database.
@@ -48,7 +48,6 @@ if (cli.input.length && cli.flags.withProvider.length) {
   cli.showHelp()
 }
 
-process.env.VERBOSITY = "error"
 import config from "../config.js"
 import * as utils from "../utils/index.js"
 import * as db from "../utils/db.js"
@@ -78,6 +77,9 @@ const isValidUri = (uri) => {
       for (let provider of cli.flags.withProvider) {
         query.$or.push({ [`identities.${provider}`]: { $exists: true } })
       }
+    }
+    if (!query.$or.length) {
+      delete query.$or
     }
     const users = await User.find(query).lean()
     // Add usage data
