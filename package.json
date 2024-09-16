@@ -58,6 +58,7 @@
     "mongodb": "^6.9.0",
     "mongoose": "^8.6.2",
     "node-rsa": "^1.1.1",
+    "nodemon": "^3.1.4",
     "passport": "~0.7.0",
     "passport-easydb": "^0.1.4",
     "passport-github": "^1.1.0",
@@ -66,6 +67,7 @@
     "passport-mediawiki-oauth": "git+https://abc@github.com/stefandesu/passport-mediawiki-oauth#0158a4f",
     "passport-oauth2": "^1.8.0",
     "passport-orcid": "0.0.4",
+    "portfinder": "^1.0.32",
     "should-send-same-site-none": "^2.0.5"
   },
   "devDependencies": {
@@ -74,8 +76,6 @@
     "eslint-config-gbv": "^2.0.0",
     "lint-staged": "^15.2.10",
     "mocha": "^10.7.3",
-    "nodemon": "^3.1.4",
-    "portfinder": "^1.0.32",
     "pre-commit": "^1.2.2",
     "superagent": "^10.1.0",
     "supertest": "^7.0.0"
