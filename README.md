@@ -587,11 +587,28 @@ PRs accepted.
 ### Publish
 **For maintainers only**
 
-Never work on the master branch directly. Always make changes on `dev` and then run the release script:
+Please work on the `dev` branch during development (or better yet, develop in a feature branch and merge into `dev` when ready).
+
+When a new release is ready (i.e. the features are finished, merged into `dev`, and all tests succeed), run the included release script (replace "patch" with "minor" or "major" if necessary):
 
 ```bash
-npm run release:patch # or minor or major
+npm run release:patch
 ```
+
+This will:
+- Check that we are on `dev`
+- Run tests and build to make sure everything works
+- Make sure `dev` is up-to-date
+- Run `npm version patch` (or "minor"/"major")
+- **Ask you to confirm the version**
+- Push changes to `dev`
+- Switch to `master`
+- Merge changes from `dev`
+- Push `master` with tags
+- Switch back to `dev`
+
+After running this, GitHub Actions will automatically create a new GitHub Release draft. Please edit and publish the release manually.
+
 
 ## Related Works
 - https://github.com/netlify/gotrue
