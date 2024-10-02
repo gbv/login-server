@@ -19,7 +19,8 @@
     "start": "nodemon server.js",
     "lint-staged": "lint-staged",
     "indexes": "node utils/addIndexes.js",
-    "release": "git checkout dev && git pull && npm test && npm version $SEMVER && git push && git checkout master && git merge dev && git push --follow-tags && git checkout dev",
+    "yesno": "node -e \"const yesno = require('yesno'); yesno({ question: 'Are you sure you want to continue?' }).then(ok => process.exit(ok ? 0 : 1));\"",
+    "release": "test $(git rev-parse --abbrev-ref HEAD) = dev && git pull && npm test && npm version $SEMVER && npm run --silent yesno && (git push && git checkout master && git merge dev && git push --follow-tags && git checkout dev) || (git tag -d $(git describe --tags) && git reset --hard HEAD~1)",
     "release:patch": "SEMVER=patch npm run release",
     "release:minor": "SEMVER=minor npm run release",
     "release:major": "SEMVER=major npm run release"
@@ -78,6 +79,7 @@
     "mocha": "^10.7.3",
     "pre-commit": "^1.2.2",
     "superagent": "^10.1.0",
-    "supertest": "^7.0.0"
+    "supertest": "^7.0.0",
+    "yesno": "^0.4.0"
   }
 }
