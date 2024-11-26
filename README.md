@@ -364,9 +364,9 @@ The following is an example `providers.json` that shows how to configure each of
     "strategy": "cbs",
     "name": "CBS",
     "credentialsNecessary": true,
-    "template": "https://example.com/ext/api/colirich/users/{id}",
+    "template": "cbs:{id}",
     "options": {
-      "url": "https://example.com/ext/api/colirich/",
+      "url": "https://example.com/ext/api/colirich/users/info",
       "apiKey": "abcdef1234567890"
     }
   }
