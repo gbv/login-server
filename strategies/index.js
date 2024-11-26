@@ -111,6 +111,11 @@ const setup = callback => {
     let options = Object.assign({
       passReqToCallback: true,
       callbackURL: provider.callbackURL,
+      logger: {
+        log: config.log,
+        warn: config.warn,
+        error: config.error,
+      },
     }, provider.options)
     try {
       result[provider.id] = strategyForProvider[provider.strategy](options, provider, (req, token, tokenSecret, profile, done) => {
