@@ -211,6 +211,7 @@ login-server uses [Passport](http://www.passportjs.org) ([GitHub](https://github
 - easydb (via [passport-easydb](https://github.com/gbv/passport-easydb))
 - Local (via [passport-local](http://www.passportjs.org/packages/passport-local/))
 - Script (see https://github.com/gbv/login-server/issues/117)
+- CBS (experimental)
 
 Because strategies use different parameters in their [verify callbacks](http://www.passportjs.org/docs/configure/), each strategy has its own wrapper file in the folder `strategies/`. To add another strategy to login-server, add a file called `{name}.js` (where `{name}` is the name of the strategy that is used with `passport.authenticate`) with the following structure (GitHub as example):
 
@@ -356,6 +357,17 @@ The following is an example `providers.json` that shows how to configure each of
     "template": "https://example.org/some-script/{id}",
     "options": {
       "script": "./bin/example-script"
+    }
+  },
+  {
+    "id": "cbs",
+    "strategy": "cbs",
+    "name": "CBS",
+    "credentialsNecessary": true,
+    "template": "https://example.com/ext/api/colirich/users/{id}",
+    "options": {
+      "url": "https://example.com/ext/api/colirich/",
+      "apiKey": "abcdef1234567890"
     }
   }
 ]
