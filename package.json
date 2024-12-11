@@ -23,7 +23,8 @@
     "release": "test $(git rev-parse --abbrev-ref HEAD) = dev && git pull && npm test && npm version $SEMVER && npm run --silent yesno && (git push && git checkout master && git merge dev && git push --follow-tags && git checkout dev) || (git tag -d $(git describe --tags) && git reset --hard HEAD~1)",
     "release:patch": "SEMVER=patch npm run release",
     "release:minor": "SEMVER=minor npm run release",
-    "release:major": "SEMVER=major npm run release"
+    "release:major": "SEMVER=major npm run release",
+    "prepare": "husky || true"
   },
   "lint-staged": {
     "**/*.js": [
@@ -33,31 +34,30 @@
       "eslint --fix"
     ]
   },
-  "pre-commit": "lint-staged",
   "author": "Stefan Peters <stefan.peters@gbv.de>",
   "license": "MIT",
   "engines": {
     "node": ">=18"
   },
   "dependencies": {
-    "axios": "^1.7.7",
+    "axios": "^1.7.9",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.3",
     "connect-flash": "^0.1.1",
     "connect-mongo": "^5.1.0",
-    "dotenv": "^16.4.5",
+    "dotenv": "^16.4.7",
     "ejs": "^3.1.10",
-    "express": "^4.21.0",
+    "express": "^4.21.2",
     "express-rate-limit": "^7.4.1",
-    "express-session": "^1.18.0",
+    "express-session": "^1.18.1",
     "express-ws": "^5.0.2",
     "helmet": "^8.0.0",
-    "inquirer": "^12.0.0",
+    "inquirer": "^12.2.0",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "meow": "^13.2.0",
-    "mongodb": "^6.9.0",
-    "mongoose": "^8.7.0",
+    "mongodb": "^6.12.0",
+    "mongoose": "^8.8.4",
     "node-rsa": "^1.1.1",
     "nodemon": "^3.1.7",
     "passport": "~0.7.0",
@@ -72,13 +72,13 @@
     "should-send-same-site-none": "^2.0.5"
   },
   "devDependencies": {
-    "chai": "^5.1.1",
-    "eslint": "~9.11",
-    "eslint-config-gbv": "~2.1",
-    "lint-staged": "^15.2.10",
-    "mocha": "^10.7.3",
-    "pre-commit": "^1.2.2",
-    "superagent": "^10.1.0",
+    "chai": "^5.1.2",
+    "eslint": "~9.16",
+    "eslint-config-gbv": "~2.6",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.11",
+    "mocha": "^11.0.1",
+    "superagent": "^10.1.1",
     "supertest": "^7.0.0",
     "yesno": "^0.4.0"
   }
