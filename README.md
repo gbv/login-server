@@ -369,6 +369,23 @@ The following is an example `providers.json` that shows how to configure each of
       "url": "https://example.com/ext/api/colirich/users/info",
       "apiKey": "abcdef1234567890"
     }
+  },
+  {
+    "id": "openidconnect",
+    "strategy": "openidconnect",
+    "name": "OpenIDConnect",
+    "template": "https://idp.example.com/user/{id}",
+    "credentialsNecessary": false,
+    "options": {
+      "clientID": "APP-abcdef1234567890",
+      "clientSecret": "abcdef1-23456-7890ab-cdef12-34567890",
+      "issuer": "https://idp.example.com",
+      "authorizationURL": "https://idp.example.com/authorize",
+      "tokenURL": "https://idp.example.com/oauth/token",
+      "userInfoURL": "https://idp.example.com/userinfo",
+      "scope": ["openid", "profile", "email"]
+    },
+    "url": "https://www.nfdi-aai.de/"
   }
 ]
 ```
