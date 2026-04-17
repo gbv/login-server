@@ -67,6 +67,7 @@
     "passport-local": "^1.0.0",
     "passport-mediawiki-oauth": "git+https://abc@github.com/stefandesu/passport-mediawiki-oauth#0158a4f",
     "passport-oauth2": "^1.8.0",
+    "passport-openidconnect": "^0.1.2",
     "passport-orcid": "0.0.4",
     "portfinder": "^1.0.32",
     "should-send-same-site-none": "^2.0.5"
