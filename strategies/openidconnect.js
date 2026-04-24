@@ -23,6 +23,9 @@ export default (options, provider, callback) => { // Factory function
   // guarantee required options and set defaults
   options.scope = options.scope || ["openid", "profile", "email"]
   options.passReqToCallback = true
+  if (!options.issuer.endsWith("/")) {
+    options.issuer += "/"
+  }
 
   return new Strategy(
     options,

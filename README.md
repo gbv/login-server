@@ -375,14 +375,12 @@ The following is an example `providers.json` that shows how to configure each of
     "id": "openidconnect",
     "strategy": "openidconnect",
     "name": "OpenIDConnect",
-    "credentialsNecessary": false,
     "options": {
       "clientID": "APP-abcdef1234567890",
       "clientSecret": "abcdef1-23456-7890ab-cdef12-34567890",
       "issuer": "https://idp.example.com/",
       "authorizationURL": "https://idp.example.com/authorize",
-      "tokenURL": "https://idp.example.com/oauth/token",
-      "scope": ["openid", "profile", "email"]
+      "tokenURL": "https://idp.example.com/oauth/token"
     }
   }
 ]
@@ -404,6 +402,10 @@ You can adjust the path to the `providers.json` file with `PROVIDERS_PATH` in `.
 - The script needs to be executable (`chmod +x`).
 - The script needs to return valid JSON with the `id` value being set when authentication was successful. Optionally, `name` can be provided and will be used as the display name.
 - Whatever language or environment the script is using needs to be available on the host that is running Login Server. When run inside a Docker container, only Bash and Node.js v20 are available. To use a different language, you need to extend Login Server's Docker image and install the required dependencies yourself.
+
+**Notes about using the OpenIDConnect provider:**
+-On the Auth0 server options, 'Allowed callback URLs' must contain '<url>/login/<provider-id>/return'
+
 
 ## JWTs
 login-server offers JSON Web Tokens that can be used to authenticate against other services (like [jskos-server](https://github.com/gbv/jskos-server)). [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) is used for signing the tokens.
