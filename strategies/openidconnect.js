@@ -26,16 +26,23 @@ export default (options, provider, callback) => { // Factory function
 
   return new Strategy(
     options,
-    async (req, issuer, sub, profile, accessToken, refreshToken, params, done) => {
-      // VerifyFunction parameters: Request, OpenID issuer URL, subject (user ID), user profile, access token, refresh token, additional params, callback function
-      callback(req, accessToken, refreshToken, {
-        id: profile?.id || sub,
-        name: profile?.displayName || profile?.name || profile?.username || params?.name || `${sub}`,
-        username: profile?.username || profile?.preferred_username || profile?.email || params?.preferred_username || params?.email || sub,
+    function(req, issuer, profile, context, idToken, accessToken, refreshToken, params, done) {
+      const item = {
+        id: profile?.id,
+        name: profile?.displayName || profile?.username || profile?.name?.givenName + " " + profile?.name?.familyName,
+        username: profile.displayName || profile?.preferred_username || profile?.emails?.[0]?.value,
         email: profile?.emails?.[0]?.value || profile?.email || params?.email || undefined,
-        uri: profile?.profileUrl || profile?._json?.profile ||  provider.id || undefined,
+        uri: profile?.profileUrl || profile?._json?.profile ||  issuer,
         provider: provider.id,
-      }, done)
+      }
+      // console.log("=== Built Item ===", item)
+      
+      try {
+        callback(req, accessToken, refreshToken, item, done)
+      } catch (err) {
+        console.error("=== Callback Error ===", err)
+        done(err)
+      }
     },
   )
 }

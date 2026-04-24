@@ -212,6 +212,7 @@ login-server uses [Passport](http://www.passportjs.org) ([GitHub](https://github
 - Local (via [passport-local](http://www.passportjs.org/packages/passport-local/))
 - Script (see https://github.com/gbv/login-server/issues/117)
 - CBS (experimental)
+- OpenIDConnect (experimental, for example via [auth0](https://auth0.com))
 
 Because strategies use different parameters in their [verify callbacks](http://www.passportjs.org/docs/configure/), each strategy has its own wrapper file in the folder `strategies/`. To add another strategy to login-server, add a file called `{name}.js` (where `{name}` is the name of the strategy that is used with `passport.authenticate`) with the following structure (GitHub as example):
 
@@ -374,18 +375,15 @@ The following is an example `providers.json` that shows how to configure each of
     "id": "openidconnect",
     "strategy": "openidconnect",
     "name": "OpenIDConnect",
-    "template": "https://idp.example.com/user/{id}",
     "credentialsNecessary": false,
     "options": {
       "clientID": "APP-abcdef1234567890",
       "clientSecret": "abcdef1-23456-7890ab-cdef12-34567890",
-      "issuer": "https://idp.example.com",
+      "issuer": "https://idp.example.com/",
       "authorizationURL": "https://idp.example.com/authorize",
       "tokenURL": "https://idp.example.com/oauth/token",
-      "userInfoURL": "https://idp.example.com/userinfo",
       "scope": ["openid", "profile", "email"]
-    },
-    "url": "https://www.nfdi-aai.de/"
+    }
   }
 ]
 ```
