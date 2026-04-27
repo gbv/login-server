@@ -23,6 +23,9 @@
     </details>
     <% } %>
   </p>
+  <% if (user.usage?.created) { %>
+    <p>Account created <%= user.usage.created %></p>
+  <% } %>
   <h4>Connected Identities</h4>
   <table class="table"><tbody>
   <% config.providers.forEach(provider => { %>
@@ -70,7 +73,6 @@
         const removeKeys = ["id", "name", "uri", "token", "accessToken", "refreshToken"]
         const filteredObject = Object.fromEntries(Object.entries(object).filter(([key]) => !removeKeys.includes(key)));
         if (Object.keys(filteredObject).length > 0) {
-
       %>
       <tr>
         <td class="border-top-0 mt-0"></td>

@@ -224,6 +224,10 @@ app.use((req, res, next) => {
       }
       usage.lastUsed = (new Date()).toISOString()
       usage.save().catch(() => null).then(() => next())
+      req.user.usage = {
+        created: usage.created,
+        lastUsed: usage.lastUsed,
+      }
     })
   } else {
     next()
