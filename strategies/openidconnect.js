@@ -4,6 +4,7 @@
 
 import { Strategy } from "passport-openidconnect" // not ESM compatible
 import config from "../config.js"
+import * as utils from "../utils/index.js"
 
 export default (options, provider, callback) => { // Factory function
 
@@ -31,15 +32,20 @@ export default (options, provider, callback) => { // Factory function
     options,
     function(req, issuer, profile, context, idToken, accessToken, refreshToken, params, done) {
       const item = {
-        id: profile?.id,
-        name: profile?.displayName || profile?.username || profile?.name?.givenName + " " + profile?.name?.familyName,
-        username: profile.displayName || profile?.preferred_username || profile?.emails?.[0]?.value,
-        email: profile?.emails?.[0]?.value || profile?.email || params?.email || undefined,
-        uri: profile?.profileUrl || profile?._json?.profile ||  issuer,
+        id: profile?.id || profile?.sub || utils.uuid(),
+        name: profile?.name?.givenName && profile?.name?.familyName && `${profile.name.givenName} ${profile.name.familyName}` || profile?.displayName,
+        username: profile?.displayName || profile?.emails?.[0]?.value,
         provider: provider.id,
+        email: profile?.emails?.[0]?.value || undefined,
+        emails: profile?.emails || undefined,
+        // token: accessToken || undefined,
+        organization: profile?.schac_home_organization || undefined,
+        sub: profile?.sub || undefined,
+        iss: profile?.iss || undefined,
+        affiliation: profile?.eduperson_scoped_affiliation ||undefined,
+        assurance: profile?.eduperson_assurance || profile?.asr || undefined,
       }
-      // console.log("=== Built Item ===", item)
-      
+
       try {
         callback(req, accessToken, refreshToken, item, done)
       } catch (err) {
