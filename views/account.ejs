@@ -19,7 +19,9 @@
     <tr>
       <td style="text-align: center;">
         <% if (provider.url) { %><a href="<%= provider.url %> " target="_blank"><% } %>
-        <img src="<%= provider.image || baseUrl + "static/default.svg" %>" height="18px" />
+        <img src="<%= provider.image || baseUrl + 'static/' + provider.strategy + '.svg' %>" height="18px"
+          onerror="handleImgError(this)"
+        />
         <% if (provider.url) { %></a><% } %>
       </td>
       <td>
@@ -85,6 +87,12 @@
         alert("Error: Name could not be saved.")
       }
     })
+  }
+  window.baseUrl = "<%= baseUrl %>";
+
+  function handleImgError(img) {
+    img.onerror = null;
+    img.src = window.baseUrl + "static/default.svg";
   }
   </script>
 <% }%>

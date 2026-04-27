@@ -8,6 +8,13 @@ applications.json
 # Ignore static files
 static/*
 !static/default.svg
+!static/cbs.svg
+!static/easydb.svg
+!static/github.svg
+!static/mediawiki.svg
+!static/openidconnect.svg
+!static/orcid.svg
+!static/stackexchange.svg
 
 # Add .env file for Docker
 !docker/.env
