@@ -12,7 +12,7 @@ console.log("Login Server local user management")
 console.log("Important Note: Do not manually edit providers.json while this script is running. Any action here will override those changes!")
 
 import dotenv from "dotenv"
-dotenv.config()
+dotenv.config({quiet:true})
 let providersFile = process.env.PROVIDERS_PATH || "./providers.json"
 let providers
 // Try to read providers from file

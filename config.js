@@ -1,5 +1,5 @@
 /**
- * Configuration
+  Configuration
  *
  * A .env file is required.
  * Recommennded keys: PORT, BASE_URL, NODE_ENV, SESSION_SECRET
@@ -7,7 +7,7 @@
  *
  */
 import * as dotenv from "dotenv"
-dotenv.config()
+dotenv.config({quiet:true})
 import fs from "node:fs"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
