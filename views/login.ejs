@@ -2,6 +2,7 @@
 
 <!-- Template for /login route -->
 
+<% if (config.providers.length) { %>
 <p>
   By using this service, you agree that authenticated usernames, identifiers, and access tokens can be made available to selected applications (see <a href="<%= baseUrl %>help">about this service</a> for details).
 </p>
@@ -20,5 +21,10 @@
 <p>
   If necessary, a new user account will be created on first login.
 </p>
+<% } else { %>
+<p>
+  This service has not fully been configured, so login is not possible yet.
+</p>
+<% } %>
 
 <%- include('footer'); -%>
