@@ -4,13 +4,16 @@
 
 <p>
   This service allows to use external identities for <a href="https://en.wikipedia.org/wiki/Single_sign-on">single sign-on</a>. By using this service, you agree that the following data of authenticated identities is saved in our database and
-  <strong>made available</strong> to selected applications (see below):
+  <strong>made available</strong> to selected applications:
 </p>
 
 <ul>
-  <li>name</li>
-  <li>a unique personal identifier</li>
-  <li>IDs, names, usernames, URIs, and access tokens (if applicable)</li>
+  <li>a freely chosen name for display (<tt>name</tt>)</li>
+  <li>a unique and stable personal account identifier (<tt>uri</tt>)</li>
+  <li>
+    a list of <a href="./account">identities</a> connected to your account,
+    each also with a name, identifier and additional data of the identity
+  </li>
 </ul>
 
 <p>
