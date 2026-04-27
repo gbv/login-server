@@ -1,13 +1,16 @@
 <%- include('header'); -%>
 
 <!-- Template for /sessions route -->
-
-<p>Reload the page to update session information!</p>
+<p>
+  A session is an active connection between this login server and an application.
+</p>
 
 <h3>Active Sessions</h3>
 
+<p><em>Reload the page to update session information!</em></p>
+
 <% if (sessions.length) { %>
-<p>There are <%= sessions.length %> active sessions including the current one.</p>
+<p>There are <%= sessions.length %> active sessions including the current one for this page.</p>
 
 <table class="table">
   <tbody>
@@ -28,7 +31,7 @@
       </td>
       <td class="text-right">
         <% if (session._id == sessionID) { %>
-          Current Session<br><a href="<%= baseUrl %>logout" class="btn btn-outline-danger btn-sm mt-2 mr-0">Log out</a>
+          current session<br><a href="<%= baseUrl %>logout" class="btn btn-outline-danger btn-sm mt-2 mr-0">Log out</a>
         <% } else { %>
           <button class="btn btn-sm btn-outline-danger remove-session-button" data-session="<%= session._id %>">Remove</button>
         <% } %>
@@ -38,12 +41,17 @@
   </tbody>
 </table>
 
-<p>
-  <button id="remove-all-sessions-button" class="btn btn-danger">Remove all other sessions</button>
-</p>
 
+<% if (sessions.length > 1) { %>
+<p style="text-align: right">
+  <button id="remove-all-sessions-button" class="btn btn-sm btn-danger">Remove all but current session</button>
+</p>
+<% } %>
+
+
+<% if (websockets.length) { %>
 <h3>Active WebSockets</h3>
-<p>WebSocket connections are used by clients to communicate with the login server. To deauthorize a WebSocket connection, you need to remove the associated session.</p>
+<p>WebSocket connections are used by applications to communicate with the login server. To deauthorize a WebSocket connection, you need to remove the associated session.</p>
 
 <table class="table small">
   <thead>
@@ -61,6 +69,7 @@
   <% }) %>
   </tbody>
 </table>
+<% } %>
 <% } else { %>
 <p>
   There are no active sessions. Please log in to see your sessions.
