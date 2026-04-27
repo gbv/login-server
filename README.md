@@ -21,7 +21,11 @@ This repository offers a login server to be used with the [Cocoda Mapping Tool](
 - [Usage](#usage)
 - [Test](#test)
 - [Strategies](#strategies)
-  - [Providers](#providers)
+- [Providers](#providers)
+  - [Notes on MediaWiki providers](#notes-on-mediawiki-providers)
+  - [Notes on OpenIDConnect providers](#notes-on-openidconnect-providers)
+  - [Notes on Script providers](#notes-on-script-providers)
+  - [Notes on LDAP providers](#notes-on-ldap-providers)
 - [JWTs](#jwts)
 - [Web interface](#web-interface)
   - [GET /](#get-)
@@ -205,14 +209,14 @@ login-server uses [Passport](http://www.passportjs.org) ([GitHub](https://github
 
 - GitHub (via [passport-github](http://www.passportjs.org/packages/passport-github/))
 - ORCID (via [passport-orcid](http://www.passportjs.org/packages/passport-orcid/))
-- Mediawiki (via [passport-mediawiki-oauth](http://www.passportjs.org/packages/passport-mediawiki-oauth/))
-- LDAP (via [passport-ldapauth](http://www.passportjs.org/packages/passport-ldapauth/))
-- Stack Exchange (via [passport-oauth2](https://www.passportjs.org/packages/passport-oauth2/))
+- MediaWiki (via [passport-mediawiki-oauth](http://www.passportjs.org/packages/passport-mediawiki-oauth/)), see [notes](#notes-on-mediawiki-providers)
+- LDAP (via [passport-ldapauth](http://www.passportjs.org/packages/passport-ldapauth/)), see [notes](#notes-on-ldap-providers)
+- OpenIDConnect (experimental, for example via [auth0](https://auth0.com)), see [notes](#notes-on-openidconnect-providers)
 - easydb (via [passport-easydb](https://github.com/gbv/passport-easydb))
 - Local (via [passport-local](http://www.passportjs.org/packages/passport-local/))
-- Script (see https://github.com/gbv/login-server/issues/117)
-- CBS (experimental)
-- OpenIDConnect (experimental, for example via [auth0](https://auth0.com))
+- Script (see https://github.com/gbv/login-server/issues/117 and [notes](#notes-on-script-providers))
+- Stack Exchange (via [passport-oauth2](https://www.passportjs.org/packages/passport-oauth2/), experimental)
+- CBS (used internally at VZG)
 
 Because strategies use different parameters in their [verify callbacks](http://www.passportjs.org/docs/configure/), each strategy has its own wrapper file in the folder `strategies/`. To add another strategy to login-server, add a file called `{name}.js` (where `{name}` is the name of the strategy that is used with `passport.authenticate`) with the following structure (GitHub as example):
 
@@ -249,9 +253,9 @@ export default (options, provider, callback) => new Strategy(options,
 
 You can look at the existing strategies as examples and add your own via a Pull Request.
 
-### Providers
+## Providers
 
-After you have added the strategy, you can use it by adding a provider to `providers.json`:
+After you have added the [strategy](#strategies), you can use it by adding a provider to `providers.json`:
 
 ```json
 [
@@ -390,12 +394,24 @@ To configure local providers, please use the provided script under `bin/manage-l
 
 You can adjust the path to the `providers.json` file with `PROVIDERS_PATH` in `.env`.
 
-**Notes about using the MediaWiki provider:**
+### Notes on MediaWiki providers
+
 - If your consumer is limited to a specific instance (e.g. Wikidata only), you need to provide the baseURL for that instance in the options, for example: `"baseURL": "https://www.wikidata.org/"`.
 - There seems to be a [bug](https://phabricator.wikimedia.org/T145828) either in Mediawiki or in passport-mediawiki-oauth that causes custom callback URLs to not work. This means that you need to provide the exact callback URL when registering your consumer (e.g. `https://coli-conc.gbv.de/login/login/wikidata/return` for our login-server instance).
-- See also: https://www.mediawiki.org/wiki/OAuth/For_Developers
+- See also <https://www.mediawiki.org/wiki/OAuth/For_Developers>
 
-**Notes about using the Script provider:**
+### Notes on OpenIDConnect providers
+
+- The provider relies on an OpenIdConnect Server
+- 'Allowed callback URLs' in the Settings of the OpenIDConnect-Server must contain `<url>/login/<provider-id>/return`
+- This server provides clientID, clientSecret and issuer (the server domain)
+  - authorizationURL is typically `<issuer>/authorize`
+  - tokenURL is typically `<issuer>/oauth/token`
+- Login options (e.g. via Google) are configured via the OpenID server
+- The OpenIDConnect server does not provide a user profile URI by default
+
+### Notes on Script providers
+
 - The Script provider is currently implemented inside Login Server (see [`lib/script-strategy.js`](https://github.com/gbv/login-server/blob/master/lib/script-strategy.js)).
 - The script's path (provided in `options.script`) can either be relative to Login Server's root folder, or an absolute path (recommended for Docker).
 - An example for a very basic Bash script can be found in [`bin/example-script`](https://github.com/gbv/login-server/blob/master/bin/example-script).
@@ -403,14 +419,9 @@ You can adjust the path to the `providers.json` file with `PROVIDERS_PATH` in `.
 - The script needs to return valid JSON with the `id` value being set when authentication was successful. Optionally, `name` can be provided and will be used as the display name.
 - Whatever language or environment the script is using needs to be available on the host that is running Login Server. When run inside a Docker container, only Bash and Node.js v20 are available. To use a different language, you need to extend Login Server's Docker image and install the required dependencies yourself.
 
-**Notes about using the OpenIDConnect provider:**
-- The provider relies on an  OpenIdConnect Server
-- 'Allowed callback URLs' in the Settings of the OpenIDConnect-Server must contain `<url>/login/<provider-id>/return`
-- This server provides clientID, clientSecret and issuer (the server domain)
-  - authorizationURL is typically `<issuer>/authorize`
-  - tokenURL is typically `<issuer>/oauth/token`
-- Login options (e.g. via Google) are configured via the server
-- The OpenIDConnect server does not provide a user profile website
+### Notes on LDAP providers
+
+LDAP strategy uses library [passport-ldapauth](https://www.npmjs.com/package/passport-ldapauth), eventually based on library [ldapjs](https://www.npmjs.com/package/ldap) not maintained anymore.
 
 ## JWTs
 login-server offers JSON Web Tokens that can be used to authenticate against other services (like [jskos-server](https://github.com/gbv/jskos-server)). [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) is used for signing the tokens.
@@ -604,10 +615,8 @@ socket.addEventListener("message", (message) => {
 })
 ```
 
-
 ## Maintainers
 
-- [@stefandesu](https://github.com/stefandesu)
 - [@nichtich](https://github.com/nichtich)
 
 ## Contribute

@@ -34,7 +34,10 @@
       "eslint --fix"
     ]
   },
-  "author": "Stefan Peters <stefan.peters@gbv.de>",
+  "author": "Jakob Voß <jakob.voss@gbv.de>",
+  "contributors": [
+    "Stefan Peters"
+  ],
   "license": "MIT",
   "engines": {
     "node": ">=18"
