@@ -16,9 +16,12 @@
       <td>
         <%= session._id %>
         <% if (session.session.referrer) { %>
+        <% function stripQuery(url) {
+            return url ? url.split('?')[0] : '';
+          } %>
           <br><small>
-            <a href="<%= session.session.referrer %>" target="_blank">
-              <%= session.session.name %>
+            <a href="<%= session.session.referrer %>" target="_blank" style="word-break: break-all;">
+              <%= stripQuery(session.session.name) %>
             </a>
           </small>
         <% } %>
