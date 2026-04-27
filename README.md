@@ -404,8 +404,13 @@ You can adjust the path to the `providers.json` file with `PROVIDERS_PATH` in `.
 - Whatever language or environment the script is using needs to be available on the host that is running Login Server. When run inside a Docker container, only Bash and Node.js v20 are available. To use a different language, you need to extend Login Server's Docker image and install the required dependencies yourself.
 
 **Notes about using the OpenIDConnect provider:**
--On the Auth0 server options, 'Allowed callback URLs' must contain '<url>/login/<provider-id>/return'
-
+- The provider relies on an  OpenIdConnect Server
+- 'Allowed callback URLs' in the Settings of the OpenIDConnect-Server must contain `<url>/login/<provider-id>/return`
+- This server provides clientID, clientSecret and issuer (the server domain)
+  - authorizationURL is typically `<issuer>/authorize`
+  - tokenURL is typically `<issuer>/oauth/token`
+- Login options (e.g. via Google) are configured via the server
+- The OpenIDConnect server does not provide a user profile website
 
 ## JWTs
 login-server offers JSON Web Tokens that can be used to authenticate against other services (like [jskos-server](https://github.com/gbv/jskos-server)). [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) is used for signing the tokens.
