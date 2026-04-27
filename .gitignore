@@ -7,7 +7,10 @@ applications.json
 
 # Ignore static files
 static/*
+
+# Predefined default images
 !static/default.svg
+!static/local.svg
 !static/cbs.svg
 !static/easydb.svg
 !static/github.svg
