@@ -53,6 +53,27 @@
         </small>
       </td>
     </tr>
+    <% } %>    
+    <% if (user.identities && user.identities[provider.id]) { %>
+      <% 
+        const object = user.identities[provider.id]
+        const removeKeys = ["id", "name", "uri", "token", "accessToken", "refreshToken"]
+        const filteredObject = Object.fromEntries(Object.entries(object).filter(([key]) => !removeKeys.includes(key)));
+        if (Object.keys(filteredObject).length > 0) {
+
+      %>
+      <tr>
+        <td class="border-top-0 mt-0"></td>
+        <td class="border-top-0 pt-0" colspan="3">
+          <small>
+            <details>
+              <summary>Additional Information</summary>
+              <pre style="text-align:left; font-size:12px;"><%= JSON.stringify(filteredObject, null, 2) %></pre>
+            </details>
+          </small>
+        </td>
+      </tr>
+    <% } %>
     <% } %>
   <% }) %>
   </tbody></table>
