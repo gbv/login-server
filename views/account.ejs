@@ -70,7 +70,7 @@
     <% if (user.identities && user.identities[provider.id]) { %>
       <%
         const object = user.identities[provider.id]
-        const removeKeys = ["id", "name", "uri", "token", "accessToken", "refreshToken"]
+        const removeKeys = ["name", "uri", "token", "accessToken", "refreshToken"]
         const filteredObject = Object.fromEntries(Object.entries(object).filter(([key]) => !removeKeys.includes(key)));
         if (Object.keys(filteredObject).length > 0) {
       %>
