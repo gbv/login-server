@@ -180,7 +180,7 @@ To provide the user with information about which applications are accessing thei
 ]
 ```
 
-The URL should be accessible because the interface will link to it. A session is associated with an application if its referrer URL contains the application's `url`. Applications will be checked from top to bottom, so you should order it from most specific URL to least specific URL (see example above).
+The URL should be accessible because the interface will link to it. A session is associated with an application if its referrer URL start with the application's `url`. Applications will be checked from top to bottom, so you should order it from most specific URL to least specific URL (see example above).
 
 ## Usage
 ```bash
