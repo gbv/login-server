@@ -1,8 +1,8 @@
 # Login Server
 [![GitHub release](https://img.shields.io/github/release/gbv/login-server.svg)](https://github.com/gbv/login-server/releases/latest)
 [![API Status](https://coli-conc-status.fly.dev/api/badge/2/status?label=API)](https://coli-conc.gbv.de/api/)
-[![License](https://img.shields.io/github/license/gbv/login-server.svg)](https://github.com/gbv/login-server/blob/master/LICENSE)
-[![Docker](https://img.shields.io/badge/Docker-ghcr.io%2Fgbv%2Flogin--server-informational)](https://github.com/gbv/login-server/blob/master/docker/README.md)
+[![License](https://img.shields.io/github/license/gbv/login-server.svg)](https://github.com/gbv/login-server/blob/main/LICENSE)
+[![Docker](https://img.shields.io/badge/Docker-ghcr.io%2Fgbv%2Flogin--server-informational)](https://github.com/gbv/login-server/blob/main/docker/README.md)
 [![Test](https://github.com/gbv/login-server/actions/workflows/test.yml/badge.svg)](https://github.com/gbv/login-server/actions/workflows/test.yml)
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg)](https://github.com/RichardLitt/standard-readme)
 
@@ -74,7 +74,7 @@ npm run indexes
 ```
 
 ### Docker
-login-server is also available via Docker. Please refer to the documentation at https://github.com/gbv/login-server/blob/master/docker/README.md for more details.
+login-server is also available via Docker. Please refer to the documentation at https://github.com/gbv/login-server/blob/main/docker/README.md for more details.
 
 ### Configuration
 
@@ -412,9 +412,9 @@ You can adjust the path to the `providers.json` file with `PROVIDERS_PATH` in `.
 
 ### Notes on Script providers
 
-- The Script provider is currently implemented inside Login Server (see [`lib/script-strategy.js`](https://github.com/gbv/login-server/blob/master/lib/script-strategy.js)).
+- The Script provider is currently implemented inside Login Server (see [`lib/script-strategy.js`](https://github.com/gbv/login-server/blob/main/lib/script-strategy.js)).
 - The script's path (provided in `options.script`) can either be relative to Login Server's root folder, or an absolute path (recommended for Docker).
-- An example for a very basic Bash script can be found in [`bin/example-script`](https://github.com/gbv/login-server/blob/master/bin/example-script).
+- An example for a very basic Bash script can be found in [`bin/example-script`](https://github.com/gbv/login-server/blob/main/bin/example-script).
 - The script needs to be executable (`chmod +x`).
 - The script needs to return valid JSON with the `id` value being set when authentication was successful. Optionally, `name` can be provided and will be used as the display name.
 - Whatever language or environment the script is using needs to be available on the host that is running Login Server. When run inside a Docker container, only Bash and Node.js v20 are available. To use a different language, you need to extend Login Server's Docker image and install the required dependencies yourself.
@@ -511,7 +511,7 @@ Callback endpoint for OAuth requests. Will save the connected identity to the us
 
 ## HTTP API
 
-Before directly programming against HTTP API and [WebSocket API](#websocket) have a look at the [login-client](https://github.com/gbv/login-client) JavaScript browser library. It can be seen in action [here](https://coli-conc.gbv.de/login/api) ([source for that site](https://github.com/gbv/login-server/blob/master/views/api.ejs)).
+Before directly programming against HTTP API and [WebSocket API](#websocket) have a look at the [login-client](https://github.com/gbv/login-client) JavaScript browser library. It can be seen in action [here](https://coli-conc.gbv.de/login/api) ([source for that site](https://github.com/gbv/login-server/blob/main/views/api.ejs)).
 
 ### GET /about
 Returns an object with keys `title` (title of the login-server instance), `env` (environment, like `development` or `production`), `publicKey` (usually a RSA public key), and `algorithm` (the [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) algorithm used). The corresponding private key to the given public key is used when signing JWTs.
@@ -622,7 +622,7 @@ socket.addEventListener("message", (message) => {
 ## Contribute
 PRs accepted.
 
-- Please use the `dev` branch as a basis. Changes from `dev` will be merged into `master` only for new releases.
+- Please use the `dev` branch as a basis. Changes from `dev` will be merged into `main` only for new releases.
 - Please run the tests before committing.
 - Please do not skip the pre-commit hook when committing your changes.
 - If editing the README, please conform to the [standard-readme](https://github.com/RichardLitt/standard-readme) specification.
@@ -647,9 +647,9 @@ This will:
 - Run `npm version patch` (or "minor"/"major")
 - **Ask you to confirm the version**
 - Push changes to `dev`
-- Switch to `master`
+- Switch to `main`
 - Merge changes from `dev`
-- Push `master` with tags
+- Push `main` with tags
 - Switch back to `dev`
 
 After running this, GitHub Actions will automatically create a new GitHub Release draft. Please edit and publish the release manually.

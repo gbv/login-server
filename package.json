@@ -21,7 +21,7 @@
     "lint-staged": "lint-staged",
     "indexes": "node utils/addIndexes.js",
     "yesno": "node -e \"const yesno = require('yesno'); yesno({ question: 'Are you sure you want to continue?' }).then(ok => process.exit(ok ? 0 : 1));\"",
-    "release": "test $(git rev-parse --abbrev-ref HEAD) = dev && git pull && npm test && npm version $SEMVER && npm run --silent yesno && (git push && git checkout master && git merge dev && git push --follow-tags && git checkout dev) || (git tag -d $(git describe --tags) && git reset --hard HEAD~1)",
+    "release": "test $(git rev-parse --abbrev-ref HEAD) = dev && git pull && npm test && npm version $SEMVER && npm run --silent yesno && (git push && git checkout main && git merge dev && git push --follow-tags && git checkout dev) || (git tag -d $(git describe --tags) && git reset --hard HEAD~1)",
     "release:patch": "SEMVER=patch npm run release",
     "release:minor": "SEMVER=minor npm run release",
     "release:major": "SEMVER=major npm run release",
