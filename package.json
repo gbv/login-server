@@ -17,7 +17,7 @@
     "lint": "eslint",
     "fix": "eslint --fix",
     "start": "nodemon server.js",
-    "mongodb": "./bin/mongodb.js",
+    "mongodb": "node ./bin/mongodb.js",
     "lint-staged": "lint-staged",
     "indexes": "node utils/addIndexes.js",
     "yesno": "node -e \"const yesno = require('yesno'); yesno({ question: 'Are you sure you want to continue?' }).then(ok => process.exit(ok ? 0 : 1));\"",

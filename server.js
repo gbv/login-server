@@ -44,7 +44,7 @@ app.use((req, res, next) => {
     "frame-ancestors": ["'self'"],
     "img-src": ["'self'", "data:", "https:", "http:"],
     "object-src": ["'none'"],
-    "script-src": ["https://cdn.jsdelivr.net/npm/gbv-login-client@1/dist/gbv-login-client.js", "https://cdn.jsdelivr.net/gh/stefandesu/node-jsonwebtoken@master/build/jsonwebtoken.js", `'nonce-${res.locals.nonceFooter}'`, `'nonce-${res.locals.nonceTemp}'`],
+    "script-src": ["https://cdn.jsdelivr.net/npm/gbv-login-client@2/dist/gbv-login-client.js", "https://cdn.jsdelivr.net/gh/stefandesu/node-jsonwebtoken@master/build/jsonwebtoken.js", `'nonce-${res.locals.nonceFooter}'`, `'nonce-${res.locals.nonceTemp}'`],
     "script-src-attr": null, // will fall back to script-src
     "style-src": ["'self'", "https:", "'unsafe-inline'"],
     "upgrade-insecure-requests": config.ssl ? [] : null,
@@ -269,10 +269,12 @@ const start = async () => {
     listener = app.listen(port, () => {
       config.log(`Listening on port ${port}.`)
 
-      // Import routes
+      // Enable routes
       fs.readdirSync(path.join(__dirname, "routes")).map(file => {
         import(`./routes/${file}`).then(route => route.default(app))
       })
+
+      app.use("/favicon.ico", express.static("./static/favicon.ico"))
 
       resolve(listener)
     })
