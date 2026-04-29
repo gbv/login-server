@@ -123,7 +123,7 @@ const setup = callback => {
         let uri = provider.template
         if (uri) {
           _.forOwn(profile, (value, key) => {
-            uri = uri.replace(`{${key}}`, value)
+            uri = uri.replace(`{${key}}`, encodeURI(value))
           })
           profile.uri = uri
         }

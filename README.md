@@ -265,7 +265,7 @@ Each object in the list of providers can have the following properties:
 - `id` (required) - Unique ID for the provider.
 - `strategy` (required) - Name of the Passport strategy used by the provider.
 - `name` (required) - Display name of the provider.
-- `template` (optional) - A template string to generate a URI (the placeholder `{field}` can be any field provided in the `providerProfile` object, usually `{id}` or `{username}`).
+- `template` (optional) - A template string to generate a URI (the placeholder `{field}` can be any field provided in the `providerProfile` object, usually `{id}` or `{username}`). Characters except `A-Z`, `a-z`, `0-9` and `-_.!~*'();/?:@&=+$,#` are escaped with percent-encoding. Make sure the fields used in a template are actually unique per identity (for instance unique username)!
 - `credentialsNecessary` (optional) - Set to `true` if username and password credentials are necessary for this provider. Instead of a redirect (for OAuth), login-server will show a login form that will send the credentials to a POST endpoint.
 - `options` (mostly required) - A options object for the strategy, often containing client credentials for the authentication endpoint.
 - `image` (optional) - An image associated with the provider. Will be shown on the login page and in the list of connected identities. You can provide static images in the folder `static/`. The value for the property would then be `static/myimage.svg`. If the filename matches the `id` of the provider, the image will be automatically associated.
