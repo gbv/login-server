@@ -19,19 +19,25 @@ Usage
 Options
   GNU long option         Option      Meaning
   --with-provider         -p          Only applicable when no user ID is given;
-                                      returns users that have a certain provider associated with them;
+                                      returns only users that have a certain provider associated with them;
                                       can be given multiple times
+  --usage                 -u          Emit usage only (for statistics)
 
 Examples
   $ ./bin/list-users.js c0c1914a-f9d6-4b92-a624-bf44118b6619
   $ ./bin/list-users.js https://github.com/stefandesu
   $ ./bin/list-users.js -p github
+  $ ./bin/list-users.js -u > usage.ndjson
 `, {
   flags: {
     withProvider: {
       type: "string",
       shortFlag: "p",
       isMultiple: true,
+    },
+    usage: {
+      type: "string",
+      shortFlag: "u",
     },
     help: {
       type: "boolean",
@@ -86,7 +92,11 @@ const isValidUri = (uri) => {
     for (const user of users) {
       await utils.addUsageToUserObject(user)
     }
-    users.forEach(user => console.log(JSON.stringify(user)))
+    if (cli.flags.usage) {
+      users.forEach(user => console.log(JSON.stringify(user)))
+    } else {
+      users.forEach(user => console.log(JSON.stringify(user.usage||{})))
+    }
   } catch (error) {
     console.error(error)
   }
