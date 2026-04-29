@@ -141,7 +141,7 @@ VERBOSITY=
 To configure the providers. See [Providers](#providers).
 
 #### `applications.json`
-To provide the user with information about which applications are accessing their data, and which application initiated a session's login, you can provide a list of applications in `applications.json`. The list has to be an array of objects and each objects needs to have a `url` and `name`. Example:
+To provide the user with information about which applications are accessing their data, and which application initiated a session's login, you can provide a list of applications in `applications.json`. The list has to be an array of objects and each objects needs to have a `url` and `name`. Each object may further have optional key `description`. Example:
 
 ```json
 [
@@ -150,37 +150,23 @@ To provide the user with information about which applications are accessing thei
     "name": "BARTOC"
   },
   {
-    "url": "https://coli-conc.gbv.de/coli-rich/",
-    "name": "coli-rich"
-  },
-  {
     "url": "https://coli-conc.gbv.de/cocoda/app/",
     "name": "Cocoda"
   },
   {
     "url": "https://coli-conc.gbv.de/cocoda/dev/",
-    "name": "Cocoda (dev)"
-  },
-  {
-    "url": "https://coli-conc.gbv.de/cocoda/rvk/",
-    "name": "Cocoda (RVK)"
-  },
-  {
-    "url": "https://coli-conc.gbv.de/cocoda/wikidata/",
-    "name": "Cocoda (Wikidata)"
-  },
-  {
-    "url": "https://coli-conc.gbv.de/cocoda/",
-    "name": "Cocoda (other)"
+    "name": "Cocoda"
+    "description": "development instance"
   },
   {
     "url": "https://coli-conc.gbv.de",
-    "name": "Other coli-conc application"
+    "name": "coli-conc",
+    "description": "Other terminology services at GBV"
   }
 ]
 ```
 
-The URL should be accessible because the interface will link to it. A session is associated with an application if its referrer URL start with the application's `url`. Applications will be checked from top to bottom, so you should order it from most specific URL to least specific URL (see example above).
+The URL should be accessible because the interface will link to it. A session is associated with an application if its referrer URL starts with the application's `url`. Applications will be checked from top to bottom, so you should order it from most specific URL to least specific URL (see example above).
 
 ## Usage
 ```bash

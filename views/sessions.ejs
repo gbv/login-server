@@ -1,8 +1,7 @@
 <%- include('header'); -%>
 
-<!-- Template for /sessions route -->
 <p>
-  A session is an active connection between this login server and an application.
+  A session identifies which application initiated login via <%= config.title %>.
 </p>
 
 <h3>Active Sessions</h3>
@@ -19,14 +18,11 @@
       <td>
         <%= session._id %>
         <% if (session.session.referrer) { %>
-        <% function stripQuery(url) {
-            return url ? url.split('?')[0] : '';
-          } %>
-          <br><small>
-            <a href="<%= session.session.referrer %>" target="_blank" style="word-break: break-all;">
-              <%= stripQuery(session.session.name) %>
-            </a>
-          </small>
+        <% function stripQuery(url) { return url ? url.split('?')[0] : ''; } %>
+          <br>
+          <a href="<%= session.session.referrer %>" target="_blank" style="word-break: break-all;">
+            <%= stripQuery(session.session.name) %>
+          </a>
         <% } %>
       </td>
       <td class="text-right">
@@ -44,7 +40,7 @@
 
 <% if (sessions.length > 1) { %>
 <p style="text-align: right">
-  <button id="remove-all-sessions-button" class="btn btn-sm btn-danger">Remove all but current session</button>
+  <button id="remove-all-sessions-button" class="btn btn-sm btn-danger">Remove All (except current session)</button>
 </p>
 <% } %>
 
