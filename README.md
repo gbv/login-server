@@ -627,6 +627,8 @@ PRs accepted.
 - Please do not skip the pre-commit hook when committing your changes.
 - If editing the README, please conform to the [standard-readme](https://github.com/RichardLitt/standard-readme) specification.
 
+Executing `npm run mongodb` will start a temporary MongoDB database for testing and development.
+
 ### Publish
 **For maintainers only**
 

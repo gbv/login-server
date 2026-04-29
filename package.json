@@ -17,6 +17,7 @@
     "lint": "eslint",
     "fix": "eslint --fix",
     "start": "nodemon server.js",
+    "mongodb": "./bin/mongodb.js",
     "lint-staged": "lint-staged",
     "indexes": "node utils/addIndexes.js",
     "yesno": "node -e \"const yesno = require('yesno'); yesno({ question: 'Are you sure you want to continue?' }).then(ok => process.exit(ok ? 0 : 1));\"",
@@ -82,6 +83,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",
     "mocha": "^11.0.1",
+    "mongodb-memory-server": "^11.0.1",
     "superagent": "^10.1.1",
     "supertest": "^7.0.0",
     "yesno": "^0.4.0"
