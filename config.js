@@ -245,9 +245,6 @@ if (env != "test") {
         case "mediawiki":
           provider.url = "https://www.mediawiki.org/wiki/MediaWiki"
           break
-        case "stackexchange":
-          provider.url = "https://stackexchange.com"
-          break
       }
     }
   }

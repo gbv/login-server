@@ -269,7 +269,7 @@ Each object in the list of providers can have the following properties:
 - `credentialsNecessary` (optional) - Set to `true` if username and password credentials are necessary for this provider. Instead of a redirect (for OAuth), login-server will show a login form that will send the credentials to a POST endpoint.
 - `options` (mostly required) - A options object for the strategy, often containing client credentials for the authentication endpoint.
 - `image` (optional) - An image associated with the provider. Will be shown on the login page and in the list of connected identities. You can provide static images in the folder `static/`. The value for the property would then be `static/myimage.svg`. If the filename matches the `id` of the provider, the image will be automatically associated.
-- `url` (optional) - A URL for the provider; will be linked on its image/icon under `/account`. There are default URLs for the strategies `github`, `orcid`, `mediawiki`, and `stackexchange`.
+- `url` (optional) - A URL for the provider; will be linked on its image/icon under `/account`. There are default URLs for the strategies `github`, `orcid`, and `mediawiki`.
 
 The following is an example `providers.json` that shows how to configure each of the existing providers:
 
@@ -303,17 +303,6 @@ The following is an example `providers.json` that shows how to configure each of
     "options": {
       "consumerKey": "abcdef1234567890",
       "consumerSecret": "abcdef1234567890abcdef1234567890"
-    }
-  },
-  {
-    "id": "stackexchange",
-    "strategy": "stackexchange",
-    "name": "Stack Exchange",
-    "template": "https://stackexchange.com/users/{id}",
-    "options": {
-      "clientID": "12345",
-      "clientSecret": "abcdef1234567890((",
-      "stackAppsKey": "1234567890abcdefg(("
     }
   },
   {

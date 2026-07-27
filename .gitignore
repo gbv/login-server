@@ -17,7 +17,6 @@ static/*
 !static/mediawiki.svg
 !static/openidconnect.svg
 !static/orcid.svg
-!static/stackexchange.svg
 
 # Add .env file for Docker
 !docker/.env
