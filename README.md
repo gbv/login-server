@@ -6,9 +6,9 @@
 [![Test](https://github.com/gbv/login-server/actions/workflows/test.yml/badge.svg)](https://github.com/gbv/login-server/actions/workflows/test.yml)
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg)](https://github.com/RichardLitt/standard-readme)
 
-This repository offers a login server to be used with the [Cocoda Mapping Tool](https://github.com/gbv/cocoda). It allows users to authenticate using different providers (e.g. GitHub, ORCID). See <https://coli-conc.gbv.de/login/api> for an example on how you could use this.
+This repository containts a web service to authenticate against different identity providers (e.g. GitHub, ORCID, MediaWiki...). The service is used in the [Cocoda Mapping Tool](https://github.com/gbv/cocoda), [BARTOC](https://bartoc.org/) and related services for single sign-on.
 
-## Table of Contents <!-- omit in toc -->
+## Table of Contents
 
 - [Install](#install)
   - [Dependencies](#dependencies)
@@ -19,8 +19,6 @@ This repository offers a login server to be used with the [Cocoda Mapping Tool](
     - [`providers.json`](#providersjson)
     - [`applications.json`](#applicationsjson)
 - [Usage](#usage)
-- [Test](#test)
-- [Strategies](#strategies)
 - [Providers](#providers)
   - [Notes on MediaWiki providers](#notes-on-mediawiki-providers)
   - [Notes on OpenIDConnect providers](#notes-on-openidconnect-providers)
@@ -55,6 +53,8 @@ This repository offers a login server to be used with the [Cocoda Mapping Tool](
   - [Example Usage](#example-usage)
 - [Maintainers](#maintainers)
 - [Contribute](#contribute)
+  - [Test](#test)
+  - [Strategies](#strategies)
   - [Publish](#publish)
 - [Related Works](#related-works)
 - [License](#license)
@@ -74,10 +74,9 @@ npm run indexes
 ```
 
 ### Docker
-login-server is also available via Docker. Please refer to the documentation at https://github.com/gbv/login-server/blob/main/docker/README.md for more details.
+login-server is also available via Docker. Please refer to the documentation at <https://github.com/gbv/login-server/blob/main/docker/README.md> for more details.
 
 ### Configuration
-
 If running the server behind a reverse proxy, make sure to include the  `X-Forwarded-Proto` header, allow all HTTP methods, and enable WebSocket proxying.
 
 You need to provide two configuration files:
@@ -138,10 +137,10 @@ VERBOSITY=
 ```
 
 #### `providers.json`
-To configure the providers. See [Providers](#providers).
+To configure the identity providers. See [Providers](#providers).
 
 #### `applications.json`
-To provide the user with information about which applications are accessing their data, and which application initiated a session's login, you can provide a list of applications in `applications.json`. The list has to be an array of objects and each objects needs to have a `url` and `name`. Each object may further have optional key `description`. Example:
+You can provide a list of applications to inform users which applications are accessing their data, and which application initiated a session's login. The list has to be an array of objects and each objects needs to have a `url` and `name`. Each object may further have optional key `description`. Example:
 
 ```json
 [
@@ -175,7 +174,7 @@ npm run start
 
 The server provides a [web interface](#web-interface), a [HTTP API](#http-api) and a [WebSocket](#websocket).
 
-The web interface allows users to create and manage accounts with connections to multiple identities at identity providers (see [providers](#providers)). Providers are used to authenticate users because the login server does not store any passwords (single sign-on).
+The web interface allows users to create and manage accounts with connections to multiple identities at [identity providers](#providers). Providers are used to authenticate users because the login server does not store any passwords (single sign-on).
 
 The HTTP API and WebSocket allow client applications to interact with the login server, for instance to check whether a user has been logged in and to find out which identities belong to a user (see [login-client](https://github.com/gbv/login-client) and [login-client-vue](https://github.com/gbv/login-client-vue) for a JavaScript libraries to connect web applications with login-server).
 
@@ -183,65 +182,9 @@ The login server can further be used to authenticate users against other service
 
 Directory [`bin`](bin) contains helper script for administration of a server instance such as listing user accounts and managing local providers.
 
-## Test
-Tests use the same MongoDB as configured in `.env`, just with the postfix `-test` after the database name.
-
-```bash
-npm test
-```
-
-## Strategies
-login-server uses [Passport](http://www.passportjs.org) ([GitHub](https://github.com/jaredhanson/passport)) as authentication middleware. Passport uses so-called "strategies" to support authentication with different providers. A list of available strategies can be found [here](https://github.com/jaredhanson/passport/wiki/Strategies). Currently supported strategies in login-server are:
-
-- GitHub (via [passport-github](http://www.passportjs.org/packages/passport-github/))
-- ORCID (via [passport-orcid](http://www.passportjs.org/packages/passport-orcid/))
-- MediaWiki (via [passport-mediawiki-oauth](http://www.passportjs.org/packages/passport-mediawiki-oauth/)), see [notes](#notes-on-mediawiki-providers)
-- LDAP (via [passport-ldapauth](http://www.passportjs.org/packages/passport-ldapauth/)), see [notes](#notes-on-ldap-providers)
-- OpenIDConnect (experimental, for example via [auth0](https://auth0.com)), see [notes](#notes-on-openidconnect-providers)
-- easydb (via [passport-easydb](https://github.com/gbv/passport-easydb))
-- Local (via [passport-local](http://www.passportjs.org/packages/passport-local/))
-- Script (see https://github.com/gbv/login-server/issues/117 and [notes](#notes-on-script-providers))
-- Stack Exchange (via [passport-oauth2](https://www.passportjs.org/packages/passport-oauth2/), experimental)
-- CBS (used internally at VZG)
-
-Because strategies use different parameters in their [verify callbacks](http://www.passportjs.org/docs/configure/), each strategy has its own wrapper file in the folder `strategies/`. To add another strategy to login-server, add a file called `{name}.js` (where `{name}` is the name of the strategy that is used with `passport.authenticate`) with the following structure (GitHub as example):
-
-```javascript
-/**
- * OAuth Stategy for GitHub.
- */
-
-// Import strategy here
-import { Strategy } from "passport-github"
-
-// Don't change this part!
-export default (options, provider, callback) => new Strategy(options,
-    // Strategies have different callback parameters.
-    // `req` is always the first and the `done` callback is always last.
-    (req, token, tokenSecret, profile, done) => {
-      // Prepare a standardized object for the user profile,
-      // usually using information from the `profile` parameter
-      let providerProfile = {
-        // Required, don't change this!
-        provider: provider.id,
-        // Required: Choose a field that represents a unique user ID for this user
-        id: profile.id,
-        // Optional: Provides a display name (e.g. full name)
-        name: profile.displayName,
-        // Optional: Provides a username
-        username: profile.username
-      }
-      // Call a custom callback. `req`, `providerProfile`, and `done` are required,
-      // `token` and `tokenSecret` can be null.
-      callback(req, token, tokenSecret, providerProfile, done)
-  })
-```
-
-You can look at the existing strategies as examples and add your own via a Pull Request.
-
 ## Providers
 
-After you have added the [strategy](#strategies), you can use it by adding a provider to `providers.json`:
+Identity providers are listed in `providers.json`. An example:
 
 ```json
 [
@@ -260,10 +203,22 @@ After you have added the [strategy](#strategies), you can use it by adding a pro
 ]
 ```
 
+Each provider must reference its type with field `strategy` (see [technical background of strategies](#strategies)). The following strategies are supported:
+
+- GitHub (via [passport-github](http://www.passportjs.org/packages/passport-github/))
+- ORCID (via [passport-orcid](http://www.passportjs.org/packages/passport-orcid/))
+- MediaWiki (via [passport-mediawiki-oauth](http://www.passportjs.org/packages/passport-mediawiki-oauth/)), see [notes](#notes-on-mediawiki-providers)
+- LDAP (via [passport-ldapauth](http://www.passportjs.org/packages/passport-ldapauth/)), see [notes](#notes-on-ldap-providers)
+- OpenIDConnect (experimental, for example via [auth0](https://auth0.com)), see [notes](#notes-on-openidconnect-providers)
+- easydb (via [passport-easydb](https://github.com/gbv/passport-easydb))
+- Local (via [passport-local](http://www.passportjs.org/packages/passport-local/))
+- Script (see <https://github.com/gbv/login-server/issues/117> and [notes](#notes-on-script-providers))
+- CBS (used internally at VZG only)
+
 Each object in the list of providers can have the following properties:
 
 - `id` (required) - Unique ID for the provider.
-- `strategy` (required) - Name of the Passport strategy used by the provider.
+- `strategy` (required) - Name of the strategy used by the provider.
 - `name` (required) - Display name of the provider.
 - `template` (optional) - A template string to generate a URI (the placeholder `{field}` can be any field provided in the `providerProfile` object, usually `{id}` or `{username}`). Characters except `A-Z`, `a-z`, `0-9` and `-_.!~*'();/?:@&=+$,#` are escaped with percent-encoding. Make sure the fields used in a template are actually unique per identity (for instance unique username)!
 - `credentialsNecessary` (optional) - Set to `true` if username and password credentials are necessary for this provider. Instead of a redirect (for OAuth), login-server will show a login form that will send the credentials to a POST endpoint.
@@ -604,6 +559,52 @@ PRs accepted.
 
 Executing `npm run mongodb` will start a temporary MongoDB database for testing and development.
 
+## Test
+Tests use the same MongoDB as configured in `.env`, just with the postfix `-test` after the database name.
+
+```bash
+npm test
+```
+
+## Strategies
+login-server uses [Passport](http://www.passportjs.org) ([GitHub](https://github.com/jaredhanson/passport)) as authentication middleware. Passport uses so-called "strategies" to support authentication with different providers. A list of available strategies can be found [here](https://github.com/jaredhanson/passport/wiki/Strategies). Currently supported strategies are listed above at [providers](#providers).
+
+Because strategies use different parameters in their [verify callbacks](http://www.passportjs.org/docs/configure/), each strategy has its own wrapper file in the folder `strategies/`. To add another strategy to login-server, add a file called `{name}.js` (where `{name}` is the name of the strategy that is used with `passport.authenticate`) with the following structure (GitHub as example):
+
+```javascript
+/**
+ * OAuth Stategy for GitHub.
+ */
+
+// Import strategy here
+import { Strategy } from "passport-github"
+
+// Don't change this part!
+export default (options, provider, callback) => new Strategy(options,
+    // Strategies have different callback parameters.
+    // `req` is always the first and the `done` callback is always last.
+    (req, token, tokenSecret, profile, done) => {
+      // Prepare a standardized object for the user profile,
+      // usually using information from the `profile` parameter
+      let providerProfile = {
+        // Required, don't change this!
+        provider: provider.id,
+        // Required: Choose a field that represents a unique user ID for this user
+        id: profile.id,
+        // Optional: Provides a display name (e.g. full name)
+        name: profile.displayName,
+        // Optional: Provides a username
+        username: profile.username
+      }
+      // Call a custom callback. `req`, `providerProfile`, and `done` are required,
+      // `token` and `tokenSecret` can be null.
+      callback(req, token, tokenSecret, providerProfile, done)
+  })
+```
+
+You can look at the existing strategies as examples and add your own via a Pull Request.
+
+
 ### Publish
 **For maintainers only**
 
@@ -631,7 +632,7 @@ After running this, GitHub Actions will automatically create a new GitHub Releas
 
 
 ## Related Works
-- https://github.com/netlify/gotrue
+- <https://github.com/netlify/gotrue>
 
 ## License
-MIT © 2019 Verbundzentrale des GBV (VZG)
+MIT © 2019- Verbundzentrale des GBV (VZG)
